@@ -22,3 +22,17 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Migration reference build + test output
+.reference
+/test-results
+/playwright-report
+/tests/visual/__baseline__
+
+# Next.js
+/.next
+/out
+next-env.d.ts
+*.tsbuildinfo
+.env*.local
+/test-results-e2e

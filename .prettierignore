@@ -1,0 +1,8 @@
+.next
+.reference
+node_modules
+playwright-report
+test-results
+package-lock.json
+# Verbatim third-party stylesheet kept byte-for-byte for visual parity.
+src/styles/legacy/webflow.css

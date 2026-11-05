@@ -1,0 +1,56 @@
+/*
+ * Tailwind design tokens. Values are NOT duplicated here: every token points at the
+ * single source of truth (the --tt-* palette in theme.css, the next/font variables, and
+ * the Webflow layout constants), so `tw:bg-brown` and the legacy CSS can never drift apart.
+ *
+ * Usage: tw:bg-cream, tw:text-espresso, tw:font-display, tw:shadow-card, tw:max-w-container-large
+ */
+@theme inline {
+  /* Palette (Warm Editorial, brown & cream) */
+  --color-brown: var(--tt-brown);
+  --color-espresso: var(--tt-espresso);
+  --color-deep-brown: var(--tt-deep-brown);
+  --color-cream: var(--tt-cream);
+  --color-off-white: var(--tt-off-white);
+  --color-sand: var(--tt-sand);
+  --color-soft-beige: var(--tt-soft-beige);
+  --color-terracotta: var(--tt-terracotta);
+  --color-sage: var(--tt-sage);
+  --color-body: var(--tt-body);
+
+  /* Semantic roles (shadcn/ui naming) */
+  --color-background: var(--tt-bg-page);
+  --color-foreground: var(--tt-text);
+  --color-primary: var(--tt-btn);
+  --color-primary-foreground: var(--tt-btn-text);
+  --color-muted: var(--tt-bg-alt);
+  --color-muted-foreground: var(--tt-body);
+  --color-accent: var(--tt-accent);
+  --color-border: var(--tt-card-border);
+  --color-input: var(--tt-line);
+  --color-ring: var(--tt-focus);
+  --color-destructive: var(--tt-error-text);
+
+  /* Typography (next/font variables, see src/app/fonts.ts) */
+  --font-display: var(--font-feature-display), sans-serif;
+  --font-sans: var(--font-artex), sans-serif;
+  --font-pixel: var(--font-pp-mondwest), sans-serif;
+
+  /* Shadows */
+  --shadow-card: var(--tt-shadow-sm);
+  --shadow-raised: var(--tt-shadow-md);
+
+  /* Radius (Webflow pill buttons / cards) */
+  --radius-pill: 100vw;
+  --radius-card: 1rem;
+
+  /* Container widths (mirror .container-large / .container-large-6 in webflow.css) */
+  --container-large: 1320px;
+  --container-content: 80rem;
+
+  /* Breakpoints (Webflow: tiny 479 / small 767 / medium 991 / large 1280) */
+  --breakpoint-sm: 30rem;
+  --breakpoint-md: 48rem;
+  --breakpoint-lg: 62rem;
+  --breakpoint-xl: 80rem;
+}

@@ -1,56 +1,119 @@
-# Elite homepage (React + Vite)
+# Elite homepage (Next.js)
 
-The Elite homepage, built from a close recreation of the homepage at https://www.techto.org/ (published Oct 23 2026) and rebranded as Elite with a brown & cream theme. Only the homepage is built. Links to other pages keep their original destinations.
+The Elite homepage on **Next.js 16 (App Router)**, React 19 Server Components, strict
+TypeScript and Tailwind CSS v4. It was migrated from the approved React + Vite build
+(git tag `react-approved-v1`) without visual changes; Playwright compares the two
+pixel by pixel at 14 viewports.
+
+> **Launch checklist — read before deploying publicly.** The copy, photos, partner logos
+> and fonts are still those of techto.org, from which the design was recreated. They belong
+> to TechTO and the named companies, and Feature Display / PP Mondwest are commercial fonts
+> that need their own licence. The site therefore ships with `noindex` and a disallow-all
+> `robots.txt` until `SITE_INDEXABLE=true` is set. Replace the content in
+> `src/services/content/static-content.ts` (or in Sanity) and the assets in
+> `public/assets/images` first.
+
+## Commands
 
 ```bash
 npm install
-npm run dev        # http://localhost:5173
-npm run build
+npm run dev                  # http://localhost:3000
+npm run build && npm start   # production build
+npm run typecheck            # tsc --noEmit (strict)
+npm run lint                 # ESLint (next/core-web-vitals + typescript)
+npm run format               # Prettier (+ Tailwind class sorting)
+npm run test:e2e             # Playwright: navigation, interactions, SEO, axe, overflow (14 viewports)
+npm run test:visual          # Playwright: pixel comparison with the React reference (14 viewports)
+npm run verify               # everything above, in order
 ```
 
-## How it is built
+Environment (see `src/config/site.ts`, validated with Zod at startup):
 
-The original site is a Webflow build. For the closest match, this project uses the site's **original stylesheet and markup structure** and replaces the Webflow runtime with React.
+| Variable               | Default                 | Purpose                                       |
+| ---------------------- | ----------------------- | --------------------------------------------- |
+| `NEXT_PUBLIC_SITE_URL` | `http://localhost:3000` | Canonical URLs, sitemap, Open Graph           |
+| `SITE_INDEXABLE`       | `false`                 | `true` allows indexing (robots + meta robots) |
 
-- `src/styles/webflow.css` is the original Webflow CSS, with asset URLs rewritten to `/assets/...`.
-- `src/styles/embeds.css` holds the original page-level `<style>` embeds (global helpers, marquee keyframes, highlight style).
-- **Brand:** the name and footer credit live in `brand` in `src/data/content.js`. The nav logo (`icons/Logo.jsx`), footer wordmark (`icons/Wordmark.jsx`) and favicons (`public/favicon.svg`, `public/favicon.png`, `public/assets/images/elite-icon-256.png`) are Elite marks drawn in the original letter style.
-- `src/styles/theme.css` is the colour theme (Warm Editorial, brown & cream). It holds the palette and semantic colour tokens (`--tt-*`), remaps the Webflow colour variables onto them, and overrides every colour on the homepage. It contains only colour properties, never sizes or layout. To retheme, edit the tokens at the top. `Header.jsx` reads the `--tt-nav-*` tokens for the nav pill animation.
-- `src/styles/components.css` holds a few runtime states that `webflow.js` used to set inline (nav overlay, form success, mobile city menu).
-- `public/assets/` holds every image, logo, GIF and font from the original site (82 files).
-- `src/lib/interactions.js` replaces Webflow IX2 and the site's custom GSAP script. Timings, easings, offsets and delays are taken from the site's published IX2 config: fade-ins, slide-ups, image "wipe" reveals, the logo stagger, the sponsorship stagger, heading scramble, button hover scramble and the image bounce.
-- Webflow `w-node-*` ids are kept, because the original CSS places grid cells by id.
+## Architecture
 
 ```
 src/
-  App.jsx                    page composition + interaction bootstrap
-  data/content.js            all copy, links, events, testimonials, sponsors, footer links
-  lib/interactions.js        IX2 / GSAP animation port
+  app/                      routing only: layout, page, robots.ts, sitemap.ts, not-found, fonts, globals.css
+  config/site.ts            validated environment + site constants
+  services/content/         content layer (Sanity-ready)
+    types.ts                  typed content models
+    provider.ts               ContentProvider interface
+    static-content.ts         current implementation (static data)
+    index.ts                  provider selection + request-deduplicated accessors (server-only)
+  features/
+    home/sections/          one Server Component per homepage section
+    home/components/        section parts; city-events and testimonial-tabs are the only client parts
+    newsletter/             NewsletterForm (client, React Hook Form + Zod) and its schema
   components/
-    Header.jsx               pill nav: scroll state, "More" dropdown, mobile menu
-    MoreDropdownPanel.jsx    dropdown contents (newsletter, podcasts, contact)
-    Hero.jsx                 headline + floating images
-    TrustedCompanies.jsx     "Trusted by Members who Built" logo grid
-    Events.jsx / EventRow.jsx featured event, city tabs, mobile "Select City", empty state
-    CommunityBenefits.jsx    Learn from the Best / Expand Your Network / Stay Ahead
-    ImpactStories.jsx        "Real Success" marquee + testimonial tabs
-    MembershipBenefits.jsx   "Other Ways Members Benefit"
-    Newsletter.jsx           Subscribe card
-    Sponsorship.jsx          perks + "Thank You" sponsor marquees
-    Footer.jsx               gradient wordmark, grid lines, link columns
-    NewsletterForm.jsx       shared form (3 instances)
-    WipeImage.jsx            image with reveal cover
-    icons/                   inline SVGs from the original (logo, wordmark, pixel icons)
+    layout/                 SiteHeader (client), MorePanel, SiteFooter
+    ui/                     shadcn/ui (Label) and small shared primitives (AccentHeading)
+    media/                  PlainImage (SVG/GIF/logos), WipeImage
+    icons/                  inline SVG icons
+  lib/
+    motion/                 GSAP port of the Webflow IX2 interactions + MotionRoot (client)
+    seo/                    metadata builder, JSON-LD
+  styles/
+    legacy/                 approved Webflow stylesheet, embeds, runtime states (unchanged)
+    theme.css               brown & cream colour theme (single source of truth for colour)
+    tokens.css              Tailwind @theme tokens that point at theme.css variables
+    base.css                resets for elements made semantic during the migration
+  sanity/                   reserved for the CMS (README, empty queries/ and schemas/)
+tests/
+  e2e/                      behaviour, SEO, accessibility, overflow
+  visual/                   pixel parity with the React reference
+scripts/serve-reference.mjs serves the frozen React build for comparison
 ```
 
-## Differences from the original (on purpose)
+### Key decisions
 
-- **Newsletter forms** have no backend. The original sends to Beehiiv. Submitting here only shows Webflow's built-in "Thank You for subscribing!" state in the browser.
-- **City filter** uses React state in place of Finsweet CMS Filter, with the same behavior: the active tab is highlighted, and "Check Back Soon" shows when a city has no events.
-- **Third-party scripts are not included**: analytics, Memberful, Tito, Beehiiv attribution and Cloudflare Turnstile. Turnstile adds an empty `<div>` to each form, and that changes the form spacing, so the same empty node is kept for layout only.
-- The footer's Beehiiv iframe is left out because the original hides it (`.beehiv-form { display: none }`).
-- The wordmark SVG's invalid `height="auto"` attribute is removed. It rendered the same but logged a console error.
+**Server Components by default.** Every section renders on the server; the page is fully
+static (`force-static`) and all content is in the initial HTML. Client code is limited to:
+the header (menu, dropdown, scroll-linked pill), the city filter, the testimonial tabs, the
+newsletter form, and `MotionRoot`, which starts the scroll reveals. Client components receive
+server-rendered content as props (`morePanel`, `rows`, `tabs`) instead of becoming the
+section themselves.
 
-## Asset note
+**Layered CSS: the approved stylesheet stays byte-for-byte.** The design depends on the
+original Webflow stylesheet (13.6k lines, grid cells placed by element id). Rewriting it
+as Tailwind classes would risk the visual sign-off at 14 viewports, so it is loaded unchanged
+into a `legacy` cascade layer, with explicit layer order in `src/app/globals.css`:
+`theme < base < legacy < components < utilities`. Tailwind's Preflight is not loaded (Webflow
+ships its own normalize). Tailwind utilities use the **`tw:` prefix** because Webflow class
+names such as `outline`, `container` and `grid` are also Tailwind utilities and would
+otherwise generate rules that change the design. New styling uses Tailwind and the tokens
+in `tokens.css`; legacy sections can be converted one at a time, gated by the visual tests.
 
-All images, logos, fonts and copy belong to TechTO and the named companies. This project is for local reference and development only. Don't deploy it publicly as-is.
+**Content is separated from layout.** Content models never contain Webflow ids or class
+variants; components map list positions to the layout slots the stylesheet expects.
+`ContentProvider` is the only seam a Sanity implementation needs (see `src/sanity/README.md`).
+
+**Motion.** Timings are the original IX2 values. Elements are server-rendered in their
+pre-animation state (no flash), revealed by `lib/motion`. With `prefers-reduced-motion`
+everything is shown in its final state and the decorative loops (scramble, bounce) are
+skipped. Without JavaScript a `<noscript>` style shows all content.
+
+**Images.** Raster photos and illustrations use `next/image` (AVIF/WebP, responsive `srcset`,
+intrinsic dimensions from the content model to prevent layout shift; hero images load
+eagerly). SVG logos/icons and animated GIFs use a plain `<img>` through `PlainImage`, since
+next/image cannot optimise them. Fonts are self-hosted and preloaded with `next/font/local`.
+
+## Visual comparison workflow
+
+The React reference build lives in `.reference/` (git-ignored):
+
+```bash
+git worktree add .reference/react-src react-approved-v1
+(cd .reference/react-src && npm ci && npm run build)
+cp -R .reference/react-src/dist .reference/react-dist
+npm run test:visual:baseline   # screenshots of the React build → tests/visual/__baseline__
+npm run build && npm run test:visual
+```
+
+Screenshots are deterministic: the tests install a paused fake clock, scroll the page to fire
+every reveal, then advance time by fixed amounts so GSAP tweens and the infinite image bounce
+always end in the same state.

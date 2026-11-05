@@ -1,0 +1,44 @@
+/*
+ * Element resets for markup that the migration made semantic.
+ * The React build used <div role="button"> for toggles; they are now real <button>s.
+ * This makes a <button> render like the <div> it replaced, so the Webflow class rules
+ * (in the higher-priority `legacy` layer) apply exactly as before.
+ */
+button.ui-unstyled {
+  appearance: none;
+  display: block;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  line-height: inherit;
+  text-align: inherit;
+  text-transform: inherit;
+  cursor: pointer;
+}
+
+/* Keyboard focus is always visible (WCAG 2.4.7 / 2.4.11). */
+button.ui-unstyled:focus-visible,
+a:focus-visible,
+input:focus-visible {
+  outline: 0.125rem solid var(--tt-focus);
+  outline-offset: 0.125rem;
+}
+
+/* City filter radios are visually hidden; show keyboard focus on their visible label. */
+.tab_link:has(input:focus-visible) {
+  outline: 0.125rem solid var(--tt-focus);
+  outline-offset: 0.125rem;
+}
+
+/*
+ * next/image always writes width/height attributes. The React build's <img>s had none, so
+ * their height followed the width. `height: auto` restores that; class rules in the legacy
+ * layer that set an explicit height still win.
+ */
+img[data-nimg] {
+  height: auto;
+}

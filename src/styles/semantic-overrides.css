@@ -1,0 +1,17 @@
+/*
+ * Layout fixes for elements the migration turned into real <button>s.
+ * Loaded in the `components` layer so they apply above the legacy Webflow rules.
+ *
+ * A block-level <button> centres its content vertically and shrink-wraps it, unlike the
+ * <div role="button"> it replaced. Where the Webflow CSS shows the "Select City" toggle as
+ * `display: block` (phones), a column flexbox lays its child out exactly like a block div.
+ */
+@media screen and (max-width: 767px) {
+  button.tab-dropdown {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    width: 100%; /* a block <div> fills its row; a <button> shrink-wraps */
+  }
+}
