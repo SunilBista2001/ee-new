@@ -1,77 +1,74 @@
 import Image from 'next/image';
-import { WipeImage } from '@/components/media/wipe-image';
-import { AccentHeading } from '@/components/ui/accent-heading';
-import { INITIAL_STYLE, MOTION_IDS } from '@/lib/motion/reveal-config';
-import type { HeroContent } from '@/services/content';
+import { ButtonLink, HeadlineText } from '@/components/ee/primitives';
+import type { HeroContent, ImageAsset } from '@/services/content';
 
-/** Wrapper class of each floating hero image, in content order (arc, circuit, man, woman). */
-const FLOATING_IMAGE_CLASSES = ['img-arc', 'img-circuit', 'img-man', 'img-woman'] as const;
+function Floater({ image, index }: { image: ImageAsset; index: number }) {
+  return (
+    <div className={`hero__float hero__float--${index + 1}`} data-float={index} aria-hidden="true">
+      <div className="hero__float-inner" data-hero-float>
+        <Image
+          src={image.src}
+          alt=""
+          width={image.width}
+          height={image.height}
+          sizes="220px"
+          priority={index < 2}
+          style={image.focus ? { objectPosition: image.focus } : undefined}
+        />
+      </div>
+    </div>
+  );
+}
 
+/**
+ * Hero: a centered editorial headline with a photo pill set inline in the text, real event
+ * photos floating around it, and a slim bottom bar with the lead and actions.
+ */
 export function Hero({ content }: { content: HeroContent }) {
   return (
-    <>
-      <div className="hero-gradient" />
-      <header className="section_header-centered">
-        <div className="hero-text-centered mobile-padding-hero">
-          <div className="container-large">
-            <div className="text-centered">
-              <div className="padding-top padding-xxlarge">
-                <div className="text-align-center">
-                  <div className="max-width-xlarge">
-                    <AccentHeading
-                      as="h1"
-                      heading={content.heading}
-                      data-w-id={MOTION_IDS.hero.heading}
-                      style={INITIAL_STYLE.slideUp}
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
+    <section className="hero" aria-labelledby="hero-title">
+      <div className="wrap hero__stage">
+        {content.floaters.map((image, i) => (
+          <Floater key={image.src} image={image} index={i} />
+        ))}
+
+        <div className="hero__center">
+          <p className="hero__meta" data-hero-item>
+            <span className="hero__status">
+              <span className="dot dot--live" aria-hidden="true" />
+              {content.status.label}: <strong>{content.status.value}</strong>
+            </span>
+            <span className="hero__meta-sep" aria-hidden="true" />
+            <span className="hero__coords">{content.meta}</span>
+          </p>
+
+          <h1 id="hero-title" className="display hero__title" data-hero-title>
+            {content.headlineStart}{' '}
+            <span className="pill-img" data-hero-pill>
+              <Image
+                src={content.inlineImage.src}
+                alt=""
+                width={content.inlineImage.width}
+                height={content.inlineImage.height}
+                sizes="240px"
+                priority
+                style={content.inlineImage.focus ? { objectPosition: content.inlineImage.focus } : undefined}
+              />
+            </span>{' '}
+            <HeadlineText headline={content.headlineEnd} />
+          </h1>
+        </div>
+      </div>
+
+      <div className="wrap">
+        <div className="hero__bar" data-hero-item>
+          <p className="hero__lead">{content.lead}</p>
+          <div className="hero__ctas">
+            <ButtonLink link={content.primaryCta} />
+            <ButtonLink link={content.secondaryCta} variant="secondary" icon={false} />
           </div>
         </div>
-        <div className="padding-global">
-          <div className="container-large">
-            <div className="padding-bottom padding-medium">
-              <div className="cta8_component">
-                <div id="w-node-_89cb5670-34e8-0c6e-446c-3cf8042ad810-a6a2ca3f" className="cta8_content">
-                  <div data-w-id={MOTION_IDS.hero.lead} style={INITIAL_STYLE.hidden} className="text-size-large">
-                    {content.lead}
-                  </div>
-                </div>
-                <a
-                  id="w-node-_89cb5670-34e8-0c6e-446c-3cf8042ad816-a6a2ca3f"
-                  href={content.cta.href}
-                  className="button is-secondary w-button"
-                >
-                  {content.cta.label}
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="hero-parallax-container">
-          {content.images.map((image, index) => (
-            <div
-              key={image.src}
-              data-w-id={MOTION_IDS.hero.images[index]}
-              className={`${FLOATING_IMAGE_CLASSES[index]} img-parallax`}
-            >
-              <WipeImage wrapperClass="wipe-container">
-                <Image
-                  src={image.src}
-                  alt={image.alt}
-                  width={image.width}
-                  height={image.height}
-                  loading="eager"
-                  data-pixelate={index === 0 ? '' : undefined}
-                />
-              </WipeImage>
-            </div>
-          ))}
-        </div>
-        <div className="bg-grid" aria-hidden="true" />
-      </header>
-    </>
+      </div>
+    </section>
   );
 }

@@ -3,11 +3,11 @@
  * (static data today, Sanity later) and the presentation components.
  *
  * Rules:
- *  - Content only. Layout concerns (Webflow grid ids, animation ids, CSS class variants)
- *    live in the presentation components, never here, so a CMS editor never sees them.
- *  - Images carry intrinsic dimensions so next/image can reserve space (no layout shift).
- *  - Rich inline emphasis (the pixel-font accent word in headings) is modelled explicitly
- *    as `AccentHeading` instead of HTML strings.
+ *  - Content only. Layout concerns (grid placement, animation hooks) live in components.
+ *  - Raster images carry intrinsic dimensions so next/image can reserve space (no layout shift).
+ *  - Only verified information. Where something is not confirmed yet (the next event's date,
+ *    city, speakers or prices), the model has an explicit "announcement" state instead of
+ *    placeholder facts.
  */
 
 export interface Link {
@@ -17,67 +17,47 @@ export interface Link {
   external?: boolean;
 }
 
-/** An image rendered as-is: SVG, animated GIF or small logo, where optimisation adds nothing. */
-export interface PlainImage {
+export interface ImageAsset {
   src: string;
   /** Empty string marks the image as decorative. */
   alt: string;
-}
-
-/** A raster image rendered through next/image; dimensions are the file's intrinsic size. */
-export interface ImageAsset extends PlainImage {
   width: number;
   height: number;
+  /** CSS object-position for art direction, e.g. "50% 20%". */
+  focus?: string;
 }
 
-/** A heading whose `accent` part is set in the pixel display font (".h1-span"). */
-export interface AccentHeading {
-  before: string;
-  accent: string;
-  after?: string;
-  /** Put the accent on its own line (the source used a <br>). */
-  breakBeforeAccent?: boolean;
+/** A headline; `accent` is the closing phrase, set in the italic serif. */
+export interface Headline {
+  text: string;
+  accent?: string;
 }
 
 // ─── Site-wide ────────────────────────────────────────────────────────────────
 
 export interface Brand {
   name: string;
-  poweredBy: Link;
-}
-
-export interface Podcast {
-  title: string;
-  description: string;
-  href: string;
-  image: ImageAsset;
+  shortName: string;
+  tagline: string;
+  /** Transparent single-colour mark, tinted with CSS (used as a mask). */
+  mark: ImageAsset;
 }
 
 export interface Navigation {
   primary: Link[];
   cta: Link;
-  more: {
-    label: string;
-    newsletterHeading: string;
-    podcastsHeading: string;
-    podcasts: Podcast[];
-    contactHeading: string;
-    contactCta: Link;
-  };
 }
 
-export interface FooterColumn {
-  title: string;
-  /** "social" columns use the boxed social link style. */
-  variant: 'links' | 'social';
-  links: Link[];
+export interface ContactInfo {
+  email: string;
+  location: string;
 }
 
-export interface Footer {
-  newsletterHeading: string;
-  columns: FooterColumn[];
-  legal: Link[];
+export interface FooterContent {
+  description: string;
+  columns: { title: string; links: Link[] }[];
   copyright: string;
+  credit: Link;
 }
 
 export interface NewsletterCopy {
@@ -85,140 +65,153 @@ export interface NewsletterCopy {
   submitLabel: string;
   successMessage: string;
   errorMessage: string;
-  /** Shown under the input when the address is not valid. */
   invalidEmailMessage: string;
 }
 
 export interface SiteSettings {
   brand: Brand;
   navigation: Navigation;
-  footer: Footer;
+  contact: ContactInfo;
+  footer: FooterContent;
   newsletter: NewsletterCopy;
 }
 
 // ─── Homepage ─────────────────────────────────────────────────────────────────
 
 export interface HeroContent {
-  heading: AccentHeading;
+  /** Small mono line above the headline. */
+  meta: string;
+  /** Headline in two parts; `inlineImage` sits between them as a rounded pill. */
+  headlineStart: string;
+  headlineEnd: Headline;
+  inlineImage: ImageAsset;
   lead: string;
-  cta: Link;
-  /** Exactly four decorative/editorial images, in the order arc, circuit, man, woman. */
-  images: [ImageAsset, ImageAsset, ImageAsset, ImageAsset];
+  primaryCta: Link;
+  secondaryCta: Link;
+  /** Photos floating around the headline (desktop), four expected. */
+  floaters: ImageAsset[];
+  status: { label: string; value: string };
 }
 
-export interface TrustedCompaniesContent {
+export interface PartnersContent {
+  label: string;
+  partners: { name: string; logo: ImageAsset }[];
+}
+
+export interface IntroContent {
+  index: string;
+  label: string;
   heading: string;
-  logos: PlainImage[];
+  /** Large statement revealed word by word on scroll. */
+  statement: string;
+  detail: string;
+  cta: Link;
+  images: [ImageAsset, ImageAsset];
+  facts: { label: string; value: string }[];
+  factsNote: string;
 }
 
-export interface EventDetails {
-  slug: string;
+export interface EventCard {
+  status: string;
+  category: string;
   title: string;
-  description?: string;
-  city: string;
-  /** ISO 8601 date-time with offset, e.g. 2026-11-10T18:00:00-05:00. */
-  startsAt: string;
-  endsAt: string;
-  /** Display strings, pre-formatted by the content source (time zone aware). */
-  display: {
-    year: string;
-    day: string;
-    month: string;
-    longDate: string;
-    shortDate: string;
-    featuredTime: string;
-    start: string;
-    end: string;
-  };
-  venue: string;
-  price: string;
-  soldOut: boolean;
-  image: ImageAsset;
-  href: string;
+  /** Badge parts, e.g. year "2026", day "26–28", month "Aug". */
+  badge: { year: string; day: string; month: string };
+  date: string;
+  location: string;
+  description: string;
+  cta: Link;
 }
 
 export interface EventsContent {
-  heading: { before: string; accent: string; after: string };
+  index: string;
+  label: string;
+  /** Heading in two parts with a photo pill between them. */
+  headingStart: string;
+  headingEnd: string;
   headingImage: ImageAsset;
   intro: string;
-  featured: EventDetails;
-  cities: string[];
-  events: EventDetails[];
-  selectCityLabel: string;
-  emptyState: AccentHeading;
-  detailsLabel: string;
+  /** Shown while no next date is public. Holds no date, city or price on purpose. */
+  announcement: {
+    label: string;
+    title: string;
+    text: string;
+    primaryCta: Link;
+    secondaryCta: Link;
+  };
+  pastHeading: string;
+  past: EventCard[];
+  allEventsCta: Link;
 }
 
-export interface FeatureBlock {
-  heading: AccentHeading;
-  text: string;
-  cta: Link;
-  images?: { main: ImageAsset; overlay: ImageAsset };
+export interface ExperienceContent {
+  index: string;
+  label: string;
+  heading: string;
+  intro: string;
+  pillars: { title: string; text: string; meta: string; image: ImageAsset }[];
 }
 
-export interface CommunityBenefitsContent {
-  learn: FeatureBlock & { images: { main: ImageAsset; overlay: ImageAsset } };
-  network: FeatureBlock;
-  stayAhead: FeatureBlock & { images: { main: ImageAsset; overlay: ImageAsset } };
+export interface Speaker {
+  name: string;
+  company: string;
+  credential: string;
+  photo: ImageAsset;
+  href?: string;
+}
+
+export interface SpeakersContent {
+  index: string;
+  label: string;
+  heading: string;
+  intro: string;
+  speakers: Speaker[];
+  invite: { title: string; text: string; cta: Link };
 }
 
 export interface Testimonial {
-  company: string;
   quote: string;
-  author: string;
+  name: string;
   role: string;
   photo: ImageAsset;
-  logo: PlainImage;
 }
 
-export interface ImpactStoriesContent {
-  tagline: string;
-  marqueeText: string;
+export interface StoriesContent {
+  index: string;
+  label: string;
+  heading: string;
+  intro: string;
+  /** Phrases for the scrolling outline-text band. */
+  marquee: string[];
   testimonials: Testimonial[];
 }
 
-export type BenefitIcon = 'maple-leaf' | 'handshake' | 'rocket';
-
-export interface MembershipBenefit {
-  icon: BenefitIcon;
-  animation: string;
-  tag: string;
-  title: string;
-  text: string;
+export interface GalleryContent {
+  index: string;
+  label: string;
+  heading: string;
+  intro: string;
+  feature: { image: ImageAsset; caption: string };
+  moments: { image: ImageAsset; caption: string }[];
+  formats: string[];
 }
 
-export interface MembershipBenefitsContent {
-  heading: string;
+export interface CommunityCtaContent {
+  label: string;
+  /** Heading in two parts; the faces sit between them. */
+  headingStart: string;
+  headingEnd: Headline;
+  text: string;
   cta: Link;
-  benefits: MembershipBenefit[];
+  faces: ImageAsset[];
+  facesCaption: string;
 }
 
 export interface NewsletterSectionContent {
-  image: ImageAsset;
-  headlineImage: ImageAsset;
+  label: string;
   heading: string;
   text: string;
-  consent: { before: string; link: Link; after: string };
-}
-
-export interface SponsorPerk {
-  title: string;
-  text: string;
-}
-
-export interface SponsorRow {
-  /** Marquee scroll direction. */
-  direction: 'left' | 'right';
-  logos: PlainImage[];
-}
-
-export interface SponsorshipContent {
-  tagline: string;
-  heading: string;
-  perks: SponsorPerk[];
-  thankYou: { before: string; accent: string };
-  sponsorRows: SponsorRow[];
-  cta: Link;
+  note: string;
 }
 
 export interface SeoContent {
@@ -232,11 +225,13 @@ export interface SeoContent {
 export interface HomePageContent {
   seo: SeoContent;
   hero: HeroContent;
-  trustedCompanies: TrustedCompaniesContent;
+  partners: PartnersContent;
+  intro: IntroContent;
   events: EventsContent;
-  communityBenefits: CommunityBenefitsContent;
-  impactStories: ImpactStoriesContent;
-  membershipBenefits: MembershipBenefitsContent;
+  experience: ExperienceContent;
+  speakers: SpeakersContent;
+  stories: StoriesContent;
+  gallery: GalleryContent;
+  communityCta: CommunityCtaContent;
   newsletter: NewsletterSectionContent;
-  sponsorship: SponsorshipContent;
 }

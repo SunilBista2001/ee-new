@@ -1,35 +1,30 @@
-import localFont from 'next/font/local';
+import { Geist, Geist_Mono, Instrument_Serif } from 'next/font/google';
 
 /*
- * Brand fonts, self-hosted and preloaded by next/font (replaces the manual <link rel=preload>
- * tags and @font-face rules of the React build). Each exposes a CSS variable that the legacy
- * Webflow stylesheet and the Tailwind tokens reference.
+ * Brand typography, self-hosted at build time by next/font.
  *
- * adjustFontFallback is off: the original rendered its plain `sans-serif` fallback while fonts
- * loaded, and the metric-adjusted fallback would change line boxes for the brief swap period.
+ *  Geist             variable sans for everything: headlines, body copy, labels.
+ *  Geist Mono        small uppercase labels, indices and metadata.
+ *  Instrument Serif  italic, used sparingly for the closing phrase of a few headlines.
  */
-export const artex = localFont({
-  src: '../assets/fonts/artex-regular.ttf',
-  variable: '--font-artex',
-  weight: '400',
+export const geist = Geist({
+  subsets: ['latin'],
+  variable: '--font-geist',
   display: 'swap',
-  adjustFontFallback: false,
 });
 
-export const featureDisplay = localFont({
-  src: '../assets/fonts/featuredisplay-regular.otf',
-  variable: '--font-feature-display',
-  weight: '400',
+export const geistMono = Geist_Mono({
+  subsets: ['latin'],
+  variable: '--font-geist-mono',
   display: 'swap',
-  adjustFontFallback: false,
 });
 
-export const ppMondwest = localFont({
-  src: '../assets/fonts/ppmondwest-regular-1.otf',
-  variable: '--font-pp-mondwest',
+export const instrumentSerif = Instrument_Serif({
+  subsets: ['latin'],
   weight: '400',
+  style: ['italic'],
+  variable: '--font-instrument',
   display: 'swap',
-  adjustFontFallback: false,
 });
 
-export const fontVariables = [artex.variable, featureDisplay.variable, ppMondwest.variable].join(' ');
+export const fontVariables = [geist.variable, geistMono.variable, instrumentSerif.variable].join(' ');

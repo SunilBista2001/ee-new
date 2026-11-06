@@ -1,17 +1,17 @@
-# Elite homepage (Next.js)
+# Elite Entrepreneurs — homepage (Next.js)
 
-The Elite homepage on **Next.js 16 (App Router)**, React 19 Server Components, strict
-TypeScript and Tailwind CSS v4. It was migrated from the approved React + Vite build
-(git tag `react-approved-v1`) without visual changes; Playwright compares the two
-pixel by pixel at 14 viewports.
+The Elite Entrepreneurs homepage: a cinematic, editorial event site on **Next.js 16 (App Router)**,
+React 19 Server Components, strict TypeScript, GSAP (ScrollTrigger + SplitText) and Lenis.
 
-> **Launch checklist — read before deploying publicly.** The copy, photos, partner logos
-> and fonts are still those of techto.org, from which the design was recreated. They belong
-> to TechTO and the named companies, and Feature Display / PP Mondwest are commercial fonts
-> that need their own licence. The site therefore ships with `noindex` and a disallow-all
-> `robots.txt` until `SITE_INDEXABLE=true` is set. Replace the content in
-> `src/services/content/static-content.ts` (or in Sanity) and the assets in
-> `public/assets/images` first.
+> **Launch checklist — read before deploying publicly.**
+>
+> - Indexing is off (`noindex`, disallow-all `robots.txt`) until `SITE_INDEXABLE=true` is set.
+> - **Event photography** — the original site publishes only a few photos of the room. The crops in
+>   `public/assets/ee/event/moment-*.jpg` come from 540px-wide interview stills; replace them with
+>   full-resolution photography (see _Content & assets_).
+> - **Next event** — the upcoming slot shows an honest “announcement soon” state. Fill it in when the
+>   date, city and lineup are public.
+> - **Newsletter** — the form validates but is not connected to an email provider yet.
 
 ## Commands
 
@@ -22,8 +22,7 @@ npm run build && npm start   # production build
 npm run typecheck            # tsc --noEmit (strict)
 npm run lint                 # ESLint (next/core-web-vitals + typescript)
 npm run format               # Prettier (+ Tailwind class sorting)
-npm run test:e2e             # Playwright: navigation, interactions, SEO, axe, overflow (14 viewports)
-npm run test:visual          # Playwright: pixel comparison with the React reference (14 viewports)
+npm run test:e2e             # Playwright at 14 viewports: navigation, interactions, SEO, axe, overflow
 npm run verify               # everything above, in order
 ```
 
@@ -38,82 +37,67 @@ Environment (see `src/config/site.ts`, validated with Zod at startup):
 
 ```
 src/
-  app/                      routing only: layout, page, robots.ts, sitemap.ts, not-found, fonts, globals.css
+  app/                      routing only: layout, page, robots, sitemap, not-found, fonts, globals.css
   config/site.ts            validated environment + site constants
-  services/content/         content layer (Sanity-ready)
-    types.ts                  typed content models
-    provider.ts               ContentProvider interface
-    static-content.ts         current implementation (static data)
-    index.ts                  provider selection + request-deduplicated accessors (server-only)
-  features/
-    home/sections/          one Server Component per homepage section
-    home/components/        section parts; city-events and testimonial-tabs are the only client parts
-    newsletter/             NewsletterForm (client, React Hook Form + Zod) and its schema
-  components/
-    layout/                 SiteHeader (client), MorePanel, SiteFooter
-    ui/                     shadcn/ui (Label) and small shared primitives (AccentHeading)
-    media/                  PlainImage (SVG/GIF/logos), WipeImage
-    icons/                  inline SVG icons
-  lib/
-    motion/                 GSAP port of the Webflow IX2 interactions + MotionRoot (client)
-    seo/                    metadata builder, JSON-LD
-  styles/
-    legacy/                 approved Webflow stylesheet, embeds, runtime states (unchanged)
-    theme.css               brown & cream colour theme (single source of truth for colour)
-    tokens.css              Tailwind @theme tokens that point at theme.css variables
-    base.css                resets for elements made semantic during the migration
-  sanity/                   reserved for the CMS (README, empty queries/ and schemas/)
-tests/
-  e2e/                      behaviour, SEO, accessibility, overflow
-  visual/                   pixel parity with the React reference
-scripts/serve-reference.mjs serves the frozen React build for comparison
+  services/content/         content layer (Sanity-ready): types, provider interface, static content
+  components/ee/            design-system primitives (Display, Eyebrow, ArrowLink, MediaFrame, Grain),
+                            SiteNav (client), SiteFooter
+  features/home/sections/   one Server Component per homepage section
+  features/home/components/ IntroLoader, TestimonialCarousel (client)
+  features/newsletter/      NewsletterForm (client, React Hook Form + Zod)
+  lib/motion/               gsap.ts (plugin registration), SmoothScroll (Lenis), PageMotion, Cursor
+  styles/ee/                tokens, reset, primitives, chrome (nav/footer/loader), sections, motion
 ```
 
-### Key decisions
+### Homepage sections
 
-**Server Components by default.** Every section renders on the server; the page is fully
-static (`force-static`) and all content is in the initial HTML. Client code is limited to:
-the header (menu, dropdown, scroll-linked pill), the city filter, the testimonial tabs, the
-newsletter form, and `MotionRoot`, which starts the scroll reveals. Client components receive
-server-rendered content as props (`morePanel`, `rows`, `tabs`) instead of becoming the
-section themselves.
+01 Navigation · 02 Cinematic hero · 03 Brand statement (`#about`) · 04 The experience · 05 Events
+(upcoming + archive + gallery + partners) · 06 Speakers · 07 Community (sticky storytelling) ·
+08 Testimonials · 09 Final CTA · 10 Footer (`#contact`, `#newsletter`). All navigation targets
+are in-page anchors, so no link points at a route that does not exist.
 
-**Layered CSS: the approved stylesheet stays byte-for-byte.** The design depends on the
-original Webflow stylesheet (13.6k lines, grid cells placed by element id). Rewriting it
-as Tailwind classes would risk the visual sign-off at 14 viewports, so it is loaded unchanged
-into a `legacy` cascade layer, with explicit layer order in `src/app/globals.css`:
-`theme < base < legacy < components < utilities`. Tailwind's Preflight is not loaded (Webflow
-ships its own normalize). Tailwind utilities use the **`tw:` prefix** because Webflow class
-names such as `outline`, `container` and `grid` are also Tailwind utilities and would
-otherwise generate rules that change the design. New styling uses Tailwind and the tokens
-in `tokens.css`; legacy sections can be converted one at a time, gated by the visual tests.
+### Design system
 
-**Content is separated from layout.** Content models never contain Webflow ids or class
-variants; components map list positions to the layout slots the stylesheet expects.
-`ContentProvider` is the only seam a Sanity implementation needs (see `src/sanity/README.md`).
+- **Colour** (`styles/ee/tokens.css`): near-black stage (`--ee-ink`), warm bone paper for contrast
+  sections (`.theme-light`), and one accent — signal amber `--ee-signal`, taken from the brand's
+  own hero footage. Use it sparingly.
+- **Type**: Archivo (variable width axis — condensed 800/900 for display, normal width for body),
+  Instrument Serif italic for single accent words, JetBrains Mono for labels and metadata. All via
+  `next/font/google`, self-hosted at build time.
+- Tailwind v4 is available with the `tw:` prefix and maps to the same tokens (`tw:bg-ink`,
+  `tw:text-signal`, `tw:font-mono`).
 
-**Motion.** Timings are the original IX2 values. Elements are server-rendered in their
-pre-animation state (no flash), revealed by `lib/motion`. With `prefers-reduced-motion`
-everything is shown in its final state and the decorative loops (scramble, bounce) are
-skipped. Without JavaScript a `<noscript>` style shows all content.
+### Motion
 
-**Images.** Raster photos and illustrations use `next/image` (AVIF/WebP, responsive `srcset`,
-intrinsic dimensions from the content model to prevent layout shift; hero images load
-eagerly). SVG logos/icons and animated GIFs use a plain `<img>` through `PlainImage`, since
-next/image cannot optimise them. Fonts are self-hosted and preloaded with `next/font/local`.
+All motion is attached by `PageMotion` through `data-*` hooks (documented at the top of
+`lib/motion/page-motion.tsx`) and created inside `gsap.context` / `gsap.matchMedia`, so every
+tween and ScrollTrigger is reverted on unmount.
 
-## Visual comparison workflow
+- Pre-animation states live in CSS under `html.has-motion`, a class set before first paint only
+  when JS runs and motion is allowed. Without JS or with `prefers-reduced-motion` everything is
+  simply visible; a 4s failsafe (`motion-fallback`) shows everything if motion never starts.
+- Lenis eases wheel scrolling only (native on touch). Nothing is pinned and no scroll is hijacked;
+  the community section uses CSS `position: sticky`.
+- The intro loader plays once per session. Background videos pause off-screen and never play
+  with reduced motion. The custom cursor and magnetic buttons only exist for fine pointers.
 
-The React reference build lives in `.reference/` (git-ignored):
+## Content & assets
 
-```bash
-git worktree add .reference/react-src react-approved-v1
-(cd .reference/react-src && npm ci && npm run build)
-cp -R .reference/react-src/dist .reference/react-dist
-npm run test:visual:baseline   # screenshots of the React build → tests/visual/__baseline__
-npm run build && npm run test:visual
-```
+Content lives in `src/services/content/static-content.ts`, typed by `types.ts`. Sources: the
+original site (eliteentrepreneurs.ca — speakers, testimonials, partners, event format and the
+August 2026 summit) and public listings for the September 2025 Toronto summit. Nothing is
+invented; unknown facts render as “To be announced”.
 
-Screenshots are deterministic: the tests install a paused fake clock, scroll the page to fire
-every reveal, then advance time by fixed amounts so GSAP tweens and the infinite image bounce
-always end in the same state.
+| Asset                                | Source / note                                                    |
+| ------------------------------------ | ---------------------------------------------------------------- |
+| `public/assets/ee/video/hero.mp4`    | Original site hero footage (+ poster)                            |
+| `public/assets/ee/speakers/*`        | Original site speaker portraits (1080×1350)                      |
+| `public/assets/ee/attendees/*`       | Original site testimonial portraits                              |
+| `public/assets/ee/sponsors/*`        | 2026 summit partner logos (white)                                |
+| `public/assets/ee/event/summit-room` | Crop of the original OG photo (title band removed) — **replace** |
+| `public/assets/ee/event/moment-*`    | Crops of interview stills (captions removed) — **replace**       |
+| `public/assets/ee/event/venue-*`     | Omni King Edward ballroom (original site)                        |
+| `public/assets/ee/event/the-seat`    | Original site “reserve your seat” image                          |
+
+**To announce the next event:** in `static-content.ts`, set `events.upcoming.state` to
+`'announced'`, fill `details` (date, venue, city) and point `primaryCta` at the ticket page.

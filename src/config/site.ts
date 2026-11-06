@@ -2,9 +2,8 @@
  * Deployment-level site configuration, read from the environment and validated once.
  *
  * NEXT_PUBLIC_SITE_URL   Absolute production origin, used for canonical URLs, sitemap and OG.
- * SITE_INDEXABLE         "true" only when the site may be indexed. Defaults to false because
- *                        the homepage still uses third-party (TechTO) copy and assets that must
- *                        be replaced before public launch (see README › Launch checklist).
+ * SITE_INDEXABLE         "true" only when the site may be indexed. Defaults to false so preview
+ *                        deployments stay out of search results (see README › Launch checklist).
  */
 import { z } from 'zod';
 
@@ -22,10 +21,10 @@ const env = envSchema.parse({
 });
 
 export const siteConfig = {
-  name: 'Elite',
+  name: 'Elite Entrepreneurs',
   url: new URL(env.NEXT_PUBLIC_SITE_URL),
   locale: 'en_CA',
   language: 'en-CA',
   indexable: env.SITE_INDEXABLE,
-  logo: '/assets/images/elite-icon-256.png',
+  logo: '/assets/ee/brand/logo-brown.png',
 } as const;

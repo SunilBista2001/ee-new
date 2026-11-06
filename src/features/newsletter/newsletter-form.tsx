@@ -3,51 +3,58 @@
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { useId, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
-import { Label } from '@/components/ui/label';
-import { PlainImage } from '@/components/media/plain-image';
 import type { NewsletterCopy } from '@/services/content';
 import { createNewsletterSchema, type NewsletterInput } from './schema';
-import { cn } from '@/lib/utils';
-
-interface NewsletterFormProps {
-  copy: NewsletterCopy;
-}
 
 /**
- * Newsletter sign-up, used in the nav dropdown, the Subscribe section and the footer.
+ * "Stay connected" newsletter sign-up.
  *
- * No email provider is connected yet (the approved build had none either): a valid
- * submission shows Webflow's success state. Connect a provider in `onValid`.
- *
- * Markup and classes match the Webflow form 1:1. Additions for accessibility are either
- * visually hidden (label) or only rendered on error (message), so the approved layout is
- * unchanged.
+ * No email provider is connected yet (the previous build had none either): a valid
+ * submission shows the success state and nothing is sent. Connect a provider in `onValid`
+ * (e.g. a Server Action).
  */
-export function NewsletterForm({ copy }: NewsletterFormProps) {
+export function NewsletterForm({ copy }: { copy: NewsletterCopy }) {
   const inputId = useId();
   const errorId = `${inputId}-error`;
   const schema = useMemo(() => createNewsletterSchema(copy.invalidEmailMessage), [copy.invalidEmailMessage]);
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitSuccessful },
+    setError,
+    formState: { errors, isSubmitSuccessful, isSubmitting },
   } = useForm<NewsletterInput>({ resolver: standardSchemaResolver(schema), defaultValues: { email: '' } });
 
   const onValid = async (): Promise<void> => {
-    // Integration point for the email provider (e.g. a Server Action). Nothing is sent today.
+    try {
+      // Integration point for the email provider. Nothing is sent today.
+    } catch {
+      setError('root.server', { message: copy.errorMessage });
+    }
   };
 
   const emailError = errors.email?.message;
+  const serverError = errors.root?.server?.message;
+
+  if (isSubmitSuccessful) {
+    return (
+      <p className="nl__done" role="status">
+        <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">
+          <path d="m3.5 8.5 3 3 6-7" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+        </svg>
+        {copy.successMessage}
+      </p>
+    );
+  }
 
   return (
-    <div className={cn('footer1_form-block w-form', isSubmitSuccessful && 'is-submitted')}>
-      <form className="footer1_form" noValidate onSubmit={handleSubmit(onValid)}>
-        <Label htmlFor={inputId} className="tw:sr-only">
-          Email address
-        </Label>
+    <form className="nl" noValidate onSubmit={handleSubmit(onValid)}>
+      <label htmlFor={inputId} className="sr-only">
+        Email address
+      </label>
+      <div className="nl__field">
         <input
           id={inputId}
-          className="form_input-3 w-input"
+          className="nl__input"
           maxLength={256}
           placeholder={copy.placeholder}
           type="email"
@@ -56,31 +63,23 @@ export function NewsletterForm({ copy }: NewsletterFormProps) {
           aria-describedby={emailError ? errorId : undefined}
           {...register('email')}
         />
-        <input type="submit" className="button stretch blue w-button" value={copy.submitLabel} />
-        {/*
-          The live site's Cloudflare Turnstile injects an empty <div><div/></div> here. It renders
-          nothing but, as an extra flex item, adds one gap to the layout; kept for spacing parity.
-        */}
-        <div aria-hidden="true">
-          <div />
-        </div>
-      </form>
+        <button type="submit" className="nl__submit" disabled={isSubmitting}>
+          {copy.submitLabel}
+          <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">
+            <path d="M3 8h10M9 4l4 4-4 4" fill="none" stroke="currentColor" strokeWidth="1.5" />
+          </svg>
+        </button>
+      </div>
       {emailError ? (
-        <p id={errorId} role="alert" className="tw:mt-2 tw:text-sm tw:text-destructive">
+        <p id={errorId} role="alert" className="nl__error">
           {emailError}
         </p>
       ) : null}
-      <div className="form_message-success-wrapper-2 w-form-done" role="status">
-        <div className="form_message-success">
-          <PlainImage image={{ src: '/assets/images/icon-check.svg', alt: '' }} />
-          <div>{copy.successMessage}</div>
-        </div>
-      </div>
-      <div className="form_message-error-wrapper w-form-fail">
-        <div className="form_message-error">
-          <div>{copy.errorMessage}</div>
-        </div>
-      </div>
-    </div>
+      {serverError ? (
+        <p role="alert" className="nl__error">
+          {serverError}
+        </p>
+      ) : null}
+    </form>
   );
 }

@@ -1,0 +1,499 @@
+/* Shared building blocks: layout, type, buttons, labels, media. */
+
+/* ─── Layout ──────────────────────────────────────────────────────────────── */
+
+.wrap {
+  width: 100%;
+  max-width: calc(var(--container) + var(--gutter) * 2);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.section {
+  padding-block: var(--section-y);
+}
+
+.section--ivory {
+  background: var(--ivory);
+}
+
+.section--stone {
+  background: var(--stone);
+}
+
+/* ─── Type ────────────────────────────────────────────────────────────────── */
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: var(--fs-label);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.eyebrow::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex: none;
+}
+
+.display {
+  font-size: var(--fs-display);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.045em;
+  text-wrap: balance;
+}
+
+.h2 {
+  font-size: var(--fs-h2);
+  font-weight: 500;
+  line-height: 1.04;
+  letter-spacing: -0.04em;
+  text-wrap: balance;
+}
+
+.h3 {
+  font-size: var(--fs-h3);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.serif {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+.lead {
+  font-size: var(--fs-lead);
+  line-height: 1.55;
+  color: var(--ink-soft);
+  text-wrap: pretty;
+  max-width: 34em;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* Section index: "01 — Label" on a hairline with small corner ticks. */
+.sx {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  min-height: 42px;
+  padding-top: var(--space-md);
+  margin-bottom: var(--space-xl);
+  border-top: 1px solid var(--line);
+}
+
+.sx::before,
+.sx::after {
+  content: '';
+  position: absolute;
+  top: -4px;
+  width: 1px;
+  height: 7px;
+  background: var(--line-strong);
+}
+
+.sx::before {
+  left: 0;
+}
+
+.sx::after {
+  right: 0;
+}
+
+.sx__label {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-sm);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.sx__num {
+  color: var(--accent-ink);
+}
+
+/* Inline photo pill inside a headline. */
+.pill-img {
+  display: inline-block;
+  width: 2.3em;
+  height: 0.86em;
+  margin-inline: 0.04em;
+  vertical-align: -0.06em;
+  border-radius: 999px;
+  overflow: hidden;
+  background: var(--stone);
+}
+
+.pill-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pill-img--sm {
+  width: 1.9em;
+}
+
+/* Highlighter behind text. */
+.hl {
+  background: linear-gradient(transparent 12%, var(--accent-soft) 12%, var(--accent-soft) 92%, transparent 92%);
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  padding-inline: 0.12em;
+}
+
+/* Year / day / month badge. */
+.date-badge {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 2px;
+  width: 92px;
+  height: 104px;
+  flex: none;
+  border-radius: var(--r-md);
+  background: var(--white);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-sm);
+  text-align: center;
+}
+
+.date-badge__year,
+.date-badge__month {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.date-badge__day {
+  font-size: 1.75rem;
+  font-weight: 400;
+  letter-spacing: -0.04em;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+
+/* Section header: eyebrow, heading, optional intro and action. */
+.sh {
+  display: grid;
+  gap: var(--space-lg);
+  row-gap: var(--space-lg);
+  margin-bottom: var(--head-gap);
+}
+
+.sh__intro {
+  color: var(--muted);
+  font-size: var(--fs-lead);
+  line-height: 1.55;
+  max-width: 32em;
+  text-wrap: pretty;
+}
+
+@media (min-width: 992px) {
+  .sh--split {
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+    align-items: end;
+    column-gap: var(--col-gap);
+  }
+
+  .sh--split .eyebrow,
+  .sh--split .sx {
+    grid-column: 1 / -1;
+  }
+
+  .sh--split .sh__side {
+    display: grid;
+    gap: var(--space-lg);
+    justify-items: start;
+    padding-bottom: var(--space-xs);
+  }
+}
+
+.sh__side {
+  display: grid;
+  gap: var(--space-lg);
+  justify-items: start;
+}
+
+/* ─── Buttons ─────────────────────────────────────────────────────────────── */
+
+/* Pill button; the arrow sits in its own round chip that slides on hover. */
+.btn {
+  --btn-bg: var(--accent);
+  --btn-fg: var(--on-dark);
+  --btn-border: var(--accent);
+  --chip-bg: rgba(255, 255, 255, 0.16);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 50px;
+  padding: 0 6px 0 24px;
+  border-radius: 999px;
+  border: 1px solid var(--btn-border);
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  transition:
+    background-color var(--t-med) var(--ease),
+    border-color var(--t-med) var(--ease),
+    color var(--t-med) var(--ease),
+    transform var(--t-fast) var(--ease);
+}
+
+.btn:not(:has(.btn__chip)) {
+  padding: 0 24px;
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+.btn__chip {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--chip-bg);
+  overflow: hidden;
+  transition: background-color var(--t-med) var(--ease);
+}
+
+.btn__icon {
+  width: 16px;
+  height: 16px;
+  flex: none;
+  transition: transform var(--t-med) var(--ease);
+}
+
+.btn:hover .btn__chip .btn__icon {
+  animation: chip-slide 0.5s var(--ease);
+}
+
+@keyframes chip-slide {
+  0% {
+    transform: none;
+  }
+  45% {
+    transform: translateX(140%);
+  }
+  46% {
+    transform: translateX(-140%);
+  }
+  100% {
+    transform: none;
+  }
+}
+
+.btn--primary:hover {
+  --btn-bg: var(--accent-hover);
+  --btn-border: var(--accent-hover);
+  --chip-bg: rgba(255, 255, 255, 0.22);
+}
+
+.btn--secondary {
+  --btn-bg: var(--white);
+  --btn-fg: var(--ink);
+  --btn-border: var(--line);
+  --chip-bg: var(--stone);
+}
+
+.btn--secondary:hover {
+  --btn-border: var(--ink);
+}
+
+.btn--light {
+  --btn-bg: var(--white);
+  --btn-fg: var(--ink);
+  --btn-border: var(--white);
+  --chip-bg: var(--stone);
+}
+
+.btn--sm {
+  min-height: 42px;
+  padding: 0 4px 0 18px;
+  gap: 10px;
+  font-size: 0.875rem;
+}
+
+.btn--sm:not(:has(.btn__chip)) {
+  padding: 0 18px;
+}
+
+.btn--sm .btn__chip {
+  width: 34px;
+  height: 34px;
+}
+
+.round-btn {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: var(--white);
+  color: var(--ink);
+  transition:
+    background-color var(--t-fast) var(--ease),
+    color var(--t-fast) var(--ease),
+    border-color var(--t-fast) var(--ease);
+}
+
+.round-btn:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-dark);
+}
+
+.round-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Underlined text link with arrow. */
+.tlink {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--ink);
+  background: linear-gradient(currentColor, currentColor) 0 100% / 100% 1px no-repeat;
+  padding-bottom: 3px;
+  transition: background-size var(--t-med) var(--ease);
+}
+
+.tlink:hover {
+  background-size: 0% 1px;
+  background-position: 100% 100%;
+}
+
+.tlink .btn__icon {
+  width: 14px;
+  height: 14px;
+}
+
+.tlink:hover .btn__icon {
+  transform: translateX(3px);
+}
+
+/* Small pill tag. */
+.tag {
+  font-family: var(--font-sans);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 11px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--white);
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+
+.tag--accent {
+  border-color: transparent;
+  background: var(--accent-soft);
+  color: var(--c-deep); /* AA on beige */
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex: none;
+}
+
+.dot--live {
+  position: relative;
+}
+
+.dot--live::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 1px solid var(--accent);
+  opacity: 0;
+  animation: ping 2.4s var(--ease) infinite;
+}
+
+@keyframes ping {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+
+/* ─── Media ───────────────────────────────────────────────────────────────── */
+
+.media {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--r-lg);
+  background: var(--stone);
+}
+
+.media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Brand mark: the transparent logo is used as a mask so it can take any colour. */
+.mark {
+  display: block;
+  aspect-ratio: 484 / 515;
+  background: currentColor;
+  -webkit-mask: url('/assets/ee/brand/logo-white.png') center / contain no-repeat;
+  mask: url('/assets/ee/brand/logo-white.png') center / contain no-repeat;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dot--live::after {
+    animation: none;
+  }
+}

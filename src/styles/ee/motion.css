@@ -1,0 +1,43 @@
+/*
+ * Pre-animation states. Keyed on `has-motion` (set before first paint only when JS runs and
+ * the visitor allows motion) and only until `motion-ready`, when GSAP has taken over with
+ * inline styles. Without JS or with reduced motion everything is simply
+ * visible. `motion-fallback` (added if the motion code never reports ready) shows everything.
+ */
+html.has-motion:not(.motion-ready):not(.motion-fallback) [data-hero-item],
+html.has-motion:not(.motion-ready):not(.motion-fallback) [data-reveal='fade'],
+html.has-motion:not(.motion-ready):not(.motion-fallback) [data-stagger-item] {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+html.has-motion:not(.motion-ready):not(.motion-fallback) [data-hero-title],
+html.has-motion:not(.motion-ready):not(.motion-fallback) [data-reveal='lines'] {
+  opacity: 0;
+}
+
+html.has-motion:not(.motion-ready):not(.motion-fallback) [data-hero-float],
+html.has-motion:not(.motion-ready):not(.motion-fallback) [data-hero-pill] {
+  opacity: 0;
+}
+
+html.has-motion:not(.motion-ready):not(.motion-fallback) [data-reveal='clip'] {
+  opacity: 0;
+  transform: translateY(40px) scale(0.97);
+}
+
+/*
+ * Elements that move on every scroll frame get their own GPU layer up front, so the browser
+ * only re-composites them instead of repainting (and never creates layers mid-scroll).
+ */
+html.has-motion [data-parallax],
+html.has-motion [data-float] {
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+/* SplitText line masks. */
+.split-line {
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}

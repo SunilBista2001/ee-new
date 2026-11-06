@@ -14,16 +14,14 @@
     "typecheck": "tsc --noEmit",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "test:e2e": "playwright test --project='e2e-*'",
-    "test:visual": "playwright test --project='visual-*'",
-    "test:visual:baseline": "TARGET=reference playwright test --project='visual-*' --update-snapshots",
-    "reference:serve": "node scripts/serve-reference.mjs",
+    "test:e2e": "playwright test",
     "verify": "npm run typecheck && npm run lint && npm run format:check && npm run build && playwright test"
   },
   "dependencies": {
     "@hookform/resolvers": "^7.0.3",
     "clsx": "^2.1.1",
     "gsap": "^3.15.1",
+    "lenis": "^1.3.27",
     "next": "^16.4.5",
     "radix-ui": "^1.8.1",
     "react": "^19.3.1",

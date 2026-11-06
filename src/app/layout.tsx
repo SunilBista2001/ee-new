@@ -24,21 +24,17 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  themeColor: '#faf8f4', // --tt-off-white, the page background
+  themeColor: '#f5f0e8', // --bg, warm ivory
+  colorScheme: 'light',
 };
 
 /*
- * Same as Webflow's head snippet in the React build: flags JS / touch support on <html>
- * (the Webflow CSS keys off `w-mod-touch`) and keeps the mobile-nav `--vh` unit current.
- * It runs before first paint, hence `suppressHydrationWarning` on <html>.
+ * Runs before first paint (hence `suppressHydrationWarning` on <html>):
+ *  - `has-motion` when JS runs and the visitor allows motion. Every pre-animation state in the
+ *    stylesheet is keyed on it, so without JS or with reduced motion content is simply visible.
+ *  - a failsafe adds `motion-fallback` (shows everything) if the motion code never reports ready.
  */
-const HEAD_SCRIPT = `(function(w,d){var n=d.documentElement,t=' w-mod-';n.className+=t+'js';if('ontouchstart'in w||(w.DocumentTouch&&d instanceof DocumentTouch))n.className+=t+'touch';function vh(){n.style.setProperty('--vh',w.innerHeight*0.01+'px')}vh();w.addEventListener('resize',vh)})(window,document);`;
-
-/*
- * Without JavaScript the scroll reveals never run, so show every animated element as-is.
- */
-const NO_SCRIPT_CSS =
-  '[data-w-id],.events-subheading{opacity:1!important;transform:none!important}.img-highlight{display:none}';
+const HEAD_SCRIPT = `(function(w,d){var n=d.documentElement;n.classList.add('js');try{if(!w.matchMedia('(prefers-reduced-motion: reduce)').matches)n.classList.add('has-motion');}catch(e){}w.setTimeout(function(){if(!n.classList.contains('motion-ready'))n.classList.add('motion-fallback')},4000)})(window,document);`;
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
   const { brand } = await getSiteSettings();
@@ -46,24 +42,18 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
     <html lang={siteConfig.language} className={fontVariables} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: HEAD_SCRIPT }} />
-        <noscript>
-          <style>{NO_SCRIPT_CSS}</style>
-        </noscript>
       </head>
       <body>
-        <a
-          href="#main-content"
-          className="button w-button tw:absolute tw:-top-40 tw:left-4 tw:z-[10000] tw:focus:top-4"
-        >
+        <a href="#main-content" className="skip-link">
           Skip to content
         </a>
         <JsonLd
           data={{
             '@context': 'https://schema.org',
-            '@type': 'WebSite',
+            '@type': 'Organization',
             name: brand.name,
             url: siteConfig.url.toString(),
-            inLanguage: siteConfig.language,
+            logo: new URL(siteConfig.logo, siteConfig.url).toString(),
           }}
         />
         {children}

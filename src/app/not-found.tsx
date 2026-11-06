@@ -6,26 +6,16 @@ export const metadata: Metadata = {
   robots: { index: false },
 };
 
+/** Same copy as before the redesign, rendered with the Elite design system. */
 export default function NotFound() {
   return (
-    <main id="main-content" className="main-wrapper">
-      <section className="section_header-centered">
-        <div className="padding-global">
-          <div className="container-large">
-            <div className="padding-section-large text-align-center">
-              <h1>Page not found</h1>
-              <div className="margin-top margin-medium">
-                <p>This page doesn’t exist yet.</p>
-              </div>
-              <div className="margin-top margin-medium">
-                <Link href="/" className="button w-button">
-                  Back to the homepage
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+    <main id="main-content" className="not-found wrap">
+      <p className="eyebrow">404</p>
+      <h1 className="display">Page not found</h1>
+      <p className="not-found__text">This page doesn’t exist yet.</p>
+      <Link href="/" className="btn btn--primary">
+        <span>Back to the homepage</span>
+      </Link>
     </main>
   );
 }

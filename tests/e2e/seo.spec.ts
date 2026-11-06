@@ -3,12 +3,14 @@ import { expect, test } from '@playwright/test';
 test.describe('SEO', () => {
   test('homepage metadata', async ({ page }) => {
     await page.goto('/');
-    await expect(page).toHaveTitle('Elite | Canada’s Most Connected Tech Community');
+    await expect(page).toHaveTitle('Elite Entrepreneurs | Where Entrepreneurs Come Together to Grow');
     const meta = (selector: string) => page.locator(selector).getAttribute('content');
-    expect(await meta('meta[name="description"]')).toMatch(/^Meet leaders, share ideas/);
+    expect(await meta('meta[name="description"]')).toMatch(/^Summits, founder networking, roundtables/);
     // Absolute URL of the site root (Next.js omits the trailing slash on the origin).
     expect(await page.locator('link[rel="canonical"]').getAttribute('href')).toMatch(/^https?:\/\/[^/]+\/?$/);
-    expect(await meta('meta[property="og:title"]')).toBe('Elite | Canada’s Most Connected Tech Community');
+    expect(await meta('meta[property="og:title"]')).toBe(
+      'Elite Entrepreneurs | Where Entrepreneurs Come Together to Grow',
+    );
     expect(await meta('meta[property="og:type"]')).toBe('website');
     expect(await meta('meta[name="twitter:card"]')).toBeTruthy();
     expect(await page.locator('html').getAttribute('lang')).toBe('en-CA');

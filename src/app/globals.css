@@ -1,29 +1,19 @@
 /*
  * Stylesheet entry point. Cascade layers make the priority explicit:
  *
- *   theme      Tailwind design tokens (CSS variables only, no rules)
- *   base       tiny element resets for markup the Webflow CSS never styled (semantic <button>s)
- *   legacy     the approved Webflow stylesheet + colour theme, byte-for-byte, in original order
- *   components shadcn/ui component styles, if any are added
+ *   theme      Tailwind design tokens (CSS variables only)
+ *   reset      element resets and page defaults of the Elite design system
+ *   ee         Elite design system: tokens, primitives and homepage sections
  *   utilities  Tailwind utilities (prefixed `tw:`)
- *
- * Why the `tw:` prefix: the Webflow markup uses class names such as `outline`, `container`
- * and `grid` that are also Tailwind utilities. Unprefixed, Tailwind would generate rules for
- * them and silently change the approved design. Prefixed utilities can never collide.
- *
- * Tailwind's Preflight reset is intentionally NOT imported: webflow.css ships its own
- * normalize, and a second reset would shift spacing and typography.
  */
-@layer theme, base, legacy, components, utilities;
+@layer theme, reset, ee, utilities;
 
 @import 'tailwindcss/theme.css' layer(theme) prefix(tw);
 @import 'tailwindcss/utilities.css' layer(utilities) prefix(tw);
 
-@import '../styles/legacy/webflow.css' layer(legacy);
-@import '../styles/legacy/embeds.css' layer(legacy);
-@import '../styles/legacy/runtime-states.css' layer(legacy);
-@import '../styles/theme.css' layer(legacy);
-
-@import '../styles/tokens.css';
-@import '../styles/base.css' layer(base);
-@import '../styles/semantic-overrides.css' layer(components);
+@import '../styles/ee/tokens.css';
+@import '../styles/ee/reset.css' layer(reset);
+@import '../styles/ee/primitives.css' layer(ee);
+@import '../styles/ee/chrome.css' layer(ee);
+@import '../styles/ee/sections.css' layer(ee);
+@import '../styles/ee/motion.css' layer(ee);

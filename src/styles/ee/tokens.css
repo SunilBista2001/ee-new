@@ -1,0 +1,126 @@
+/*
+ * Elite design tokens: a light, warm, editorial system.
+ *
+ * ── Colour ────────────────────────────────────────────────────────────────────
+ * Brand palette ("warm neutral + brown"), with accent brown as the primary colour:
+ *
+ *   #F5F0E8 warm ivory     page background
+ *   #E4D6C5 soft beige     tinted bands, highlights, accent backgrounds
+ *   #B89A7A muted taupe    decorative only (strong hairlines, outlines); never small text
+ *   #8B6348 accent brown   PRIMARY: buttons, links, accents, numbers
+ *   #594233 deep brown     secondary text, primary hover, accent text on beige
+ *   #302820 dark espresso  main text
+ *
+ * Contrast (WCAG AA, small text): espresso, deep brown and --muted pass on every surface.
+ * Accent brown passes on ivory and the lighter surfaces (4.6:1) but not on beige (3.7:1),
+ * so beige areas re-point --accent-ink to deep brown (see .on-beige below).
+ */
+:root {
+  /* Palette */
+  --c-ivory: #f5f0e8;
+  --c-beige: #e4d6c5;
+  --c-taupe: #b89a7a;
+  --c-brown: #8b6348;
+  --c-deep: #594233;
+  --c-espresso: #302820;
+
+  /* Surfaces */
+  --bg: var(--c-ivory);
+  --white: #fbf8f3; /* raised surface: cards, pills, inputs */
+  --ivory: #efe7db; /* alternate section */
+  --stone: #eae0d2; /* image placeholders, subtle hover */
+  --mist: #f8f4ee;
+  --on-dark: #ffffff; /* text on brown/espresso and over photos */
+
+  /* Ink */
+  --ink: var(--c-espresso);
+  --ink-soft: var(--c-deep);
+  --muted: #65564a;
+  --line: #ddd0bf;
+  --line-soft: #e9e0d4;
+  --line-strong: var(--c-taupe);
+
+  /* Accent: brown */
+  --accent: var(--c-brown);
+  --accent-hover: var(--c-deep);
+  --accent-ink: var(--c-brown); /* accent text on light surfaces */
+  --accent-soft: var(--c-beige);
+  --accent-wash: #ede3d6;
+
+  /* Brand mark */
+  --brand: var(--c-deep);
+
+  /* Type */
+  --font-sans: var(--font-geist), ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, 'SF Mono', Menlo, monospace;
+  --font-serif: var(--font-instrument), 'Iowan Old Style', Georgia, serif;
+
+  --fs-display: clamp(2.6rem, 1.6rem + 4.4vw, 5.6rem);
+  --fs-h2: clamp(2rem, 1.45rem + 2.3vw, 3.5rem);
+  --fs-h3: clamp(1.25rem, 1.1rem + 0.55vw, 1.6rem);
+  --fs-lead: clamp(1.075rem, 1rem + 0.3vw, 1.25rem);
+  --fs-body: 1rem;
+  --fs-small: 0.875rem;
+  --fs-label: 0.75rem;
+
+  /* ── Spacing ─────────────────────────────────────────────────────────────────
+   * One scale for everything. Fixed steps for components, fluid steps for layout.
+   *
+   * Section rhythm: every section has `padding-block: var(--section-y)`, so the space
+   * between any two sections is always 2 × --section-y, tinted bands included.
+   * Inside a section: label → heading = --space-xl, header → content = --head-gap,
+   * one content block → the next = --block-gap.
+   */
+  --space-2xs: 4px;
+  --space-xs: 8px;
+  --space-sm: 12px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+  --space-3xl: 64px;
+
+  --section-y: clamp(3rem, 2rem + 3.6vw, 5.5rem);
+  --head-gap: clamp(2.5rem, 2rem + 1.8vw, 3.75rem);
+  --block-gap: clamp(3.5rem, 2.5rem + 3.4vw, 6rem);
+  --row-y: clamp(1.5rem, 1.2rem + 0.8vw, 2.25rem);
+  --card-pad: clamp(1.5rem, 1rem + 2.4vw, 3.5rem);
+  --col-gap: clamp(2.5rem, 1rem + 5vw, 6rem);
+
+  /* Layout */
+  --container: 1320px;
+  --gutter: clamp(1rem, 0.5rem + 2.4vw, 2.5rem);
+  --nav-h: 72px;
+
+  /* Shape */
+  --r-xs: 6px;
+  --r-sm: 10px;
+  --r-md: 16px;
+  --r-lg: 24px;
+  --r-xl: 32px;
+
+  /* Elevation (used sparingly), tinted with espresso */
+  --shadow-sm: 0 1px 2px rgba(48, 40, 32, 0.06);
+  --shadow-md: 0 12px 32px -14px rgba(48, 40, 32, 0.22), 0 2px 6px rgba(48, 40, 32, 0.05);
+  --scrim: rgba(48, 40, 32, 0.62);
+
+  /* Motion */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --t-fast: 180ms;
+  --t-med: 380ms;
+  --t-slow: 700ms;
+
+  color-scheme: light;
+}
+
+/* Beige areas: accent text switches to deep brown to keep AA contrast. */
+.on-beige {
+  --accent-ink: var(--c-deep);
+}
+
+@media (max-width: 767px) {
+  :root {
+    --nav-h: 64px;
+  }
+}
