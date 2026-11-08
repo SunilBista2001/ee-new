@@ -36,3 +36,5 @@ next-env.d.ts
 *.tsbuildinfo
 .env*.local
 /test-results-e2e
+.vercel
+.env*
