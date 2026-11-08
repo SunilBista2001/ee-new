@@ -9,7 +9,7 @@ import { gsap, ScrollTrigger, SplitText } from './gsap';
  *  [data-hero-title]     headline lines rise out of a mask on load
  *  [data-hero-item]      hero copy, buttons and cards fade up on load
  *  [data-hero-float]     floating hero photos pop in, then drift at their own pace on scroll
- *  [data-hero-pill]      the photo pill inside the headline widens open
+ *  [data-hero-panel]     the hero photo wall opens out from its centre frame
  *  [data-reveal=words]   a statement fills in from grey to ink, word by word, with the scroll
  *  [data-reveal=lines]   section headings: line-by-line reveal on scroll
  *  [data-reveal=fade]    gentle fade-up on scroll
@@ -53,10 +53,17 @@ export function PageMotion() {
         0.35,
       );
       hero.fromTo(
-        '[data-hero-pill]',
-        { clipPath: 'inset(0% 50% 0% 50% round 999px)', opacity: 1 },
-        { clipPath: 'inset(0% 0% 0% 0% round 999px)', duration: 1.3, ease: 'expo.inOut', clearProps: 'clipPath' },
-        0.2,
+        '[data-hero-panel]',
+        { opacity: 0, y: 48 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 1.4,
+          stagger: { each: 0.08, from: 'center' },
+          force3D: true,
+          clearProps: 'transform',
+        },
+        0.3,
       );
       hero.fromTo(
         '[data-hero-float]',

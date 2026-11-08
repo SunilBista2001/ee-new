@@ -3,12 +3,10 @@
  *
  * Sources: eliteentrepreneurs.ca (speakers, testimonials, partners, event format, 2026 summit
  * details and attendee mix) and the Elite Entrepreneurs Luma page (September 2025 Toronto
- * summit). Nothing here is invented. As of November 2026 no next event has been published, so
- * the events section shows an announcement state with no date, city or price.
+ * summit). Nothing here is invented. As of November 2026 no next event has been published.
  *
  * REPLACEMENT POINTS (see README › Content & assets):
- *  - `events.announcement`: when the next event is public, add it as a card in `events.past`'s
- *    place (or a new `upcoming` list) with its real date, venue and ticket link.
+ *  - `guests.guests`: portraits from the speaker roster; replace with the announced lineup.
  *  - Event photography: the original site only publishes a few photos of the room. The crops in
  *    /assets/ee/event come from interview stills (540px wide). Swap them for full-resolution
  *    photography from the photographer when available; keep file names or update paths here.
@@ -155,20 +153,44 @@ const homePage: HomePageContent = {
   },
 
   hero: {
-    meta: '43.65° N, 79.38° W · Toronto',
+    meta: 'Toronto, Canada',
+    status: { label: 'Next edition', value: 'Announcing soon' },
     headlineStart: 'Where entrepreneurs',
     headlineEnd: { text: 'come together', accent: 'to grow.' },
-    inlineImage: PHOTO.crowd,
     lead: 'Connect with ambitious founders, exchange ideas, learn from experienced operators, and build relationships that move your business forward.',
     primaryCta: { label: 'Explore Upcoming Events', href: '#events' },
     secondaryCta: { label: 'Discover the Community', href: '#community' },
-    floaters: [
-      portrait('parikchhit-basnet', 'Parikchhit Basnet, founder of Elite Entrepreneurs'),
-      PHOTO.networking,
-      PHOTO.backdropTalk,
-      portrait('max-sturtevant', 'Max Sturtevant, speaker'),
+    stage: {
+      main: PHOTO.crowd,
+      panels: [PHOTO.networking, PHOTO.backdropTalk, PHOTO.conversation, PHOTO.ballroom],
+    },
+    highlights: [
+      { title: 'Learn', meta: '9 talks in 2026', icon: 'learn' },
+      { title: 'Connect', meta: '6 unscheduled hours', icon: 'connect' },
+      { title: 'Share', meta: '2 hours of roundtables', icon: 'share' },
     ],
-    status: { label: 'Next edition', value: 'Announcing soon' },
+    stat: { value: '79%', label: 'of attendees are founders', note: '2026 summit' },
+    speakers: {
+      title: 'Learn from people who build.',
+      text: 'Operators from HighLevel, Creo Social, Icy and more.',
+      avatars: [
+        portrait('rohan-sheth', 'Rohan Sheth'),
+        portrait('steven-baterina', 'Steven Baterina'),
+        portrait('manik-kundra', 'Manik Kundra'),
+      ],
+      link: { label: 'Meet the speakers', href: '#speakers' },
+    },
+    proof: {
+      text: 'The first three summits sold out.',
+      avatars: [
+        attendee('steven', 'Steven'),
+        attendee('tarun', 'Tarun'),
+        attendee('dylan', 'Dylan Blyuss'),
+        attendee('aidan', 'Aidan'),
+      ],
+    },
+    seal: 'Elite Entrepreneurs · Toronto · 4th year running · ',
+    note: ['Good people.', 'Better business.'],
   },
 
   partners: {
@@ -205,47 +227,21 @@ const homePage: HomePageContent = {
     factsNote: 'Attendee figures from the 2026 summit.',
   },
 
-  events: {
-    index: '02',
-    label: 'Events',
-    headingStart: 'Find your',
-    headingEnd: 'next room.',
-    headingImage: PHOTO.backdropTalk,
-    intro:
-      'From founder gatherings to full-scale summits, find experiences designed to bring ambitious people together.',
-    announcement: {
-      label: 'Next edition',
-      title: 'The next room is being curated.',
-      text: 'Date, city and lineup will be announced soon. Join the list to hear first. The first three summits sold out.',
-      primaryCta: { label: 'Get notified', href: '#newsletter' },
-      secondaryCta: { label: 'Contact the team', href: `mailto:${CONTACT_EMAIL}` },
-    },
-    pastHeading: 'Recent events',
-    past: [
-      {
-        status: 'Past event',
-        category: 'Summit · 3 days',
-        title: 'Elite Entrepreneurs Summit 2026',
-        badge: { year: '2026', day: '26–28', month: 'Aug' },
-        date: 'August 26–28, 2026',
-        location: 'Omni King Edward Hotel, Toronto',
-        description:
-          'A welcome mixer, a full summit day of talks, a founders panel and roundtables, then a VIP day that ended on the water.',
-        cta: { label: 'Event details', href: 'https://www.eliteentrepreneurs.ca/', external: true },
-      },
-      {
-        status: 'Past event',
-        category: 'Summit',
-        title: 'Elite Entrepreneurs Toronto Summit',
-        badge: { year: '2025', day: '19', month: 'Sep' },
-        date: 'September 19, 2025',
-        location: 'Toronto',
-        description:
-          'A summit for brand owners and founders, with a pre-event mixer and VIP mastermind sessions on Lake Ontario.',
-        cta: { label: 'Event details', href: LUMA, external: true },
-      },
+  // Portraits come from the speaker roster. Swap in the confirmed lineup once the next
+  // edition's guests are announced (keep five, the middle one is featured).
+  guests: {
+    eyebrow: 'Upcoming guests',
+    heading: { text: 'Upcoming Guests to', accent: 'Look Forward to' },
+    description:
+      'Get ready for an exciting lineup of guests that you won’t want to miss! We have a variety of incredible personalities joining us, each bringing their unique flair and insights. Stay tuned for more details!',
+    guests: [
+      portrait('rene-lacad', 'Rene Lacad'),
+      portrait('manik-kundra', 'Manik Kundra'),
+      portrait('omar-sandhu', 'Omar Sandhu'),
+      portrait('max-sturtevant', 'Max Sturtevant'),
+      portrait('brandon-carter', 'Brandon Carter'),
     ],
-    allEventsCta: { label: 'View all events', href: LUMA, external: true },
+    backdropWord: 'Guests',
   },
 
   experience: {

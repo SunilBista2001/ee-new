@@ -15,5 +15,6 @@
 @import '../styles/ee/reset.css' layer(reset);
 @import '../styles/ee/primitives.css' layer(ee);
 @import '../styles/ee/chrome.css' layer(ee);
+@import '../styles/ee/hero.css' layer(ee);
 @import '../styles/ee/sections.css' layer(ee);
 @import '../styles/ee/motion.css' layer(ee);

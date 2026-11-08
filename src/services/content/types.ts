@@ -78,19 +78,36 @@ export interface SiteSettings {
 
 // ─── Homepage ─────────────────────────────────────────────────────────────────
 
-export interface HeroContent {
-  /** Small mono line above the headline. */
+export interface HeroHighlight {
+  title: string;
   meta: string;
-  /** Headline in two parts; `inlineImage` sits between them as a rounded pill. */
+  icon: 'learn' | 'connect' | 'share';
+}
+
+export interface HeroContent {
+  /** Small mono line next to the status (location). */
+  meta: string;
+  status: { label: string; value: string };
+  /** Headline in two controlled lines; the second closes with the italic serif accent. */
   headlineStart: string;
   headlineEnd: Headline;
-  inlineImage: ImageAsset;
   lead: string;
   primaryCta: Link;
   secondaryCta: Link;
-  /** Photos floating around the headline (desktop), four expected. */
-  floaters: ImageAsset[];
-  status: { label: string; value: string };
+  /** Curved wall of event photos under the headline: one focal image and four side panels. */
+  stage: { main: ImageAsset; panels: [ImageAsset, ImageAsset, ImageAsset, ImageAsset] };
+  /** Event formats pinned on the photo wall. */
+  highlights: HeroHighlight[];
+  /** A verified attendee figure. */
+  stat: { value: string; label: string; note: string };
+  /** Card that links to the speakers section. */
+  speakers: { title: string; text: string; avatars: ImageAsset[]; link: Link };
+  /** Social proof under the left column. */
+  proof: { text: string; avatars: ImageAsset[] };
+  /** Text set around the rotating seal. */
+  seal: string;
+  /** Short closing note in the right column, one line per entry. */
+  note: string[];
 }
 
 export interface PartnersContent {
@@ -111,37 +128,16 @@ export interface IntroContent {
   factsNote: string;
 }
 
-export interface EventCard {
-  status: string;
-  category: string;
-  title: string;
-  /** Badge parts, e.g. year "2026", day "26–28", month "Aug". */
-  badge: { year: string; day: string; month: string };
-  date: string;
-  location: string;
+export interface GuestsContent {
+  /** Small bracketed label above the heading. */
+  eyebrow: string;
+  /** Two-line heading; `accent` is the second line, set in the italic serif. */
+  heading: Headline;
   description: string;
-  cta: Link;
-}
-
-export interface EventsContent {
-  index: string;
-  label: string;
-  /** Heading in two parts with a photo pill between them. */
-  headingStart: string;
-  headingEnd: string;
-  headingImage: ImageAsset;
-  intro: string;
-  /** Shown while no next date is public. Holds no date, city or price on purpose. */
-  announcement: {
-    label: string;
-    title: string;
-    text: string;
-    primaryCta: Link;
-    secondaryCta: Link;
-  };
-  pastHeading: string;
-  past: EventCard[];
-  allEventsCta: Link;
+  /** Five portraits, left to right; the middle one is featured. */
+  guests: [ImageAsset, ImageAsset, ImageAsset, ImageAsset, ImageAsset];
+  /** Oversized word set faintly behind the portraits. */
+  backdropWord: string;
 }
 
 export interface ExperienceContent {
@@ -227,7 +223,7 @@ export interface HomePageContent {
   hero: HeroContent;
   partners: PartnersContent;
   intro: IntroContent;
-  events: EventsContent;
+  guests: GuestsContent;
   experience: ExperienceContent;
   speakers: SpeakersContent;
   stories: StoriesContent;

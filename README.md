@@ -9,8 +9,8 @@ React 19 Server Components, strict TypeScript, GSAP (ScrollTrigger + SplitText) 
 > - **Event photography** — the original site publishes only a few photos of the room. The crops in
 >   `public/assets/ee/event/moment-*.jpg` come from 540px-wide interview stills; replace them with
 >   full-resolution photography (see _Content & assets_).
-> - **Next event** — the upcoming slot shows an honest “announcement soon” state. Fill it in when the
->   date, city and lineup are public.
+> - **Upcoming guests** — the five portraits come from the speaker roster, not a confirmed lineup.
+>   Replace them in `guests.guests` (`static-content.ts`) when the next edition's guests are public.
 > - **Newsletter** — the form validates but is not connected to an email provider yet.
 
 ## Commands
@@ -51,8 +51,8 @@ src/
 
 ### Homepage sections
 
-01 Navigation · 02 Cinematic hero · 03 Brand statement (`#about`) · 04 The experience · 05 Events
-(upcoming + archive + gallery + partners) · 06 Speakers · 07 Community (sticky storytelling) ·
+01 Navigation · 02 Cinematic hero · 03 Brand statement (`#about`) · 04 The experience · 05 Upcoming
+guests (`#events`, five overlapping portraits) · 06 Speakers · 07 Community (sticky storytelling) ·
 08 Testimonials · 09 Final CTA · 10 Footer (`#contact`, `#newsletter`). All navigation targets
 are in-page anchors, so no link points at a route that does not exist.
 
@@ -99,5 +99,5 @@ invented; unknown facts render as “To be announced”.
 | `public/assets/ee/event/venue-*`     | Omni King Edward ballroom (original site)                        |
 | `public/assets/ee/event/the-seat`    | Original site “reserve your seat” image                          |
 
-**To announce the next event:** in `static-content.ts`, set `events.upcoming.state` to
-`'announced'`, fill `details` (date, venue, city) and point `primaryCta` at the ticket page.
+**To announce the guest lineup:** in `static-content.ts`, replace the five portraits in
+`guests.guests`, left to right; the third one is featured.

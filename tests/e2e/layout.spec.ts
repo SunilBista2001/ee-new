@@ -19,7 +19,7 @@ test.describe('responsive layout', () => {
       'Where entrepreneurs',
       'Partners of the 2026 summit',
       'Business grows better together.',
-      'The next room is being curated.',
+      'Look Forward to',
       'Omni King Edward Hotel',
       'Learn from people who build.',
       'Parikchhit',
