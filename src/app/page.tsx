@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { SiteFooter } from '@/components/ee/site-footer';
 import { SiteNav } from '@/components/ee/site-nav';
 import { CommunityCta } from '@/features/home/sections/community-cta';
+import { Events } from '@/features/home/sections/events';
 import { Experience } from '@/features/home/sections/experience';
 import { Gallery } from '@/features/home/sections/gallery';
 import { Guests } from '@/features/home/sections/guests';
@@ -35,6 +36,7 @@ export default async function HomePage() {
         <Partners content={home.partners} />
         <Intro content={home.intro} />
         <Guests content={home.guests} />
+        <Events content={home.events} />
         <Experience content={home.experience} />
         <Speakers content={home.speakers} />
         <Stories content={home.stories} />

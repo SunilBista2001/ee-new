@@ -92,13 +92,7 @@ export function Stories({ content }: { content: StoriesContent }) {
         >
           <div ref={slideRef} className="story__slide" aria-live="polite" aria-atomic="true">
             <div className="story__portrait" data-slide-part>
-              <Image
-                src={active.photo.src}
-                alt={active.photo.alt}
-                width={400}
-                height={400}
-                sizes="(min-width: 992px) 320px, 60vw"
-              />
+              <Image src={active.photo.src} alt={active.photo.alt} fill sizes="(min-width: 992px) 320px, 60vw" />
             </div>
             <figure className="story__body">
               <svg viewBox="0 0 40 32" className="story__mark" aria-hidden="true" data-slide-part>

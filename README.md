@@ -52,7 +52,7 @@ src/
 ### Homepage sections
 
 01 Navigation · 02 Cinematic hero · 03 Brand statement (`#about`) · 04 The experience · 05 Upcoming
-guests (`#events`, five overlapping portraits) · 06 Speakers · 07 Community (sticky storytelling) ·
+guests (`#guests`) · 06 Events (`#events`: featured edition, next edition, earlier editions) · 06 Speakers · 07 Community (sticky storytelling) ·
 08 Testimonials · 09 Final CTA · 10 Footer (`#contact`, `#newsletter`). All navigation targets
 are in-page anchors, so no link points at a route that does not exist.
 

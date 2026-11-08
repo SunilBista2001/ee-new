@@ -223,16 +223,6 @@
   text-align: center;
 }
 
-.guests__eyebrow {
-  display: inline-flex;
-  gap: 0.5em;
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--ink-soft);
-}
-
 .guests__title {
   font-size: clamp(2.4rem, 1.2rem + 4.6vw, 5.5rem);
   font-weight: 500;
@@ -411,6 +401,598 @@
 @media (prefers-reduced-motion: reduce) {
   .guest__frame,
   .guest__frame img {
+    transition: none;
+  }
+}
+
+/* ─── Events: editorial showcase ───────────────────────────────────────────── */
+
+.events__head {
+  display: grid;
+  gap: var(--space-lg);
+  margin-bottom: var(--head-gap);
+}
+
+.events__title {
+  font-size: clamp(2.6rem, 1.3rem + 5vw, 6rem);
+  font-weight: 500;
+  line-height: 0.98;
+  letter-spacing: -0.055em;
+}
+
+.events__accent {
+  display: block;
+}
+
+.events__title .serif {
+  font-size: 1.1em;
+  line-height: 0.95;
+  color: var(--accent-ink);
+}
+
+.events__intro {
+  max-width: 30em;
+  font-size: var(--fs-lead);
+  line-height: 1.55;
+  color: var(--muted);
+  text-wrap: pretty;
+}
+
+@media (min-width: 992px) {
+  .events__head {
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    align-items: end;
+    column-gap: var(--col-gap);
+  }
+
+  .events__intro {
+    padding-bottom: 0.6em;
+  }
+}
+
+/* Shared bits. */
+.ev-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.ev-num {
+  color: var(--accent-ink);
+}
+
+.ev-meta__sep {
+  width: 18px;
+  height: 1px;
+  background: var(--line-strong);
+}
+
+.ev-place {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--fs-small);
+  color: var(--ink-soft);
+}
+
+.ev-place svg {
+  width: 15px;
+  height: 15px;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-linejoin: round;
+  color: var(--accent);
+}
+
+/* ── Featured edition ── */
+
+.ev-feature {
+  position: relative;
+  display: grid;
+}
+
+.ev-feature__media {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--r-xl);
+  background: var(--stone);
+}
+
+.ev-feature__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: scale 1.2s var(--ease);
+}
+
+/* Warm wash behind the caption so it reads on the bright ballroom (top below 1200px, where
+   the panel covers the foot of the photo; bottom on desktop). */
+.ev-feature__media::after {
+  content: '';
+  position: absolute;
+  inset: 0 0 60%;
+  background: linear-gradient(0deg, rgba(48, 40, 32, 0), rgba(48, 40, 32, 0.45));
+  pointer-events: none;
+}
+
+.ev-feature:hover .ev-feature__media img {
+  scale: 1.04;
+}
+
+.ev-feature__caption {
+  position: absolute;
+  z-index: 1;
+  left: clamp(16px, 2.4vw, 32px);
+  top: clamp(14px, 2vw, 28px);
+  display: flex;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--on-dark);
+}
+
+.ev-feature__caption span {
+  opacity: 0.7;
+}
+
+.ev-feature__panel {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  justify-items: start;
+  gap: var(--space-md);
+  margin: -64px var(--space-sm) 0;
+  padding: clamp(1.5rem, 1rem + 2vw, 2.75rem);
+  border-radius: var(--r-xl);
+  background: var(--white);
+  box-shadow: var(--shadow-md);
+}
+
+.ev-date {
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+  margin-block: var(--space-xs) 2px;
+}
+
+.ev-date__day {
+  font-size: clamp(3.4rem, 2.4rem + 3vw, 5.25rem);
+  font-weight: 500;
+  line-height: 0.82;
+  letter-spacing: -0.06em;
+  color: var(--accent-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.ev-date__rest {
+  display: grid;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1.35;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.ev-feature__title {
+  font-size: var(--fs-h3);
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+
+.ev-feature__text {
+  max-width: 34em;
+  color: var(--muted);
+  line-height: 1.6;
+  text-wrap: pretty;
+}
+
+.ev-programme {
+  width: 100%;
+  margin: var(--space-xs) 0 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--line);
+}
+
+.ev-programme li {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr);
+  gap: var(--space-md);
+  align-items: baseline;
+  padding-block: 11px;
+  border-bottom: 1px solid var(--line-soft);
+  font-size: var(--fs-small);
+  color: var(--ink);
+}
+
+.ev-programme__label {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent-ink);
+}
+
+.ev-feature__cta {
+  margin-top: var(--space-xs);
+}
+
+/* Tablet and small laptops: the panel overlaps the photo's foot, programme in a second column. */
+@media (min-width: 768px) and (max-width: 1199px) {
+  .ev-feature__media {
+    aspect-ratio: 16 / 9;
+  }
+
+  .ev-feature__panel {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    column-gap: var(--space-2xl);
+    align-items: start;
+    margin: -96px var(--space-2xl) 0;
+  }
+
+  .ev-feature__panel > * {
+    grid-column: 1;
+  }
+
+  .ev-feature__panel .ev-programme {
+    grid-column: 2;
+    grid-row: 1 / span 6;
+    margin-top: 0;
+  }
+}
+
+/* Desktop: photo across the first nine columns; the panel overlaps its lower right corner. */
+@media (min-width: 1200px) {
+  .ev-feature {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    align-items: end;
+  }
+
+  .ev-feature__media {
+    grid-column: 1 / span 9;
+    grid-row: 1;
+    aspect-ratio: 16 / 9.4;
+  }
+
+  .ev-feature__panel {
+    grid-column: 8 / -1;
+    grid-row: 1;
+    margin: 0 0 -72px;
+  }
+
+  .ev-feature__caption {
+    top: auto;
+    bottom: 28px;
+    left: 32px;
+  }
+
+  .ev-feature__media::after {
+    inset: 55% 0 0;
+    background: linear-gradient(180deg, rgba(48, 40, 32, 0), rgba(48, 40, 32, 0.5));
+  }
+}
+
+/* ── Lower row: next edition + earlier editions ── */
+
+.events__lower {
+  display: grid;
+  gap: var(--space-lg);
+  margin-top: var(--block-gap);
+}
+
+@media (min-width: 768px) {
+  .events__lower {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: start;
+  }
+}
+
+@media (min-width: 992px) {
+  .events__lower {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--space-lg);
+  }
+
+  .ev-next {
+    grid-column: 1 / span 7;
+  }
+
+  .ev-card {
+    grid-column: 8 / -1;
+    margin-top: var(--space-3xl);
+  }
+}
+
+@media (min-width: 1200px) {
+  .events__lower {
+    /* Clears the featured panel, which hangs 72px below the photo on the right. */
+    margin-top: calc(72px + var(--space-2xl));
+  }
+}
+
+@media (max-width: 767px) {
+  .ev-meta__sep {
+    display: none;
+  }
+
+  .ev-next {
+    min-height: 0;
+  }
+
+  /* Leave room under the copy for the row of chairs. */
+  .ev-next__body {
+    padding-bottom: 200px;
+  }
+}
+
+/* Next edition: a dark panel built on the single lit chair, "your seat". */
+.ev-next {
+  position: relative;
+  display: grid;
+  overflow: hidden;
+  min-height: clamp(440px, 30rem + 4vw, 560px);
+  border-radius: var(--r-xl);
+  background: var(--c-espresso);
+  color: var(--on-dark);
+  isolation: isolate;
+}
+
+.ev-next__media {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+}
+
+.ev-next__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.9;
+  transition: scale 1.2s var(--ease);
+}
+
+/* Fade the photo into espresso at the top, where the copy sits. */
+.ev-next__media::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(48, 40, 32, 0.92) 0%, rgba(48, 40, 32, 0.55) 45%, rgba(48, 40, 32, 0) 75%);
+}
+
+.ev-next:hover .ev-next__media img {
+  scale: 1.04;
+}
+
+.ev-next__body {
+  display: grid;
+  align-content: start;
+  justify-items: start;
+  gap: var(--space-md);
+  padding: clamp(1.5rem, 1rem + 2vw, 2.75rem);
+}
+
+.ev-next__top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  width: 100%;
+  margin-bottom: var(--space-sm);
+}
+
+.ev-next__live {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 28px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.ev-next__live .dot {
+  background: var(--c-beige);
+}
+
+.ev-next__live .dot--live::after {
+  border-color: var(--c-beige);
+}
+
+.ev-next__tba {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.ev-next__tba em {
+  font-family: var(--font-serif);
+  font-size: 1.35rem;
+  letter-spacing: -0.01em;
+  text-transform: none;
+  color: var(--c-beige);
+}
+
+.ev-next__title {
+  max-width: 13em;
+  font-size: clamp(1.75rem, 1.3rem + 1.6vw, 2.6rem);
+  font-weight: 500;
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+  text-wrap: balance;
+}
+
+.ev-next__text {
+  max-width: 30em;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.ev-next__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-md) var(--space-lg);
+  margin-top: var(--space-xs);
+}
+
+.ev-next__link {
+  color: var(--on-dark);
+}
+
+/* Earlier editions: photo card, clickable as a whole through the stretched title link. */
+.ev-card {
+  position: relative;
+  display: grid;
+  gap: var(--space-lg);
+}
+
+.ev-card__media {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--r-xl);
+  background: var(--stone);
+}
+
+.ev-card__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: scale 1.2s var(--ease);
+}
+
+.ev-card__date {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  background: var(--white);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.ev-card__date strong {
+  font-family: var(--font-sans);
+  font-size: 1.125rem;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  color: var(--accent-ink);
+}
+
+.ev-card__body {
+  display: grid;
+  justify-items: start;
+  gap: var(--space-sm);
+}
+
+.ev-card__title {
+  font-size: var(--fs-h3);
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+
+.ev-card__link::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: var(--r-xl);
+}
+
+.ev-card__link:focus-visible {
+  outline: none;
+}
+
+.ev-card__link:focus-visible::after {
+  outline: 2px solid var(--accent);
+  outline-offset: 6px;
+}
+
+.ev-card__text {
+  max-width: 32em;
+  color: var(--muted);
+  line-height: 1.6;
+  text-wrap: pretty;
+}
+
+.ev-card__go {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: var(--space-xs);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.ev-card__chip {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  transition:
+    background-color var(--t-med) var(--ease),
+    border-color var(--t-med) var(--ease),
+    color var(--t-med) var(--ease);
+}
+
+.ev-card:hover .ev-card__media img {
+  scale: 1.05;
+}
+
+.ev-card:hover .ev-card__chip {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-dark);
+}
+
+.ev-card:hover .ev-card__chip .btn__icon {
+  animation: chip-slide 0.5s var(--ease);
+}
+
+.events__foot {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--block-gap);
+  padding-top: var(--space-2xl);
+  border-top: 1px solid var(--line);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ev-feature__media img,
+  .ev-next__media img,
+  .ev-card__media img {
     transition: none;
   }
 }
@@ -866,6 +1448,7 @@
 }
 
 .story__portrait {
+  position: relative;
   width: min(60vw, 320px);
   aspect-ratio: 4 / 5;
   border-radius: 999px 999px var(--r-lg) var(--r-lg);

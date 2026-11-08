@@ -104,7 +104,7 @@ function PhotoWall({ stage, highlights }: Pick<HeroContent, 'stage' | 'highlight
         width={image.width}
         height={image.height}
         sizes="(min-width: 1200px) 560px, 60vw"
-        priority={index === 2 || index === 3}
+        preload={index === 2 || index === 3}
         style={image.focus ? { objectPosition: image.focus } : undefined}
       />
     </div>
@@ -122,7 +122,8 @@ function PhotoWall({ stage, highlights }: Pick<HeroContent, 'stage' | 'highlight
             width={stage.main.width}
             height={stage.main.height}
             sizes="(min-width: 1200px) 560px, 70vw"
-            priority
+            preload
+            quality={85}
             style={stage.main.focus ? { objectPosition: stage.main.focus } : undefined}
           />
         </figure>

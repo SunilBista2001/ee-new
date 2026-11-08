@@ -129,8 +129,8 @@ export interface IntroContent {
 }
 
 export interface GuestsContent {
-  /** Small bracketed label above the heading. */
-  eyebrow: string;
+  index: string;
+  label: string;
   /** Two-line heading; `accent` is the second line, set in the italic serif. */
   heading: Headline;
   description: string;
@@ -138,6 +138,43 @@ export interface GuestsContent {
   guests: [ImageAsset, ImageAsset, ImageAsset, ImageAsset, ImageAsset];
   /** Oversized word set faintly behind the portraits. */
   backdropWord: string;
+}
+
+export interface EventCard {
+  status: string;
+  category: string;
+  title: string;
+  /** Short date parts for the editorial date mark, e.g. day "26–28", month "Aug", year "2026". */
+  badge: { year: string; day: string; month: string };
+  date: string;
+  location: string;
+  description: string;
+  cta: Link;
+  image: ImageAsset;
+  /** Optional run of show, in order. */
+  programme?: { label: string; text: string }[];
+}
+
+export interface EventsContent {
+  index: string;
+  label: string;
+  /** Heading; `accent` closes it in the italic serif. */
+  heading: Headline;
+  intro: string;
+  /** The most recent edition, shown large. */
+  featured: EventCard;
+  /** Earlier editions. */
+  more: EventCard[];
+  /** Shown while no next date is public. Holds no date, city or price on purpose. */
+  announcement: {
+    label: string;
+    title: string;
+    text: string;
+    primaryCta: Link;
+    secondaryCta: Link;
+    image: ImageAsset;
+  };
+  allEventsCta: Link;
 }
 
 export interface ExperienceContent {
@@ -224,6 +261,7 @@ export interface HomePageContent {
   partners: PartnersContent;
   intro: IntroContent;
   guests: GuestsContent;
+  events: EventsContent;
   experience: ExperienceContent;
   speakers: SpeakersContent;
   stories: StoriesContent;

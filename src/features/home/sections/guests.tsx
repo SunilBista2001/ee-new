@@ -1,27 +1,24 @@
 import Image from 'next/image';
+import { SectionIndex } from '@/components/ee/primitives';
 import type { GuestsContent } from '@/services/content';
 
 const SLOTS = ['outer', 'side', 'featured', 'side', 'outer'] as const;
 
 /**
- * Upcoming guests: a bracketed label, a two-line editorial heading and five overlapping
+ * Upcoming guests: the numbered section index, a two-line editorial heading and five overlapping
  * portraits with the middle one featured, over a faint oversized word.
  *
- * Keeps the `#events` anchor the navigation, hero and footer already point at.
  * Motion: the heading lines and copy use the shared reveal hooks; the portraits rise in as one
  * staggered group (`data-stagger`). Hover lift lives in CSS on `translate`, so it never fights
  * the GSAP entrance (which owns `transform`).
  */
 export function Guests({ content }: { content: GuestsContent }) {
   return (
-    <section id="events" className="section guests" aria-labelledby="guests-title" tabIndex={-1}>
+    <section id="guests" className="section guests" aria-labelledby="guests-title" tabIndex={-1}>
       <div className="wrap">
+        <SectionIndex index={content.index} label={content.label} />
+
         <header className="guests__head">
-          <p className="guests__eyebrow" data-reveal="fade">
-            <span aria-hidden="true">[</span>
-            {content.eyebrow}
-            <span aria-hidden="true">]</span>
-          </p>
           <h2 id="guests-title" className="guests__title" data-reveal="lines">
             <span className="guests__line">{content.heading.text}</span>{' '}
             {content.heading.accent ? <span className="guests__line serif">{content.heading.accent}</span> : null}

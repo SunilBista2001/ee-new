@@ -7,6 +7,8 @@
  *
  * REPLACEMENT POINTS (see README › Content & assets):
  *  - `guests.guests`: portraits from the speaker roster; replace with the announced lineup.
+ *  - `events.announcement`: when the next event is public, make it the `featured` card (real
+ *    date, venue, image and ticket link) and move the current featured one into `more`.
  *  - Event photography: the original site only publishes a few photos of the room. The crops in
  *    /assets/ee/event come from interview stills (540px wide). Swap them for full-resolution
  *    photography from the photographer when available; keep file names or update paths here.
@@ -63,6 +65,13 @@ const PHOTO = {
     '50% 70%',
   ),
   hallway: img('event/moment-hallway.jpg', 'An attendee sharing his experience at the summit', 540, 480, '50% 55%'),
+  seat: img(
+    'event/the-seat.jpg',
+    'A row of dark chairs with a single white chair lit in the middle',
+    1920,
+    1026,
+    '50% 70%',
+  ),
   networking: img(
     'event/moment-networking.jpg',
     'Attendees talking during a networking break at an Elite Entrepreneurs summit',
@@ -230,7 +239,8 @@ const homePage: HomePageContent = {
   // Portraits come from the speaker roster. Swap in the confirmed lineup once the next
   // edition's guests are announced (keep five, the middle one is featured).
   guests: {
-    eyebrow: 'Upcoming guests',
+    index: '02',
+    label: 'Upcoming guests',
     heading: { text: 'Upcoming Guests to', accent: 'Look Forward to' },
     description:
       'Get ready for an exciting lineup of guests that you won’t want to miss! We have a variety of incredible personalities joining us, each bringing their unique flair and insights. Stay tuned for more details!',
@@ -244,8 +254,56 @@ const homePage: HomePageContent = {
     backdropWord: 'Guests',
   },
 
-  experience: {
+  events: {
     index: '03',
+    label: 'Events',
+    heading: { text: 'Find your', accent: 'next room.' },
+    intro:
+      'From founder gatherings to full-scale summits, find experiences designed to bring ambitious people together.',
+    featured: {
+      status: 'Past event',
+      category: 'Summit · 3 days',
+      title: 'Elite Entrepreneurs Summit 2026',
+      badge: { year: '2026', day: '26–28', month: 'Aug' },
+      date: 'August 26–28, 2026',
+      location: 'Omni King Edward Hotel, Toronto',
+      description:
+        'A welcome mixer, a full summit day of talks, a founders panel and roundtables, then a VIP day that ended on the water.',
+      cta: { label: 'Event details', href: 'https://www.eliteentrepreneurs.ca/', external: true },
+      image: PHOTO.ballroom,
+      programme: [
+        { label: 'Day 01', text: 'Welcome mixer' },
+        { label: 'Day 02', text: 'Talks, founders panel and roundtables' },
+        { label: 'Day 03', text: 'VIP day, ending on the water' },
+      ],
+    },
+    more: [
+      {
+        status: 'Past event',
+        category: 'Summit',
+        title: 'Elite Entrepreneurs Toronto Summit',
+        badge: { year: '2025', day: '19', month: 'Sep' },
+        date: 'September 19, 2025',
+        location: 'Toronto',
+        description:
+          'A summit for brand owners and founders, with a pre-event mixer and VIP mastermind sessions on Lake Ontario.',
+        cta: { label: 'Event details', href: LUMA, external: true },
+        image: PHOTO.crowd,
+      },
+    ],
+    announcement: {
+      label: 'Next edition',
+      title: 'The next room is being curated.',
+      text: 'Date, city and lineup will be announced soon. Join the list to hear first. The first three summits sold out.',
+      primaryCta: { label: 'Get notified', href: '#newsletter' },
+      secondaryCta: { label: 'Contact the team', href: `mailto:${CONTACT_EMAIL}` },
+      image: PHOTO.seat,
+    },
+    allEventsCta: { label: 'View all events', href: LUMA, external: true },
+  },
+
+  experience: {
+    index: '04',
     label: 'What happens at Elite',
     heading: 'A day built around people, not slides.',
     intro: 'Every format is designed so the people in the room actually talk to each other.',
@@ -278,7 +336,7 @@ const homePage: HomePageContent = {
   },
 
   speakers: {
-    index: '04',
+    index: '05',
     label: 'Speakers & founders',
     heading: 'Learn from people who build.',
     intro: 'Every speaker on an Elite stage runs the business they came to talk about.',
@@ -369,7 +427,7 @@ const homePage: HomePageContent = {
   },
 
   stories: {
-    index: '05',
+    index: '06',
     label: 'Community stories',
     heading: 'Every connection has a story.',
     intro: 'In their own words: founders who have been in the room as attendees, speakers and sponsors.',
@@ -421,7 +479,7 @@ const homePage: HomePageContent = {
   },
 
   gallery: {
-    index: '06',
+    index: '07',
     label: 'The Elite experience',
     heading: 'Inside the room.',
     intro: 'Stage sessions in the morning. Roundtables after lunch. Conversations that run long after.',
