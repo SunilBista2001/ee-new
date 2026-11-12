@@ -25,7 +25,7 @@ test.describe('navigation', () => {
       await toggle.click();
       await expect(banner.getByRole('button', { name: 'Close menu' })).toHaveAttribute('aria-expanded', 'true');
       const dialog = page.getByRole('dialog', { name: 'Menu' });
-      await expect(dialog.getByRole('link', { name: /Speakers/ })).toBeVisible();
+      await expect(dialog.getByRole('link', { name: /Podcast/ })).toBeVisible();
       await expect(dialog.getByRole('link', { name: /Events/ }).first()).toBeFocused();
       await expect(page.locator('body')).toHaveCSS('overflow', 'hidden');
 
@@ -35,15 +35,15 @@ test.describe('navigation', () => {
 
       // Choosing a link closes the menu and lands on the section.
       await banner.getByRole('button', { name: 'Open menu' }).click();
-      await dialog.getByRole('link', { name: /Speakers/ }).click();
+      await dialog.getByRole('link', { name: /Podcast/ }).click();
       await expect(banner.getByRole('button', { name: 'Open menu' })).toHaveAttribute('aria-expanded', 'false');
-      await expect(page.locator('#speakers')).toBeInViewport();
+      await expect(page.locator('#podcast')).toBeInViewport();
     } else {
       const nav = page.getByRole('navigation', { name: 'Primary' });
       await expect(nav.getByRole('link', { name: /Events/ })).toBeVisible();
-      await nav.getByRole('link', { name: /Speakers/ }).click();
-      await expect(page.locator('#speakers')).toBeInViewport();
-      await expect(page.locator('#speakers')).toBeFocused();
+      await nav.getByRole('link', { name: /Podcast/ }).click();
+      await expect(page.locator('#podcast')).toBeInViewport();
+      await expect(page.locator('#podcast')).toBeFocused();
     }
   });
 

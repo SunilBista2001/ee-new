@@ -497,3 +497,128 @@
     animation: none;
   }
 }
+
+/* ─── Newsletter form ─────────────────────────────────────────────────────── */
+
+.nl {
+  display: grid;
+  gap: 10px;
+}
+
+.nl__field {
+  display: flex;
+  gap: 8px;
+  padding: 6px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--white);
+  transition:
+    border-color var(--t-fast) var(--ease),
+    box-shadow var(--t-fast) var(--ease);
+}
+
+.nl__field:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px rgba(139, 99, 72, 0.12);
+}
+
+.nl__input {
+  flex: 1;
+  min-width: 0;
+  height: 50px;
+  padding: 0 18px;
+  border: 0;
+  background: transparent;
+  font-size: 1rem;
+  outline: none;
+}
+
+.nl__input::placeholder {
+  color: var(--muted);
+}
+
+.nl__input[aria-invalid='true'] {
+  color: #9b2c1f;
+}
+
+.nl__submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 50px;
+  padding: 0 22px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--on-dark);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: background-color var(--t-fast) var(--ease);
+}
+
+.nl__submit:hover {
+  background: var(--accent-hover);
+}
+
+.nl__submit svg {
+  transition: transform var(--t-med) var(--ease);
+}
+
+.nl__submit:hover svg {
+  transform: translateX(3px);
+}
+
+.nl__submit:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.nl__error {
+  padding-left: 18px;
+  font-size: var(--fs-small);
+  color: #9b2c1f;
+}
+
+.nl__done {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 64px;
+  padding: 0 24px;
+  border-radius: 999px;
+  background: var(--white);
+  border: 1px solid var(--line);
+  font-weight: 500;
+}
+
+.nl__done svg {
+  flex: none;
+  color: var(--accent-ink);
+}
+
+@media (max-width: 419px) {
+  .nl__field {
+    flex-direction: column;
+    border-radius: var(--r-lg);
+  }
+
+  .nl__submit {
+    justify-content: center;
+  }
+}
+
+/* ─── 404 ─────────────────────────────────────────────────────────────────── */
+
+.not-found {
+  display: grid;
+  gap: var(--space-lg);
+  justify-items: start;
+  min-height: 70vh;
+  align-content: center;
+  padding-block: var(--section-y);
+}
+
+.not-found__text {
+  color: var(--muted);
+}

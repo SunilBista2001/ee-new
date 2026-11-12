@@ -14,6 +14,7 @@ export function getContentProvider(): ContentProvider {
 /** Request-deduplicated accessors for Server Components (layout + page share one read). */
 export const getSiteSettings = cache(() => getContentProvider().getSiteSettings());
 export const getHomePage = cache(() => getContentProvider().getHomePage());
+export const getPartnersPage = cache(() => getContentProvider().getPartnersPage());
 
 export type * from './types';
 export type { ContentProvider } from './provider';

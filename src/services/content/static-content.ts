@@ -1,20 +1,21 @@
 /**
- * Static content source for the Elite Entrepreneurs homepage, typed against ./types.
+ * Static content source for the Elite Entrepreneurs site, typed against ./types.
  *
- * Sources: eliteentrepreneurs.ca (speakers, testimonials, partners, event format, 2026 summit
- * details and attendee mix) and the Elite Entrepreneurs Luma page (September 2025 Toronto
- * summit). Nothing here is invented. As of November 2026 no next event has been published.
+ * Homepage copy and structure follow the "EE Website: Page-by-Page Brief" (Home) word for
+ * word. Text in [brackets] is a placeholder from the brief and renders as a marked slot.
  *
- * REPLACEMENT POINTS (see README › Content & assets):
- *  - `guests.guests`: portraits from the speaker roster; replace with the announced lineup.
- *  - `events.announcement`: when the next event is public, make it the `featured` card (real
- *    date, venue, image and ticket link) and move the current featured one into `more`.
- *  - Event photography: the original site only publishes a few photos of the room. The crops in
- *    /assets/ee/event come from interview stills (540px wide). Swap them for full-resolution
- *    photography from the photographer when available; keep file names or update paths here.
+ * Photography: /assets/ee/event, /speakers and /attendees are Elite's own images. /assets/ee/stock
+ * holds licence-free stand-ins from Unsplash (see README › Content & assets): replace them with
+ * real event photography, keeping file names or updating the paths in `STOCK` below.
+ *
+ * REPLACEMENT POINTS:
+ *  - `LINKS.youtube`: the YouTube channel URL (empty means "not live yet": the button renders
+ *    disabled). `LINKS.lumaEmbed` is the public Luma calendar.
+ *  - `ROUTES`: the Events, Partners and About pages from the brief.
+ *  - `testimonials.items`: quotes, last names and companies are still to come.
  */
 import type { ContentProvider } from './provider';
-import type { HomePageContent, ImageAsset, SiteSettings } from './types';
+import type { HomePageContent, ImageAsset, PartnersPageContent, SiteSettings } from './types';
 
 const EE = '/assets/ee';
 
@@ -26,51 +27,64 @@ const img = (file: string, alt: string, width: number, height: number, focus?: s
   ...(focus ? { focus } : {}),
 });
 
-const portrait = (slug: string, name: string): ImageAsset =>
-  img(`speakers/${slug}.jpg`, `Portrait of ${name}`, 1080, 1350, '50% 62%');
-
-const attendee = (slug: string, name: string): ImageAsset =>
-  img(`attendees/${slug}.jpg`, `Portrait of ${name}`, 400, 400);
-
+// Nav links to homepage sections use bare anchors (rewritten to "/#…" on other pages by
+// lib/site-links.ts). Point Events and About at ROUTES once those pages exist.
 const CONTACT_EMAIL = 'pb@mintaveinc.com';
 const LUMA = 'https://luma.com/eliteentrepreneur';
+const FOUNDER_INSTAGRAM = 'https://www.instagram.com/lifeofsplash/';
+const FOUNDER_LINKEDIN = 'https://www.linkedin.com/in/parikchhit-basnet/';
 
-// Photography shared by several sections.
-const PHOTO = {
-  crowd: img(
-    'event/summit-room.jpg',
-    'Attendees seated at round tables in a Toronto ballroom, watching the stage at an Elite Entrepreneurs summit',
-    1200,
-    450,
-    '50% 55%',
-  ),
-  ballroom: img(
-    'event/venue-ballroom-crop.jpg',
-    'A white and gold ballroom with starburst chandeliers at the Omni King Edward Hotel',
-    1400,
-    941,
-  ),
+/** Pages from the brief. */
+const ROUTES = {
+  events: '/events',
+  partners: '/partners',
+  about: '/about',
+} as const;
+
+const LINKS = {
+  lumaCalendarId: 'cal-cZXdkI64HNrkwmv',
+  lumaEmbed: 'https://luma.com/embed/calendar/cal-cZXdkI64HNrkwmv/events?lt=light',
+  /** [link] in the brief: not published yet. */
+  youtube: '',
+} as const;
+
+/** Social preview image (metadata only; on-page pictures are placeholders). */
+const OG_IMAGE = img(
+  'event/summit-room.jpg',
+  'Attendees seated at round tables in a Toronto ballroom, watching the stage at an Elite Entrepreneurs summit',
+  1200,
+  450,
+);
+
+const stock = (file: string, alt: string, width: number, height: number, focus?: string) =>
+  img(`stock/${file}.jpg`, alt, width, height, focus);
+
+/** Stand-in photography (Unsplash). Replace with Elite's own event photos. */
+const STOCK = {
+  crowd: stock('crowd', 'A large group of guests cheering together at an evening event', 1800, 1096, '50% 40%'),
+  toast: stock('toast', 'Guests raising their glasses in a toast', 1800, 1200),
+  dinnerTable: stock('dinner-table', 'A long candlelit dinner table set for a private dinner', 1800, 1200),
+  dinnerLaughing: stock('dinner-laughing', 'Friends laughing together over dinner', 1800, 1200, '45% 40%'),
+  dinnerTalk: stock('dinner-talk', 'Two guests in conversation at a dinner', 1800, 1378),
+  dinnerEvent: stock('dinner-event', 'Guests seated at a decorated dinner table', 1800, 1200),
+  padel: stock('padel', 'Two players on a padel court', 1800, 2700, '50% 35%'),
+  mixer: stock('mixer', 'People mingling at an indoor evening event in warm light', 1800, 1200),
+  conversation: stock('conversation', 'A small group talking around a table', 1800, 1200),
+  networking: stock('networking', 'People meeting and talking by a window', 1800, 1200),
+  greeting: stock('greeting', 'Guests greeting each other at an event', 1800, 1013),
+  summitStage: stock('summit-stage', 'A speaker on stage in front of a full audience', 1800, 1200),
+  speaker: stock('speaker', 'A speaker addressing a crowd', 1800, 1200),
+  podcast: stock('podcast', 'Two people recording a podcast with headphones and microphones', 1800, 1187),
+} as const;
+
+/** Elite's own photography. */
+const EVENT = {
   backdropTalk: img(
     'event/moment-backdrop-talk.jpg',
     'Two attendees in conversation in front of the Elite Entrepreneurs backdrop',
     540,
     395,
     '50% 45%',
-  ),
-  conversation: img(
-    'event/moment-conversation.jpg',
-    'An attendee interviewed in front of the Elite Entrepreneurs backdrop',
-    540,
-    400,
-    '50% 70%',
-  ),
-  hallway: img('event/moment-hallway.jpg', 'An attendee sharing his experience at the summit', 540, 480, '50% 55%'),
-  seat: img(
-    'event/the-seat.jpg',
-    'A row of dark chairs with a single white chair lit in the middle',
-    1920,
-    1026,
-    '50% 70%',
   ),
   networking: img(
     'event/moment-networking.jpg',
@@ -79,6 +93,24 @@ const PHOTO = {
     420,
     '55% 70%',
   ),
+} as const;
+
+const face = (slug: string): ImageAsset => img(`attendees/${slug}.jpg`, '', 400, 400);
+const sponsor = (file: string, name: string, width: number, height: number) => ({
+  name,
+  logo: img(`sponsors/${file}.png`, name, width, height),
+});
+
+/** Summit partner logos (white on transparent; tinted with CSS). */
+const SPONSORS = {
+  amex: sponsor('american-express', 'American Express', 520, 168),
+  omnisend: sponsor('omnisend', 'Omnisend', 520, 70),
+  highlevel: sponsor('highlevel', 'HighLevel', 511, 115),
+  commas: sponsor('commas', 'Commas', 520, 108),
+  creo: sponsor('creo', 'Creo Social', 282, 79),
+  arcady: sponsor('arcady', 'Arcady Media', 520, 150),
+  mintAve: sponsor('mint-ave', 'Mint Ave', 520, 103),
+  scalingWebinars: sponsor('scaling-webinars', 'Scaling With Webinars', 446, 152),
 } as const;
 
 // ─── Site settings ───────────────────────────────────────────────────────────
@@ -93,12 +125,11 @@ const siteSettings: SiteSettings = {
   navigation: {
     primary: [
       { label: 'Events', href: '#events' },
-      { label: 'Community', href: '#community' },
-      { label: 'Speakers', href: '#speakers' },
+      { label: 'Partners', href: ROUTES.partners },
       { label: 'About', href: '#about' },
-      { label: 'Contact', href: '#contact' },
+      { label: 'Podcast', href: '#podcast' },
     ],
-    cta: { label: 'Explore Events', href: '#events' },
+    cta: { label: 'See what’s coming up', href: '#events' },
   },
   contact: {
     email: CONTACT_EMAIL,
@@ -122,8 +153,8 @@ const siteSettings: SiteSettings = {
         title: 'Follow',
         links: [
           { label: 'Events on Luma', href: LUMA, external: true },
-          { label: 'Founder on Instagram', href: 'https://www.instagram.com/lifeofsplash/', external: true },
-          { label: 'Founder on LinkedIn', href: 'https://www.linkedin.com/in/parikchhit-basnet/', external: true },
+          { label: 'Founder on Instagram', href: FOUNDER_INSTAGRAM, external: true },
+          { label: 'Founder on LinkedIn', href: FOUNDER_LINKEDIN, external: true },
         ],
       },
       {
@@ -154,378 +185,344 @@ const siteSettings: SiteSettings = {
 
 const homePage: HomePageContent = {
   seo: {
-    title: 'Elite Entrepreneurs | Where Entrepreneurs Come Together to Grow',
-    description:
-      'Summits, founder networking, roundtables and private dinners in Toronto. Elite Entrepreneurs brings founders, operators and business owners into the same room.',
+    title: 'Elite Entrepreneurs | Relationships drive business.',
+    description: 'We curate the rooms where the right people meet and real relationships get built. Business follows.',
     path: '/',
-    ogImage: PHOTO.crowd,
+    ogImage: OG_IMAGE,
   },
 
   hero: {
-    meta: 'Toronto, Canada',
-    status: { label: 'Next edition', value: 'Announcing soon' },
-    headlineStart: 'Where entrepreneurs',
-    headlineEnd: { text: 'come together', accent: 'to grow.' },
-    lead: 'Connect with ambitious founders, exchange ideas, learn from experienced operators, and build relationships that move your business forward.',
-    primaryCta: { label: 'Explore Upcoming Events', href: '#events' },
-    secondaryCta: { label: 'Discover the Community', href: '#community' },
-    stage: {
-      main: PHOTO.crowd,
-      panels: [PHOTO.networking, PHOTO.backdropTalk, PHOTO.conversation, PHOTO.ballroom],
-    },
-    highlights: [
-      { title: 'Learn', meta: '9 talks in 2026', icon: 'learn' },
-      { title: 'Connect', meta: '6 unscheduled hours', icon: 'connect' },
-      { title: 'Share', meta: '2 hours of roundtables', icon: 'share' },
-    ],
-    stat: { value: '79%', label: 'of attendees are founders', note: '2026 summit' },
-    speakers: {
-      title: 'Learn from people who build.',
-      text: 'Operators from HighLevel, Creo Social, Icy and more.',
-      avatars: [
-        portrait('rohan-sheth', 'Rohan Sheth'),
-        portrait('steven-baterina', 'Steven Baterina'),
-        portrait('manik-kundra', 'Manik Kundra'),
-      ],
-      link: { label: 'Meet the speakers', href: '#speakers' },
-    },
-    proof: {
-      text: 'The first three summits sold out.',
-      avatars: [
-        attendee('steven', 'Steven'),
-        attendee('tarun', 'Tarun'),
-        attendee('dylan', 'Dylan Blyuss'),
-        attendee('aidan', 'Aidan'),
-      ],
-    },
-    seal: 'Elite Entrepreneurs · Toronto · 4th year running · ',
-    note: ['Good people.', 'Better business.'],
+    headline: { text: 'Relationships drive', accent: 'business.' },
+    lead: 'We curate the rooms where the right people meet and real relationships get built. Business follows.',
+    primaryCta: { label: 'See what’s coming up', href: ROUTES.events },
+    secondaryCta: { label: 'Partner with us', href: ROUTES.partners },
+    image: STOCK.crowd,
+    inset: STOCK.toast,
   },
 
-  partners: {
-    label: 'Partners of the 2026 summit',
-    partners: [
-      { name: 'American Express', logo: img('sponsors/american-express.png', 'American Express', 520, 168) },
-      { name: 'Omnisend', logo: img('sponsors/omnisend.png', 'Omnisend', 520, 70) },
-      { name: 'HighLevel', logo: img('sponsors/highlevel.png', 'HighLevel', 511, 115) },
-      { name: 'Commas', logo: img('sponsors/commas.png', 'Commas', 520, 108) },
-      { name: 'Creo Social', logo: img('sponsors/creo.png', 'Creo Social', 282, 79) },
-      { name: 'Arcady Media', logo: img('sponsors/arcady.png', 'Arcady Media', 520, 150) },
-      { name: 'Mint Ave', logo: img('sponsors/mint-ave.png', 'Mint Ave', 520, 103) },
-      { name: 'Scaling With Webinars', logo: img('sponsors/scaling-webinars.png', 'Scaling With Webinars', 446, 152) },
+  proof: {
+    label: 'Elite Entrepreneurs in numbers',
+    stats: [
+      { value: '10+', label: 'Events' },
+      { value: '1,000+', label: 'Attendees' },
+      { value: '300+', label: 'At our last summit' },
+    ],
+    logosLabel: 'Partners',
+    logos: [
+      SPONSORS.amex,
+      SPONSORS.omnisend,
+      SPONSORS.highlevel,
+      SPONSORS.commas,
+      SPONSORS.creo,
+      SPONSORS.arcady,
+      SPONSORS.mintAve,
+      SPONSORS.scalingWebinars,
     ],
   },
 
-  intro: {
+  why: {
     index: '01',
-    label: 'About Elite',
-    heading: 'Business grows better together.',
-    statement:
-      'Elite Entrepreneurs brings founders and business owners into the same room to share experience, learn from people doing the work, and build relationships beyond the event.',
-    detail:
-      'You don’t need to be the biggest business in the room. You do need to be building one: agency owners, e-commerce operators, consultants, creators and founders, side by side.',
-    cta: { label: 'See what happens at Elite', href: '#experience' },
-    images: [PHOTO.ballroom, PHOTO.conversation],
-    facts: [
-      { label: 'Attendees who are founders', value: '79%' },
-      { label: 'Attendees who are decision-makers', value: '88%' },
-      { label: 'Edition', value: '4th year running' },
-      { label: 'First three summits', value: 'Sold out' },
-      { label: 'Home', value: 'Toronto, Canada' },
-    ],
-    factsNote: 'Attendee figures from the 2026 summit.',
+    label: 'Why we exist',
+    heading: 'Business got loud.',
+    lines: ['Everything is online.', 'Everything is an ad.', 'It’s hard to know who to trust.'],
+    emphasis: 'So people work with people they know.',
+    body: 'We’re bringing that back. The right people, in the right rooms, doing fun things together.',
+    closing: 'Building a business can be lonely. It doesn’t have to be.',
+    cta: { label: 'Our story', href: ROUTES.about },
+    images: [STOCK.dinnerLaughing, STOCK.conversation],
   },
 
-  // Portraits come from the speaker roster. Swap in the confirmed lineup once the next
-  // edition's guests are announced (keep five, the middle one is featured).
-  guests: {
+  audience: {
     index: '02',
-    label: 'Upcoming guests',
-    heading: { text: 'Upcoming Guests to', accent: 'Look Forward to' },
-    description:
-      'Get ready for an exciting lineup of guests that you won’t want to miss! We have a variety of incredible personalities joining us, each bringing their unique flair and insights. Stay tuned for more details!',
-    guests: [
-      portrait('rene-lacad', 'Rene Lacad'),
-      portrait('manik-kundra', 'Manik Kundra'),
-      portrait('omar-sandhu', 'Omar Sandhu'),
-      portrait('max-sturtevant', 'Max Sturtevant'),
-      portrait('brandon-carter', 'Brandon Carter'),
-    ],
-    backdropWord: 'Guests',
-  },
-
-  events: {
-    index: '03',
-    label: 'Events',
-    heading: { text: 'Find your', accent: 'next room.' },
-    intro:
-      'From founder gatherings to full-scale summits, find experiences designed to bring ambitious people together.',
-    featured: {
-      status: 'Past event',
-      category: 'Summit · 3 days',
-      title: 'Elite Entrepreneurs Summit 2026',
-      badge: { year: '2026', day: '26–28', month: 'Aug' },
-      date: 'August 26–28, 2026',
-      location: 'Omni King Edward Hotel, Toronto',
-      description:
-        'A welcome mixer, a full summit day of talks, a founders panel and roundtables, then a VIP day that ended on the water.',
-      cta: { label: 'Event details', href: 'https://www.eliteentrepreneurs.ca/', external: true },
-      image: PHOTO.ballroom,
-      programme: [
-        { label: 'Day 01', text: 'Welcome mixer' },
-        { label: 'Day 02', text: 'Talks, founders panel and roundtables' },
-        { label: 'Day 03', text: 'VIP day, ending on the water' },
+    heading: 'Who you’ll meet.',
+    forList: {
+      title: 'For',
+      items: [
+        'People serious about growing, who don’t take themselves too seriously.',
+        'People who believe in relationships and community.',
+        'People who want to meet other great people.',
       ],
     },
-    more: [
-      {
-        status: 'Past event',
-        category: 'Summit',
-        title: 'Elite Entrepreneurs Toronto Summit',
-        badge: { year: '2025', day: '19', month: 'Sep' },
-        date: 'September 19, 2025',
-        location: 'Toronto',
-        description:
-          'A summit for brand owners and founders, with a pre-event mixer and VIP mastermind sessions on Lake Ontario.',
-        cta: { label: 'Event details', href: LUMA, external: true },
-        image: PHOTO.crowd,
-      },
-    ],
-    announcement: {
-      label: 'Next edition',
-      title: 'The next room is being curated.',
-      text: 'Date, city and lineup will be announced soon. Join the list to hear first. The first three summits sold out.',
-      primaryCta: { label: 'Get notified', href: '#newsletter' },
-      secondaryCta: { label: 'Contact the team', href: `mailto:${CONTACT_EMAIL}` },
-      image: PHOTO.seat,
+    notForList: {
+      title: 'Not for',
+      items: ['Pretentious people.', 'Anyone only there to pitch.'],
     },
-    allEventsCta: { label: 'View all events', href: LUMA, external: true },
+    faces: ['steven', 'tarun', 'dylan', 'aidan', 'jordan', 'umar'].map(face),
   },
 
-  experience: {
+  ecosystem: {
+    index: '03',
+    label: 'The ecosystem',
+    heading: 'One idea. A lot of rooms.',
+    items: [
+      {
+        name: 'The Fifteen',
+        text: 'One table, fifteen people, one long dinner.',
+        href: `${ROUTES.events}#the-fifteen`,
+        image: STOCK.dinnerTable,
+      },
+      {
+        name: 'Sidequests',
+        text: 'Something different every month. Padel, workshops, the stuff no one else plans.',
+        href: `${ROUTES.events}#sidequests`,
+        image: STOCK.padel,
+      },
+      {
+        name: '[Mixer name: AI] and [Mixer name: Commerce]',
+        text: 'Open nights for people building in AI and e-commerce.',
+        href: `${ROUTES.events}#mixers`,
+        image: STOCK.mixer,
+      },
+      {
+        name: 'The Summit',
+        text: 'Our flagship. 300+ last time.',
+        href: `${ROUTES.events}#summit`,
+        image: STOCK.summitStage,
+      },
+      {
+        name: 'Keeping It Real',
+        text: 'The podcast.',
+        status: 'Coming soon',
+        image: STOCK.podcast,
+      },
+      {
+        name: 'The Community',
+        status: 'Coming soon',
+        image: STOCK.greeting,
+      },
+    ],
+  },
+
+  calendar: {
     index: '04',
-    label: 'What happens at Elite',
-    heading: 'A day built around people, not slides.',
-    intro: 'Every format is designed so the people in the room actually talk to each other.',
-    pillars: [
-      {
-        title: 'Learn',
-        text: 'Practical insights from entrepreneurs who run the businesses they talk about.',
-        meta: '9 talks in 2026',
-        image: PHOTO.crowd,
-      },
-      {
-        title: 'Connect',
-        text: 'Meet founders and operators who understand the challenges of building a business.',
-        meta: '6 unscheduled hours',
-        image: PHOTO.networking,
-      },
-      {
-        title: 'Share',
-        text: 'Roundtables on acquisition, hiring, retention, content and operations.',
-        meta: '2 hours of roundtables',
-        image: PHOTO.backdropTalk,
-      },
-      {
-        title: 'Grow',
-        text: 'Relationships, partners and opportunities that last beyond the event.',
-        meta: 'VIP day with the speakers',
-        image: PHOTO.ballroom,
-      },
-    ],
-  },
-
-  speakers: {
-    index: '05',
-    label: 'Speakers & founders',
-    heading: 'Learn from people who build.',
-    intro: 'Every speaker on an Elite stage runs the business they came to talk about.',
-    speakers: [
-      {
-        name: 'Parikchhit Basnet',
-        company: 'Elite Entrepreneurs',
-        credential: 'Founder of Elite Entrepreneurs.',
-        photo: portrait('parikchhit-basnet', 'Parikchhit Basnet'),
-        href: 'https://www.linkedin.com/in/parikchhit-basnet/',
-      },
-      {
-        name: 'Brandon Carter',
-        company: 'HTT',
-        credential: 'Grew to millions of followers, generated 8 figures in revenue.',
-        photo: portrait('brandon-carter', 'Brandon Carter'),
-        href: 'https://www.linkedin.com/in/kingketo/',
-      },
-      {
-        name: 'Max Sturtevant',
-        company: 'WellCopy',
-        credential: 'Scaled to 90+ team members and 150+ clients.',
-        photo: portrait('max-sturtevant', 'Max Sturtevant'),
-        href: 'https://www.linkedin.com/in/maxsturtevant/',
-      },
-      {
-        name: 'Tarun Kamath',
-        company: 'Arcady Media',
-        credential: '#1 email agency in Canada.',
-        photo: portrait('tarun-kamath', 'Tarun Kamath'),
-        href: 'https://www.linkedin.com/in/tarun-kamath-367600200/',
-      },
-      {
-        name: 'Rohan Sheth',
-        company: 'GrowRev',
-        credential: '$300M+ in ad spend across 50+ industries.',
-        photo: portrait('rohan-sheth', 'Rohan Sheth'),
-        href: 'https://www.linkedin.com/in/therohansheth/',
-      },
-      {
-        name: 'Manik Kundra',
-        company: 'Icy',
-        credential: 'Dorm room to a 4,000 sq ft Toronto warehouse in three years.',
-        photo: portrait('manik-kundra', 'Manik Kundra'),
-        href: 'https://www.linkedin.com/in/icymanik/',
-      },
-      {
-        name: 'Steven Baterina',
-        company: 'Creo Social',
-        credential: '$4M+ generated for clients from YouTube.',
-        photo: portrait('steven-baterina', 'Steven Baterina'),
-        href: 'https://www.linkedin.com/in/steven-baterina',
-      },
-      {
-        name: 'Omar Sandhu',
-        company: 'Creo Social',
-        credential: 'Co-founder helping brands use YouTube as a growth channel.',
-        photo: portrait('omar-sandhu', 'Omar Sandhu'),
-        href: 'https://www.linkedin.com/in/omarsandhu/',
-      },
-      {
-        name: 'Benny Billz',
-        company: 'Glitchy',
-        credential: '160,000 affiliates trained, $100M+ paid out.',
-        photo: portrait('benny-billz', 'Benny Billz'),
-        href: 'https://www.instagram.com/bennybillz/',
-      },
-      {
-        name: 'Rene Lacad',
-        company: 'Lacad Consulting',
-        credential: 'Social strategy for operators, not influencers.',
-        photo: portrait('rene-lacad', 'Rene Lacad'),
-        href: 'https://www.instagram.com/renelacad/',
-      },
-      {
-        name: 'Mark Baratto',
-        company: 'HighLevel',
-        credential: 'Senior Growth Marketer; previously co-founded and exited a broker-dealer.',
-        photo: { ...portrait('mark-baratto', 'Mark Baratto'), width: 1200, height: 1500 },
-        href: 'https://www.linkedin.com/in/mark-baratto/',
-      },
-    ],
-    invite: {
-      title: 'Your seat on stage',
-      text: 'Running something worth learning from? Tell us about it.',
-      cta: { label: 'Apply to speak', href: `mailto:${CONTACT_EMAIL}?subject=Speaking%20at%20Elite%20Entrepreneurs` },
-    },
-  },
-
-  stories: {
-    index: '06',
-    label: 'Community stories',
-    heading: 'Every connection has a story.',
-    intro: 'In their own words: founders who have been in the room as attendees, speakers and sponsors.',
-    marquee: ['Good people', 'Meaningful conversations', 'Better business'],
-    testimonials: [
-      {
-        quote:
-          'One of my favourite events I’ve attended. I closed one client, got five strong leads, and I was only there for half the day. On top of that, I met some incredible entrepreneurs.',
-        name: 'Steven',
-        role: 'Founder, Creo Social',
-        photo: attendee('steven', 'Steven'),
-      },
-      {
-        quote:
-          'This room is always filled with great entrepreneurs. It’s one of the few events where the audience is actually present and engaged. I’ve met partners and hired people I connected with in the room.',
-        name: 'Tarun',
-        role: 'Founder, Arcady Media',
-        photo: attendee('tarun', 'Tarun'),
-      },
-      {
-        quote:
-          'I’ve been a speaker, sponsor, and attendee — and at every level, it’s been valuable for me and my company. I’m always impressed by Splash and the room he brings together.',
-        name: 'Dylan Blyuss',
-        role: 'Founder, Publish Experts',
-        photo: attendee('dylan', 'Dylan Blyuss'),
-      },
-      {
-        quote:
-          'The quality of speakers is genuinely shocking in the best way. I’ve attended every event and each time I’m blown away by how generously everyone shares. You always leave with something valuable.',
-        name: 'Aidan',
-        role: 'Founder, Tactly Media',
-        photo: attendee('aidan', 'Aidan'),
-      },
-      {
-        quote:
-          'I’ve been part of a lot of masterminds and events, but for the price, Splash brings unmatched value. You get direct access to top industry leaders, and the room they curate is always on point.',
-        name: 'Jordan Bazouzi',
-        role: 'Founder, Nu Reach Media',
-        photo: attendee('jordan', 'Jordan Bazouzi'),
-      },
-      {
-        quote:
-          'I’ve been to every Elite Entrepreneurs event so far, and each one has delivered — both in topics and the quality of people in the room.',
-        name: 'Umar',
-        role: 'Founder, Nest Marketing',
-        photo: attendee('umar', 'Umar'),
-      },
-    ],
+    heading: 'Coming up.',
+    calendarId: LINKS.lumaCalendarId,
+    embedUrl: LINKS.lumaEmbed,
+    link: { label: 'View on Luma', href: LUMA, external: true },
   },
 
   gallery: {
-    index: '07',
-    label: 'The Elite experience',
-    heading: 'Inside the room.',
-    intro: 'Stage sessions in the morning. Roundtables after lunch. Conversations that run long after.',
-    feature: { image: PHOTO.crowd, caption: 'Summit day, Toronto' },
-    moments: [
-      { image: PHOTO.networking, caption: 'Founder networking' },
-      { image: PHOTO.backdropTalk, caption: 'Business conversations' },
-      { image: PHOTO.hallway, caption: 'Between sessions' },
-      { image: PHOTO.ballroom, caption: 'Omni King Edward Hotel' },
-      { image: PHOTO.conversation, caption: 'Attendee interviews' },
-    ],
-    formats: [
-      'Founder conversations',
-      'Networking mixers',
-      'Stage sessions',
-      'Roundtables',
-      'Private dinners',
-      'VIP days',
+    index: '05',
+    heading: 'What it feels like.',
+    video: { src: `${EE}/video/hero.mp4`, poster: STOCK.speaker, playLabel: 'Play the recap video' },
+    photos: [
+      STOCK.dinnerEvent,
+      EVENT.backdropTalk,
+      STOCK.networking,
+      STOCK.toast,
+      STOCK.dinnerTalk,
+      STOCK.mixer,
+      EVENT.networking,
+      STOCK.dinnerTable,
     ],
   },
 
-  communityCta: {
-    label: 'Join the community',
-    headingStart: 'Your next',
-    headingEnd: { text: 'connection', accent: 'starts here.' },
-    text: 'Join a community of entrepreneurs who value meaningful conversations, shared experience, and opportunities to grow.',
-    cta: { label: 'Explore Elite', href: '#events' },
-    faces: [
-      attendee('steven', 'Steven'),
-      attendee('tarun', 'Tarun'),
-      attendee('dylan', 'Dylan Blyuss'),
-      attendee('aidan', 'Aidan'),
-      attendee('jordan', 'Jordan Bazouzi'),
+  testimonials: {
+    index: '06',
+    heading: 'What people say.',
+    items: [
+      { quote: '[Quote coming]', name: 'Eddie Malouf', company: '[Company]' },
+      {
+        quote: '[Quote coming]',
+        name: 'Brandon Carter',
+        company: '[Company]',
+        photo: img('speakers/brandon-carter.jpg', 'Portrait of Brandon Carter', 1080, 1350, '50% 30%'),
+      },
+      {
+        quote: '[Quote coming]',
+        name: 'Max [last name]',
+        company: '[Company]',
+        photo: img('speakers/max-sturtevant.jpg', 'Portrait of Max', 1080, 1350, '50% 30%'),
+      },
+      {
+        quote: '[Quote coming]',
+        name: 'Tarun [last name]',
+        company: '[Company]',
+        photo: img('speakers/tarun-kamath.jpg', 'Portrait of Tarun', 1080, 1350, '50% 30%'),
+      },
+      { quote: '[Quote coming]', name: '[Name]', company: '[Company]' },
     ],
-    facesCaption: 'Founders who keep coming back',
+  },
+
+  podcast: {
+    label: 'Podcast',
+    heading: 'Keeping It Real.',
+    text: 'Conversations with entrepreneurs. New episodes soon on YouTube.',
+    cta: { label: 'Subscribe on YouTube', href: LINKS.youtube, external: true },
+    image: STOCK.podcast,
+  },
+
+  partnerBand: {
+    heading: 'Put your brand in the rooms where business actually happens.',
+    cta: { label: 'Partner with us', href: ROUTES.partners },
+    image: STOCK.dinnerEvent,
   },
 
   newsletter: {
     label: 'Newsletter',
-    heading: 'Stay connected.',
-    text: 'Get updates on upcoming events, founder stories, and opportunities to connect.',
-    note: 'Occasional emails. Unsubscribe any time.',
+    heading: '[Headline TBD]',
+    submitLabel: 'Join the list',
+  },
+};
+
+// ─── Partners ─────────────────────────────────────────────────────────────────
+//
+// Copy follows the Partners brief word for word. Partner quotes, contacts and results are not
+// supplied yet: add `quote`, `person` and `result` to a story in `stories.stories` and it
+// renders in full; until then the story shows its "in progress" state.
+
+const partnersPage: PartnersPageContent = {
+  seo: {
+    title: 'Partner with Elite Entrepreneurs',
+    description:
+      'Years of showing up built real trust with founders, operators and decision makers. Partners get the rooms, the content, the podcast and the relationships.',
+    path: '/partners',
+    ogImage: OG_IMAGE,
+  },
+
+  bookCallLabel: 'Book a call',
+
+  hero: {
+    label: 'Partnerships',
+    headline: { text: 'Partner with the network', accent: 'founders trust.' },
+    lead: 'Years of showing up built real trust with founders, operators and decision makers. Partners get the rooms, the content, the podcast and the relationships.',
+    image: STOCK.conversation,
+    inset: img(
+      'event/moment-conversation.jpg',
+      'Two attendees filmed in conversation in front of the Elite Entrepreneurs backdrop',
+      540,
+      400,
+      '40% 50%',
+    ),
+    insetCaption: 'Filmed on site at an Elite Entrepreneurs summit',
+    facts: homePage.proof.stats,
+  },
+
+  audience: {
+    index: '01',
+    label: 'Who’s in the room',
+    heading: 'Who’s in the room.',
+    items: ['E-commerce founders', 'Agency owners', 'Marketers', 'Investors', 'Content creators'],
+    highlight: 'Founders running 7 to 9 figure businesses.',
+    image: OG_IMAGE,
+    caption: 'An Elite Entrepreneurs summit, Toronto',
+  },
+
+  why: {
+    index: '02',
+    label: 'Why brands partner with EE',
+    heading: 'Business moves faster when people trust each other.',
+    lines: ['There’s so much noise out there.', 'Everything feels forced.'],
+    body: 'The real way to grow is through relationships. We curate the rooms where those relationships happen, and put your brand inside them.',
+    benefits: [
+      { title: 'Your online brand shows up in person.' },
+      { title: 'We make the content.', text: 'Photos and video from every activation.' },
+      { title: 'We play long term.', text: 'We only take on partners where it’s a win for both sides.' },
+    ],
+    images: [STOCK.dinnerTalk, EVENT.backdropTalk],
+  },
+
+  benefits: {
+    index: '03',
+    label: 'What partners get',
+    heading: 'What partners get.',
+    items: ['Branding', 'Exclusivity', 'Access to customers', 'Video', 'Photos', 'A seat in the ecosystem'],
+  },
+
+  ways: {
+    index: '04',
+    label: 'Ways to work together',
+    heading: 'Ways to work together.',
+    options: [
+      { title: 'Year-round partner', image: STOCK.greeting },
+      { title: 'One-time partner on a single event', image: STOCK.summitStage },
+      { title: 'Co-host an event with us', image: STOCK.dinnerTable },
+      {
+        title: 'Hire us to host your event',
+        image: img(
+          'event/venue-ballroom-crop.jpg',
+          'The ballroom of the Omni King Edward hotel in Toronto, an Elite Entrepreneurs venue',
+          1400,
+          941,
+        ),
+      },
+    ],
+  },
+
+  founder: {
+    index: '05',
+    label: 'Who’s behind it',
+    name: 'Splash',
+    fullName: 'Parikchhit “Splash” Basnet',
+    role: 'Founder, Elite Entrepreneurs',
+    portrait: img(
+      'speakers/parikchhit-basnet.jpg',
+      'Portrait of Parikchhit “Splash” Basnet, founder of Elite Entrepreneurs',
+      1080,
+      1350,
+      '50% 40%',
+    ),
+    credentials: [
+      { label: 'Founded', text: 'Mint Ave, an email marketing agency.', logo: SPONSORS.mintAve.logo },
+      {
+        label: 'Built',
+        text: 'Growth Writer, an email marketing community with 1,000+ students that produced some of the top agencies in the space.',
+      },
+      { label: 'Has spoken', text: 'In Dubai, Mexico and at Ecom North.' },
+    ],
+    links: [
+      { label: 'Instagram', href: FOUNDER_INSTAGRAM, external: true },
+      { label: 'LinkedIn', href: FOUNDER_LINKEDIN, external: true },
+    ],
+  },
+
+  stories: {
+    index: '06',
+    label: 'Partner stories',
+    heading: 'Partner stories.',
+    emptyState: {
+      title: 'Story in progress.',
+      text: 'The quote, contact and result will appear here once confirmed with the partner.',
+    },
+    stories: [
+      { partner: 'Omnisend', logo: SPONSORS.omnisend.logo },
+      { partner: 'American Express', logo: SPONSORS.amex.logo },
+      { partner: 'Commas', logo: SPONSORS.commas.logo },
+      { partner: 'GoHighLevel', logo: { ...SPONSORS.highlevel.logo, alt: 'GoHighLevel' } },
+      { partner: 'CreoSocial', logo: { ...SPONSORS.creo.logo, alt: 'CreoSocial' } },
+    ],
+  },
+
+  pastPartners: {
+    index: '07',
+    label: 'Past partners',
+    heading: 'Past partners.',
+    partners: [
+      SPONSORS.amex,
+      SPONSORS.omnisend,
+      SPONSORS.highlevel,
+      SPONSORS.commas,
+      SPONSORS.creo,
+      SPONSORS.arcady,
+      SPONSORS.mintAve,
+      SPONSORS.scalingWebinars,
+    ],
+  },
+
+  inquiry: {
+    index: '08',
+    label: 'Partnership inquiry',
+    heading: 'Start the conversation.',
+    intro: 'Tell us what you want to achieve. A few details help us come to the first call prepared.',
+    successMessage: 'Thanks. We’ll be in touch within [X] days.',
+    errorMessage: 'Your inquiry could not be sent. Please try again, or email us directly.',
+    unavailableMessage: 'The inquiry form is not accepting submissions right now. Please email us directly.',
+    submitLabel: 'Send inquiry',
   },
 };
 
 export const staticContentProvider: ContentProvider = {
   getSiteSettings: () => Promise.resolve(siteSettings),
   getHomePage: () => Promise.resolve(homePage),
+  getPartnersPage: () => Promise.resolve(partnersPage),
 };

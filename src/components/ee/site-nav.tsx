@@ -1,5 +1,6 @@
 'use client';
 
+import { usePathname } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { Brand, ContactInfo, Navigation } from '@/services/content';
 import { gsap } from '@/lib/motion/gsap';
@@ -17,11 +18,15 @@ export function SiteNav({
   brand,
   navigation,
   contact,
+  homeHref = '#top',
 }: {
   brand: Brand;
   navigation: Navigation;
   contact: ContactInfo;
+  /** Target of the logo: back to the top on the homepage, the homepage elsewhere. */
+  homeHref?: string;
 }) {
+  const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
   const [open, setOpen] = useState(false);
@@ -143,7 +148,11 @@ export function SiteNav({
       onKeyDown={open ? onMenuKeyDown : undefined}
     >
       <div className="nav__bar wrap">
-        <a href="#top" className="nav__brand" aria-label={`${brand.name}, back to top`}>
+        <a
+          href={homeHref}
+          className="nav__brand"
+          aria-label={homeHref === '#top' ? `${brand.name}, back to top` : `${brand.name}, home`}
+        >
           <BrandMark className="nav__mark" />
           <span className="nav__wordmark" aria-hidden="true">
             Elite <span>Entrepreneurs</span>
@@ -154,12 +163,13 @@ export function SiteNav({
           <ul>
             {navigation.primary.map((link) => {
               const id = link.href.replace('#', '');
+              const isPage = link.href === pathname;
               return (
                 <li key={link.href}>
                   <a
                     href={link.href}
-                    className={cn('nav__link', active === id && 'is-active')}
-                    aria-current={active === id ? 'location' : undefined}
+                    className={cn('nav__link', (active === id || isPage) && 'is-active')}
+                    aria-current={isPage ? 'page' : active === id ? 'location' : undefined}
                   >
                     {link.label}
                   </a>

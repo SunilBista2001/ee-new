@@ -16,14 +16,22 @@ html.has-motion:not(.motion-ready):not(.motion-fallback) [data-reveal='lines'] {
   opacity: 0;
 }
 
-html.has-motion:not(.motion-ready):not(.motion-fallback) [data-hero-float],
-html.has-motion:not(.motion-ready):not(.motion-fallback) [data-hero-panel] {
-  opacity: 0;
-}
-
 html.has-motion:not(.motion-ready):not(.motion-fallback) [data-reveal='clip'] {
   opacity: 0;
   transform: translateY(40px) scale(0.97);
+}
+
+html.has-motion:not(.motion-ready):not(.motion-fallback) [data-reveal='mask'] {
+  clip-path: inset(100% 0 0 0);
+}
+
+html.has-motion:not(.motion-fallback) [data-expand] {
+  clip-path: inset(0% 2.5% 0% 2.5% round 20px);
+}
+
+/* Parallax images are drawn slightly larger than their frame so the drift never shows an edge. */
+html.has-motion [data-parallax] {
+  scale: 1.14;
 }
 
 /*
@@ -31,7 +39,8 @@ html.has-motion:not(.motion-ready):not(.motion-fallback) [data-reveal='clip'] {
  * only re-composites them instead of repainting (and never creates layers mid-scroll).
  */
 html.has-motion [data-parallax],
-html.has-motion [data-float] {
+html.has-motion [data-drift],
+html.has-motion [data-scrub-x] {
   will-change: transform;
   backface-visibility: hidden;
 }

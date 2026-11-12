@@ -12,6 +12,10 @@ React 19 Server Components, strict TypeScript, GSAP (ScrollTrigger + SplitText) 
 > - **Upcoming guests** — the five portraits come from the speaker roster, not a confirmed lineup.
 >   Replace them in `guests.guests` (`static-content.ts`) when the next edition's guests are public.
 > - **Newsletter** — the form validates but is not connected to an email provider yet.
+> - **Partners inquiry** — refuses submissions (HTTP 503, with an email fallback on the page) until
+>   `PARTNER_CRM_WEBHOOK_URL` and/or `SLACK_PARTNER_WEBHOOK_URL` are set. Set
+>   `NEXT_PUBLIC_PARTNER_BOOKING_URL` so "Book a call" opens the scheduler instead of the form, and
+>   replace `[X]` in `partnersPage.inquiry.successMessage` with the confirmed response time.
 
 ## Commands
 
@@ -28,10 +32,14 @@ npm run verify               # everything above, in order
 
 Environment (see `src/config/site.ts`, validated with Zod at startup):
 
-| Variable               | Default                 | Purpose                                       |
-| ---------------------- | ----------------------- | --------------------------------------------- |
-| `NEXT_PUBLIC_SITE_URL` | `http://localhost:3000` | Canonical URLs, sitemap, Open Graph           |
-| `SITE_INDEXABLE`       | `false`                 | `true` allows indexing (robots + meta robots) |
+| Variable                          | Default                 | Purpose                                                                                                                |
+| --------------------------------- | ----------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `NEXT_PUBLIC_SITE_URL`            | `http://localhost:3000` | Canonical URLs, sitemap, Open Graph                                                                                    |
+| `SITE_INDEXABLE`                  | `false`                 | `true` allows indexing (robots + meta robots)                                                                          |
+| `NEXT_PUBLIC_PARTNER_BOOKING_URL` | unset                   | Scheduler behind every "Book a call" on `/partners` (build time). Unset: buttons go to the inquiry form                |
+| `PARTNER_CRM_WEBHOOK_URL`         | unset                   | Server only. Receives each partnership inquiry as flat JSON (HubSpot/GoHighLevel workflow webhook, Zapier, Make, n8n…) |
+| `PARTNER_CRM_WEBHOOK_TOKEN`       | unset                   | Server only, optional. Sent as `Authorization: Bearer <token>` to the CRM webhook                                      |
+| `SLACK_PARTNER_WEBHOOK_URL`       | unset                   | Server only. Slack incoming webhook notified of each inquiry                                                           |
 
 ## Architecture
 
@@ -46,15 +54,21 @@ src/
   features/home/components/ IntroLoader, TestimonialCarousel (client)
   features/newsletter/      NewsletterForm (client, React Hook Form + Zod)
   lib/motion/               gsap.ts (plugin registration), SmoothScroll (Lenis), PageMotion, Cursor
-  styles/ee/                tokens, reset, primitives, chrome (nav/footer/loader), sections, motion
+  styles/ee/                tokens, reset, primitives, chrome (nav/footer), home (homepage sections), motion
 ```
 
 ### Homepage sections
 
-01 Navigation · 02 Cinematic hero · 03 Brand statement (`#about`) · 04 The experience · 05 Upcoming
-guests (`#guests`) · 06 Events (`#events`: featured edition, next edition, earlier editions) · 06 Speakers · 07 Community (sticky storytelling) ·
-08 Testimonials · 09 Final CTA · 10 Footer (`#contact`, `#newsletter`). All navigation targets
-are in-page anchors, so no link points at a route that does not exist.
+Structure and copy follow the content brief (“EE Website: Page-by-Page Brief”, Home), in its
+order: 1 Hero · 2 Proof strip + logo strip · 3 Why we exist (`#about`) · 4 Who you’ll meet
+(`#community`) · 5 The ecosystem (`#ecosystem`) · 6 Coming up, Luma embed (`#events`) · 7 What it
+feels like (`#gallery`) · 8 What people say (`#speakers`) · 9 Podcast (`#podcast`) · 10 Partner
+band · 11 Newsletter (`#newsletter`). Nav and footer are unchanged.
+
+Text in `[brackets]` renders as a marked placeholder (`SlotText`). Buttons point at the
+brief’s pages (`/events`, `/partners`, `/about`); a link with an empty `href` (YouTube) renders
+disabled. Interactive pieces are small client components in `features/home/components`
+(`EcosystemIndex`, `TestimonialStage`, `RecapVideo`); everything else is server-rendered.
 
 ### Design system
 
@@ -81,6 +95,33 @@ tween and ScrollTrigger is reverted on unmount.
 - The intro loader plays once per session. Background videos pause off-screen and never play
   with reduced motion. The custom cursor and magnetic buttons only exist for fine pointers.
 
+## Partners page (`/partners`)
+
+`src/app/partners/page.tsx` renders the nine sections of the Partners brief in order, one Server
+Component each in `src/features/partners/sections`: Hero · Who's in the room · Why brands partner
+· What partners get · Ways to work together · Who's behind it · Partner stories · Past partners ·
+Partnership inquiry. Copy lives in `partnersPage` (`static-content.ts`); the nav and footer are the
+shared ones, with homepage anchors rewritten to `/#…` (`lib/site-links.ts`). Styles:
+`styles/ee/partners.css`. Motion uses the same `PageMotion` hooks as the homepage.
+
+- **Partner stories** — each story takes `quote`, `person` (`name`, `role`) and `result`
+  (`value`, `label`). Until a quote is supplied the card shows an explicit "Story in progress"
+  state; nothing is presented as a testimonial before it is one.
+- **Inquiry pipeline** — `InquiryForm` (client, React Hook Form + the shared Zod schema in
+  `features/partners/schema.ts`) posts to `POST /api/partner-inquiry`, which validates again,
+  checks the origin, a honeypot and a per-instance rate limit, then calls
+  `services/partners/inquiry.ts`:
+  - CRM configured → the CRM must accept it; Slack is then notified. If the CRM fails but Slack
+    accepts, the visitor still gets the confirmation and the Slack message is flagged
+    "CRM sync failed, add manually".
+  - Only Slack configured → Slack must accept it. Nothing configured → 503, never a fake success.
+  - Every form session sends one `submissionId` (also in the CRM payload for de-duplication);
+    repeats with the same id are delivered once. The button is disabled while sending.
+- **Photography** — the hero main image and the "ways" thumbnails are the Unsplash stand-ins
+  (`stock/`); the room, the on-camera still, the venue and Splash's portrait are Elite's own.
+- **Logos** — the supplied logos are white-only, so they are tinted to ink with CSS. Drop in
+  full-colour files to show brand colours (and remove the `filter` in `.pt-wall__logo`).
+
 ## Content & assets
 
 Content lives in `src/services/content/static-content.ts`, typed by `types.ts`. Sources: the
@@ -90,6 +131,7 @@ invented; unknown facts render as “To be announced”.
 
 | Asset                                | Source / note                                                    |
 | ------------------------------------ | ---------------------------------------------------------------- |
+| `public/assets/ee/stock/*`           | Stand-in photography from Unsplash (free licence) — **replace**  |
 | `public/assets/ee/video/hero.mp4`    | Original site hero footage (+ poster)                            |
 | `public/assets/ee/speakers/*`        | Original site speaker portraits (1080×1350)                      |
 | `public/assets/ee/attendees/*`       | Original site testimonial portraits                              |
@@ -99,5 +141,5 @@ invented; unknown facts render as “To be announced”.
 | `public/assets/ee/event/venue-*`     | Omni King Edward ballroom (original site)                        |
 | `public/assets/ee/event/the-seat`    | Original site “reserve your seat” image                          |
 
-**To announce the guest lineup:** in `static-content.ts`, replace the five portraits in
-`guests.guests`, left to right; the third one is featured.
+**To fill the homepage placeholders:** edit `homePage` in `static-content.ts` (testimonial
+quotes, mixer names, newsletter headline, `LINKS.youtube`).

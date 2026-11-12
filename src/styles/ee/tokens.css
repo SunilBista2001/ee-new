@@ -10,6 +10,8 @@
  *   #8B6348 accent brown   PRIMARY: buttons, links, accents, numbers
  *   #594233 deep brown     secondary text, primary hover, accent text on beige
  *   #302820 dark espresso  main text
+ *   #A07D45 gold           decorative accents and large display numerals only (3.4:1 on ivory)
+ *   #C9A86F light gold     accents on espresso
  *
  * Contrast (WCAG AA, small text): espresso, deep brown and --muted pass on every surface.
  * Accent brown passes on ivory and the lighter surfaces (4.6:1) but not on beige (3.7:1),
@@ -23,6 +25,8 @@
   --c-brown: #8b6348;
   --c-deep: #594233;
   --c-espresso: #302820;
+  --c-gold: #a07d45;
+  --c-gold-light: #c9a86f;
 
   /* Surfaces */
   --bg: var(--c-ivory);
@@ -54,6 +58,7 @@
   --font-sans: var(--font-geist), ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, 'SF Mono', Menlo, monospace;
   --font-serif: var(--font-instrument), 'Iowan Old Style', Georgia, serif;
+  --font-display: var(--font-inter-tight), var(--font-geist), ui-sans-serif, system-ui, sans-serif;
 
   --fs-display: clamp(2.6rem, 1.6rem + 4.4vw, 5.6rem);
   --fs-h2: clamp(2rem, 1.45rem + 2.3vw, 3.5rem);

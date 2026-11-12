@@ -77,174 +77,121 @@ export interface SiteSettings {
 }
 
 // ─── Homepage ─────────────────────────────────────────────────────────────────
-
-export interface HeroHighlight {
-  title: string;
-  meta: string;
-  icon: 'learn' | 'connect' | 'share';
-}
+//
+// Structure and copy follow the "EE Website: Page-by-Page Brief" (Home). Text in [brackets]
+// is a placeholder from the brief: it renders as a visibly marked slot until real copy lands.
 
 export interface HeroContent {
-  /** Small mono line next to the status (location). */
-  meta: string;
-  status: { label: string; value: string };
-  /** Headline in two controlled lines; the second closes with the italic serif accent. */
-  headlineStart: string;
-  headlineEnd: Headline;
+  /** `accent` closes the headline in the italic serif. */
+  headline: Headline;
   lead: string;
   primaryCta: Link;
   secondaryCta: Link;
-  /** Curved wall of event photos under the headline: one focal image and four side panels. */
-  stage: { main: ImageAsset; panels: [ImageAsset, ImageAsset, ImageAsset, ImageAsset] };
-  /** Event formats pinned on the photo wall. */
-  highlights: HeroHighlight[];
-  /** A verified attendee figure. */
-  stat: { value: string; label: string; note: string };
-  /** Card that links to the speakers section. */
-  speakers: { title: string; text: string; avatars: ImageAsset[]; link: Link };
-  /** Social proof under the left column. */
-  proof: { text: string; avatars: ImageAsset[] };
-  /** Text set around the rotating seal. */
-  seal: string;
-  /** Short closing note in the right column, one line per entry. */
-  note: string[];
-}
-
-export interface PartnersContent {
-  label: string;
-  partners: { name: string; logo: ImageAsset }[];
-}
-
-export interface IntroContent {
-  index: string;
-  label: string;
-  heading: string;
-  /** Large statement revealed word by word on scroll. */
-  statement: string;
-  detail: string;
-  cta: Link;
-  images: [ImageAsset, ImageAsset];
-  facts: { label: string; value: string }[];
-  factsNote: string;
-}
-
-export interface GuestsContent {
-  index: string;
-  label: string;
-  /** Two-line heading; `accent` is the second line, set in the italic serif. */
-  heading: Headline;
-  description: string;
-  /** Five portraits, left to right; the middle one is featured. */
-  guests: [ImageAsset, ImageAsset, ImageAsset, ImageAsset, ImageAsset];
-  /** Oversized word set faintly behind the portraits. */
-  backdropWord: string;
-}
-
-export interface EventCard {
-  status: string;
-  category: string;
-  title: string;
-  /** Short date parts for the editorial date mark, e.g. day "26–28", month "Aug", year "2026". */
-  badge: { year: string; day: string; month: string };
-  date: string;
-  location: string;
-  description: string;
-  cta: Link;
+  /** Wide main photo and a small overlapping detail. */
   image: ImageAsset;
-  /** Optional run of show, in order. */
-  programme?: { label: string; text: string }[];
+  inset: ImageAsset;
 }
 
-export interface EventsContent {
-  index: string;
+export interface ProofContent {
+  /** Screen-reader heading for the strip. */
   label: string;
-  /** Heading; `accent` closes it in the italic serif. */
-  heading: Headline;
-  intro: string;
-  /** The most recent edition, shown large. */
-  featured: EventCard;
-  /** Earlier editions. */
-  more: EventCard[];
-  /** Shown while no next date is public. Holds no date, city or price on purpose. */
-  announcement: {
-    label: string;
-    title: string;
-    text: string;
-    primaryCta: Link;
-    secondaryCta: Link;
-    image: ImageAsset;
-  };
-  allEventsCta: Link;
+  stats: { value: string; label: string }[];
+  logosLabel: string;
+  logos: { name: string; logo: ImageAsset }[];
 }
 
-export interface ExperienceContent {
+export interface WhyContent {
   index: string;
   label: string;
   heading: string;
-  intro: string;
-  pillars: { title: string; text: string; meta: string; image: ImageAsset }[];
+  /** One idea per line. */
+  lines: string[];
+  /** The line given emphasis (the turn of the argument). */
+  emphasis: string;
+  body: string;
+  /** Final line, set in the italic serif. */
+  closing: string;
+  cta: Link;
+  /** Tall main photo and a smaller overlapping one. */
+  images: [ImageAsset, ImageAsset];
 }
 
-export interface Speaker {
+export interface AudienceContent {
+  index: string;
+  heading: string;
+  forList: { title: string; items: string[] };
+  notForList: { title: string; items: string[] };
+  /** Faces from the community, shown beside the heading. */
+  faces: ImageAsset[];
+}
+
+export interface EcosystemItem {
   name: string;
-  company: string;
-  credential: string;
-  photo: ImageAsset;
+  text?: string;
+  /** Link to the format's section on the Events page; omitted while it is not live. */
   href?: string;
+  /** Status tag for formats that are not live yet. */
+  status?: string;
+  image: ImageAsset;
 }
 
-export interface SpeakersContent {
+export interface EcosystemContent {
   index: string;
   label: string;
   heading: string;
-  intro: string;
-  speakers: Speaker[];
-  invite: { title: string; text: string; cta: Link };
+  items: EcosystemItem[];
+}
+
+export interface CalendarContent {
+  index: string;
+  heading: string;
+  /** Luma calendar id, used to read the upcoming events. */
+  calendarId: string;
+  /** Luma calendar embed (iframe src): shown if the events cannot be loaded. */
+  embedUrl: string;
+  /** Link to the same calendar on Luma. */
+  link: Link;
+}
+
+export interface GalleryContent {
+  index: string;
+  heading: string;
+  video: { src: string; poster: ImageAsset; playLabel: string };
+  photos: ImageAsset[];
 }
 
 export interface Testimonial {
   quote: string;
   name: string;
-  role: string;
-  photo: ImageAsset;
+  company: string;
+  /** Optional portrait; a monogram is shown without one. */
+  photo?: ImageAsset;
 }
 
-export interface StoriesContent {
+export interface TestimonialsContent {
   index: string;
+  heading: string;
+  items: Testimonial[];
+}
+
+export interface PodcastContent {
   label: string;
   heading: string;
-  intro: string;
-  /** Phrases for the scrolling outline-text band. */
-  marquee: string[];
-  testimonials: Testimonial[];
-}
-
-export interface GalleryContent {
-  index: string;
-  label: string;
-  heading: string;
-  intro: string;
-  feature: { image: ImageAsset; caption: string };
-  moments: { image: ImageAsset; caption: string }[];
-  formats: string[];
-}
-
-export interface CommunityCtaContent {
-  label: string;
-  /** Heading in two parts; the faces sit between them. */
-  headingStart: string;
-  headingEnd: Headline;
   text: string;
   cta: Link;
-  faces: ImageAsset[];
-  facesCaption: string;
+  image: ImageAsset;
+}
+
+export interface PartnerBandContent {
+  heading: string;
+  cta: Link;
+  image: ImageAsset;
 }
 
 export interface NewsletterSectionContent {
   label: string;
   heading: string;
-  text: string;
-  note: string;
+  submitLabel: string;
 }
 
 export interface SeoContent {
@@ -258,14 +205,138 @@ export interface SeoContent {
 export interface HomePageContent {
   seo: SeoContent;
   hero: HeroContent;
-  partners: PartnersContent;
-  intro: IntroContent;
-  guests: GuestsContent;
-  events: EventsContent;
-  experience: ExperienceContent;
-  speakers: SpeakersContent;
-  stories: StoriesContent;
+  proof: ProofContent;
+  why: WhyContent;
+  audience: AudienceContent;
+  ecosystem: EcosystemContent;
+  calendar: CalendarContent;
   gallery: GalleryContent;
-  communityCta: CommunityCtaContent;
+  testimonials: TestimonialsContent;
+  podcast: PodcastContent;
+  partnerBand: PartnerBandContent;
   newsletter: NewsletterSectionContent;
+}
+
+// ─── Partners page ────────────────────────────────────────────────────────────
+//
+// Structure and copy follow the Partners brief (sections 1 to 9, in order). Nothing is
+// invented: partner quotes, contacts and results are optional and render as an explicit
+// "story in progress" state until they are supplied.
+
+export interface PartnersHeroContent {
+  label: string;
+  headline: Headline;
+  lead: string;
+  /** Main editorial photo and a smaller one from Elite's own events. */
+  image: ImageAsset;
+  inset: ImageAsset;
+  insetCaption: string;
+  /** Approved numbers, reused from the homepage proof strip. */
+  facts: { value: string; label: string }[];
+}
+
+export interface PartnersAudienceContent {
+  index: string;
+  label: string;
+  heading: string;
+  /** The kinds of people in the room. */
+  items: string[];
+  /** The closing line, set apart: the founders the room is built around. */
+  highlight: string;
+  image: ImageAsset;
+  caption: string;
+}
+
+export interface PartnersWhyContent {
+  index: string;
+  label: string;
+  heading: string;
+  /** Short opening lines, filled in word by word on scroll. */
+  lines: string[];
+  body: string;
+  benefits: { title: string; text?: string }[];
+  images: [ImageAsset, ImageAsset];
+}
+
+export interface PartnersBenefitsContent {
+  index: string;
+  label: string;
+  heading: string;
+  items: string[];
+}
+
+export interface PartnershipOption {
+  title: string;
+  image: ImageAsset;
+}
+
+export interface PartnersWaysContent {
+  index: string;
+  label: string;
+  heading: string;
+  options: PartnershipOption[];
+}
+
+export interface FounderContent {
+  index: string;
+  label: string;
+  name: string;
+  /** Full name, for the caption and alt text. */
+  fullName: string;
+  role: string;
+  portrait: ImageAsset;
+  credentials: { label: string; text: string; logo?: ImageAsset }[];
+  links: Link[];
+}
+
+export interface PartnerStory {
+  partner: string;
+  logo: ImageAsset;
+  /** Everything below is optional until supplied by the partner. */
+  quote?: string;
+  person?: { name: string; role: string };
+  result?: { value: string; label: string };
+}
+
+export interface PartnerStoriesContent {
+  index: string;
+  label: string;
+  heading: string;
+  /** Copy for a story that has not been supplied yet. */
+  emptyState: { title: string; text: string };
+  stories: PartnerStory[];
+}
+
+export interface PastPartnersContent {
+  index: string;
+  label: string;
+  heading: string;
+  partners: { name: string; logo: ImageAsset }[];
+}
+
+export interface InquiryContent {
+  index: string;
+  label: string;
+  heading: string;
+  intro: string;
+  /** "[X]" stays a marked placeholder until the response time is confirmed. */
+  successMessage: string;
+  errorMessage: string;
+  unavailableMessage: string;
+  submitLabel: string;
+}
+
+export interface PartnersPageContent {
+  seo: SeoContent;
+  /** Label of every "Book a call" button. */
+  bookCallLabel: string;
+  hero: PartnersHeroContent;
+  audience: PartnersAudienceContent;
+  why: PartnersWhyContent;
+  benefits: PartnersBenefitsContent;
+  ways: PartnersWaysContent;
+  founder: FounderContent;
+  stories: PartnerStoriesContent;
+  pastPartners: PastPartnersContent;
+  inquiry: InquiryContent;
 }

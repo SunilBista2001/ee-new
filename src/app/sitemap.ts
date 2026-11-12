@@ -2,7 +2,7 @@ import type { MetadataRoute } from 'next';
 import { siteConfig } from '@/config/site';
 
 /** Routes served by this app. Add entries here as pages are migrated. */
-const ROUTES = ['/'] as const;
+const ROUTES = ['/', '/partners'] as const;
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return ROUTES.map((path) => ({

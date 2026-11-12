@@ -32,7 +32,10 @@ const externalProps = (link: Link) =>
 
 type ButtonVariant = 'primary' | 'secondary' | 'light';
 
-/** A link styled as a button. External links get a new-tab hint for screen readers. */
+/**
+ * A link styled as a button. External links get a new-tab hint for screen readers. A link with
+ * an empty `href` is not live yet: it renders as a disabled, non-navigating button.
+ */
 export function ButtonLink({
   link,
   variant = 'primary',
@@ -46,6 +49,16 @@ export function ButtonLink({
   size?: 'sm';
   icon?: boolean;
 } & Omit<ComponentPropsWithoutRef<'a'>, 'href'>) {
+  if (!link.href) {
+    return (
+      <span
+        className={cn('btn', `btn--${variant}`, size && `btn--${size}`, 'is-pending', className)}
+        aria-disabled="true"
+      >
+        <span className="btn__label">{link.label}</span>
+      </span>
+    );
+  }
   return (
     <a
       href={link.href}
@@ -80,11 +93,11 @@ export function Eyebrow({ children, className }: { children: ReactNode; classNam
 }
 
 /** Numbered section marker on a hairline with corner ticks, e.g. "01 — About Elite". */
-export function SectionIndex({ index, label, aside }: { index: string; label: string; aside?: ReactNode }) {
+export function SectionIndex({ index, label, aside }: { index: string; label?: string; aside?: ReactNode }) {
   return (
     <div className="sx" data-reveal="fade">
       <p className="sx__label">
-        <span className="sx__num">{index} —</span>
+        <span className="sx__num">{label ? `${index} —` : index}</span>
         {label}
       </p>
       {aside ? <div className="sx__aside">{aside}</div> : null}
@@ -143,24 +156,28 @@ export function SectionHeader({
   );
 }
 
-/** Rounded image frame. `parallax` lets PageMotion drift the image a little on scroll. */
+/**
+ * Image frame. `reveal` picks the scroll entrance: "mask" wipes the frame open from the bottom
+ * while the image settles (default), "clip" rises and settles, `false` leaves it to a parent.
+ * `parallax` lets PageMotion drift the image inside the frame on scroll.
+ */
 export function Photo({
   image,
   sizes,
   priority,
   className,
   parallax,
-  reveal = true,
+  reveal = 'mask',
 }: {
   image: ImageAsset;
   sizes: string;
   priority?: boolean;
   className?: string;
   parallax?: boolean;
-  reveal?: boolean;
+  reveal?: 'mask' | 'clip' | false;
 }) {
   return (
-    <div className={cn('media', className)} data-reveal={reveal ? 'clip' : undefined}>
+    <div className={cn('media', className)} data-reveal={reveal || undefined}>
       <Image
         src={image.src}
         alt={image.alt}
@@ -168,6 +185,8 @@ export function Photo({
         height={image.height}
         sizes={sizes}
         priority={priority}
+        // Above-the-fold photos decode with the paint instead of popping in a moment later.
+        decoding={priority ? 'sync' : undefined}
         quality={85}
         style={image.focus ? { objectPosition: image.focus } : undefined}
         data-parallax={parallax ? '' : undefined}
@@ -179,4 +198,26 @@ export function Photo({
 /** The Elite monogram, tinted with currentColor. Decorative: pair it with visible or sr-only text. */
 export function BrandMark({ className }: { className?: string }) {
   return <span className={cn('mark', className)} aria-hidden="true" />;
+}
+
+/**
+ * Text that may hold [bracketed] placeholders from the content brief. Each placeholder is set
+ * apart as a marked slot so unfinished copy is obvious on the page and easy to find later.
+ */
+export function SlotText({ text }: { text: string }) {
+  const parts = text.split(/(\[[^\]]+\])/);
+  if (parts.length === 1) return <>{text}</>;
+  return (
+    <>
+      {parts.map((part, i) =>
+        part.startsWith('[') && part.endsWith(']') ? (
+          <span key={i} className="slot-text">
+            {part}
+          </span>
+        ) : (
+          part
+        ),
+      )}
+    </>
+  );
 }

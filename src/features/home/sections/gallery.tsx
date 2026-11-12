@@ -1,73 +1,46 @@
 import Image from 'next/image';
 import { SectionIndex } from '@/components/ee/primitives';
-import type { GalleryContent } from '@/services/content';
+import { RecapVideo } from '@/features/home/components/recap-video';
+import type { GalleryContent, ImageAsset } from '@/services/content';
+
+function Row({ photos, shift, variant }: { photos: ImageAsset[]; shift: number; variant: 'a' | 'b' }) {
+  return (
+    <ul className={`hm-gal__row hm-gal__row--${variant}`} data-scrub-x={shift}>
+      {photos.map((photo) => (
+        <li key={photo.src} className="hm-gal__tile">
+          <Image
+            src={photo.src}
+            alt={photo.alt}
+            width={photo.width}
+            height={photo.height}
+            sizes="(min-width: 768px) 38vw, 60vw"
+            style={photo.focus ? { objectPosition: photo.focus } : undefined}
+          />
+        </li>
+      ))}
+    </ul>
+  );
+}
 
 /**
- * The Elite experience: a wide photo band with the heading set over it, then a horizontal
- * strip of moments (native scroll with snap points; nothing is pinned or hijacked).
+ * What it feels like: the recap video, then two full-bleed rows of photos that slide in
+ * opposite directions as the page scrolls.
  */
 export function Gallery({ content }: { content: GalleryContent }) {
-  const { feature } = content;
+  const half = Math.ceil(content.photos.length / 2);
   return (
-    <section id="inside" className="section gallery" aria-labelledby="gallery-title">
+    <section id="gallery" className="section hm-gal" aria-labelledby="gal-title" tabIndex={-1}>
       <div className="wrap">
-        <SectionIndex index={content.index} label={content.label} />
+        <SectionIndex index={content.index} />
+        <h2 id="gal-title" className="hm-h2 hm-head" data-reveal="lines">
+          {content.heading}
+        </h2>
+        <RecapVideo video={content.video} />
       </div>
 
-      <div className="wrap">
-        <figure className="band" data-reveal="clip">
-          <Image
-            src={feature.image.src}
-            alt={feature.image.alt}
-            width={feature.image.width}
-            height={feature.image.height}
-            sizes="(min-width: 1400px) 1320px, 100vw"
-            style={feature.image.focus ? { objectPosition: feature.image.focus } : undefined}
-            data-parallax=""
-          />
-          <div className="band__overlay">
-            <h2 id="gallery-title" className="h2 band__title">
-              {content.heading}
-            </h2>
-            <p className="band__intro">{content.intro}</p>
-          </div>
-          <figcaption className="band__fig mono">Fig. 01 — {feature.caption}</figcaption>
-        </figure>
-      </div>
-
-      <div className="strip" tabIndex={0} role="region" aria-label="Event moments, scroll horizontally">
-        <ul className="strip__track">
-          {content.moments.map((moment, i) => (
-            <li key={moment.caption} className="strip__item">
-              <figure>
-                <div className="strip__media">
-                  <Image
-                    src={moment.image.src}
-                    alt={moment.image.alt}
-                    width={moment.image.width}
-                    height={moment.image.height}
-                    sizes="(min-width: 768px) 360px, 75vw"
-                    style={moment.image.focus ? { objectPosition: moment.image.focus } : undefined}
-                  />
-                </div>
-                <figcaption className="strip__caption">
-                  <span className="mono">Fig. {String(i + 2).padStart(2, '0')}</span>
-                  {moment.caption}
-                </figcaption>
-              </figure>
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      <div className="wrap">
-        <ul className="gallery__formats" aria-label="Event formats" data-reveal="fade">
-          {content.formats.map((format) => (
-            <li key={format} className="tag">
-              {format}
-            </li>
-          ))}
-        </ul>
+      <div className="hm-gal__rows">
+        <Row photos={content.photos.slice(0, half)} shift={-6} variant="a" />
+        <Row photos={content.photos.slice(half)} shift={6} variant="b" />
       </div>
     </section>
   );

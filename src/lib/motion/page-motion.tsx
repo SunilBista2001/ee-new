@@ -8,14 +8,19 @@ import { gsap, ScrollTrigger, SplitText } from './gsap';
  *
  *  [data-hero-title]     headline lines rise out of a mask on load
  *  [data-hero-item]      hero copy, buttons and cards fade up on load
- *  [data-hero-float]     floating hero photos pop in, then drift at their own pace on scroll
- *  [data-hero-panel]     the hero photo wall opens out from its centre frame
  *  [data-reveal=words]   a statement fills in from grey to ink, word by word, with the scroll
  *  [data-reveal=lines]   section headings: line-by-line reveal on scroll
  *  [data-reveal=fade]    gentle fade-up on scroll
  *  [data-reveal=clip]    images rise and settle into place on scroll (compositor-only)
+ *  [data-reveal=mask]    image frames wipe open from the bottom while the image settles
  *  [data-stagger]        a grid revealed as one group (children: [data-stagger-item])
- *  [data-parallax]       images drift a few percent while in view (≥768px only)
+ *  [data-count]          a number counts up from zero when it enters ("1,000+" keeps its format)
+ *  [data-inview]         gets the class `in-view` once on screen (drives CSS-only effects)
+ *  [data-expand]         a full-bleed panel grows from an inset, rounded frame to the full width
+ *                        with the scroll (`data-expand="load"`: tied to the first screen)
+ *  [data-scrub-x="n"]    a row slides n% sideways across its pass through the viewport
+ *  [data-parallax]       images drift a few percent inside their frame (≥768px only)
+ *  [data-drift="n"]      a whole element floats n px against the scroll (≥768px only)
  *
  * Nothing runs with prefers-reduced-motion: the CSS pre-states only apply under `has-motion`.
  * Scrolling is never pinned or hijacked.
@@ -29,6 +34,7 @@ export function PageMotion() {
     }
 
     const splits: SplitText[] = [];
+    const restores: (() => void)[] = [];
     const ctx = gsap.context(() => {
       const ease = 'expo.out';
       const once = { start: 'top 88%', once: true } as const;
@@ -51,25 +57,6 @@ export function PageMotion() {
         { opacity: 0, y: 20 },
         { opacity: 1, y: 0, duration: 1, stagger: 0.08, clearProps: 'transform' },
         0.35,
-      );
-      hero.fromTo(
-        '[data-hero-panel]',
-        { opacity: 0, y: 48 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 1.4,
-          stagger: { each: 0.08, from: 'center' },
-          force3D: true,
-          clearProps: 'transform',
-        },
-        0.3,
-      );
-      hero.fromTo(
-        '[data-hero-float]',
-        { opacity: 0, scale: 0.85, y: 24 },
-        { opacity: 1, scale: 1, y: 0, duration: 1.4, stagger: 0.1, clearProps: 'transform' },
-        0.5,
       );
 
       // Statement: words fill from grey to ink while the paragraph crosses the viewport.
@@ -134,6 +121,88 @@ export function PageMotion() {
         );
       });
 
+      // Mask reveals: the frame wipes open while the image inside eases back from a zoom.
+      gsap.utils.toArray<HTMLElement>('[data-reveal="mask"]').forEach((el) => {
+        const inner = el.querySelector('img, video');
+        const tl = gsap.timeline({ scrollTrigger: { trigger: el, ...once } });
+        tl.fromTo(
+          el,
+          { clipPath: 'inset(100% 0% 0% 0%)' },
+          { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.4, ease: 'expo.inOut', clearProps: 'clipPath' },
+          0,
+        );
+        if (inner) tl.fromTo(inner, { scale: 1.22 }, { scale: 1, duration: 1.9, ease, force3D: true }, 0);
+      });
+
+      // Counters: server-rendered with the final value, counted up from zero on entry.
+      const numberFormat = new Intl.NumberFormat('en-US');
+      gsap.utils.toArray<HTMLElement>('[data-count]').forEach((el) => {
+        const text = el.textContent ?? '';
+        const match = /[\d,]+/.exec(text);
+        if (!match) return;
+        const target = Number(match[0].replace(/,/g, ''));
+        const prefix = text.slice(0, match.index);
+        const suffix = text.slice(match.index + match[0].length);
+        const state = { value: 0 };
+        const render = () => {
+          el.textContent = prefix + numberFormat.format(Math.round(state.value)) + suffix;
+        };
+        render();
+        restores.push(() => {
+          el.textContent = text;
+        });
+        gsap.to(state, {
+          value: target,
+          duration: 2.2,
+          ease: 'power3.out',
+          onUpdate: render,
+          // Start as soon as the number is on screen, so it is never seen resting at zero.
+          scrollTrigger: { trigger: el, start: 'top bottom', once: true },
+        });
+      });
+
+      // CSS-driven effects (rules drawing in, strike-throughs): just flag the element.
+      gsap.utils.toArray<HTMLElement>('[data-inview]').forEach((el) => {
+        ScrollTrigger.create({
+          trigger: el,
+          start: 'top 82%',
+          once: true,
+          onEnter: () => el.classList.add('in-view'),
+        });
+        restores.push(() => el.classList.remove('in-view'));
+      });
+
+      // Full-bleed panels open out from an inset frame. clip-path keeps it on the compositor.
+      gsap.utils.toArray<HTMLElement>('[data-expand]').forEach((el) => {
+        const onLoad = el.dataset.expand === 'load';
+        gsap.fromTo(
+          el,
+          { clipPath: 'inset(0% 2.5% 0% 2.5% round 20px)' },
+          {
+            clipPath: 'inset(0% 0% 0% 0% round 0px)',
+            ease: 'none',
+            scrollTrigger: onLoad
+              ? { start: 0, end: () => window.innerHeight * 0.55, scrub: true }
+              : { trigger: el, start: 'top 92%', end: 'top 40%', scrub: true },
+          },
+        );
+      });
+
+      // Rows that slide sideways with the scroll (gallery).
+      gsap.utils.toArray<HTMLElement>('[data-scrub-x]').forEach((el) => {
+        const amount = Number(el.dataset.scrubX) || 0;
+        gsap.fromTo(
+          el,
+          { xPercent: amount > 0 ? -amount : 0 },
+          {
+            xPercent: amount > 0 ? 0 : amount,
+            ease: 'none',
+            force3D: true,
+            scrollTrigger: { trigger: el.parentElement ?? el, start: 'top bottom', end: 'bottom top', scrub: true },
+          },
+        );
+      });
+
       // Grids reveal as one group with a short stagger.
       gsap.utils.toArray<HTMLElement>('[data-stagger]').forEach((group) => {
         const items = group.querySelectorAll('[data-stagger-item]');
@@ -155,31 +224,34 @@ export function PageMotion() {
 
       // Subtle parallax on large images, larger screens only.
       const mm = gsap.matchMedia();
-      mm.add('(min-width: 992px)', () => {
-        // Hero photos drift at different speeds as the page leaves the hero.
-        gsap.utils.toArray<HTMLElement>('[data-float]').forEach((el) => {
-          const speed = [-60, 40, -30, 70][Number(el.dataset.float) % 4] ?? 0;
-          gsap.to(el, {
-            y: speed,
-            ease: 'none',
-            force3D: true,
-            scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true },
-          });
-        });
-      });
       mm.add('(min-width: 768px)', () => {
         gsap.utils.toArray<HTMLElement>('[data-parallax]').forEach((img) => {
           const frame = img.parentElement ?? img;
           gsap.fromTo(
             img,
-            { yPercent: -4 },
+            { yPercent: -6 },
             {
-              yPercent: 4,
+              yPercent: 6,
               ease: 'none',
               // Keep the GPU layer for the whole scrub; with force3D "auto" GSAP drops it at
               // progress 0/1 and re-creates it on the next frame, which stutters.
               force3D: true,
               scrollTrigger: { trigger: frame, start: 'top bottom', end: 'bottom top', scrub: true },
+            },
+          );
+        });
+
+        // Floating elements move against the scroll at their own pace.
+        gsap.utils.toArray<HTMLElement>('[data-drift]').forEach((el) => {
+          const amount = Number(el.dataset.drift) || 0;
+          gsap.fromTo(
+            el,
+            { y: amount },
+            {
+              y: -amount,
+              ease: 'none',
+              force3D: true,
+              scrollTrigger: { trigger: el, start: 'top bottom', end: 'bottom top', scrub: true },
             },
           );
         });
@@ -193,6 +265,7 @@ export function PageMotion() {
     return () => {
       ctx.revert();
       splits.forEach((s) => s.revert());
+      restores.forEach((restore) => restore());
     };
   }, []);
 
