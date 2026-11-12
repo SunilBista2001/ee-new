@@ -127,7 +127,7 @@ const siteSettings: SiteSettings = {
       { label: 'Events', href: '#events' },
       { label: 'Partners', href: ROUTES.partners },
       { label: 'About', href: '#about' },
-      { label: 'Podcast', href: '#podcast' },
+      // { label: 'Podcast', href: '#podcast' },
     ],
     cta: { label: 'See what’s coming up', href: '#events' },
   },
