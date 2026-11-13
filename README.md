@@ -16,6 +16,10 @@ React 19 Server Components, strict TypeScript, GSAP (ScrollTrigger + SplitText) 
 >   `PARTNER_CRM_WEBHOOK_URL` and/or `SLACK_PARTNER_WEBHOOK_URL` are set. Set
 >   `NEXT_PUBLIC_PARTNER_BOOKING_URL` so "Book a call" opens the scheduler instead of the form, and
 >   replace `[X]` in `partnersPage.inquiry.successMessage` with the confirmed response time.
+> - **Podcast launch list** — `/podcast` refuses sign-ups (HTTP 503, "sign-ups are not open just
+>   yet") until `PODCAST_NOTIFY_WEBHOOK_URL` is set. Show details (description, hosts, launch date,
+>   artwork, Spotify / Apple / YouTube links) and episodes are empty in `PODCAST_SHOW` /
+>   `PODCAST_EPISODES` (`static-content.ts`) and stay off the page until filled in.
 
 ## Commands
 
@@ -40,6 +44,8 @@ Environment (see `src/config/site.ts`, validated with Zod at startup):
 | `PARTNER_CRM_WEBHOOK_URL`         | unset                   | Server only. Receives each partnership inquiry as flat JSON (HubSpot/GoHighLevel workflow webhook, Zapier, Make, n8n…) |
 | `PARTNER_CRM_WEBHOOK_TOKEN`       | unset                   | Server only, optional. Sent as `Authorization: Bearer <token>` to the CRM webhook                                      |
 | `SLACK_PARTNER_WEBHOOK_URL`       | unset                   | Server only. Slack incoming webhook notified of each inquiry                                                           |
+| `PODCAST_NOTIFY_WEBHOOK_URL`      | unset                   | Server only. Receives each podcast launch-list sign-up as flat JSON (email tool automation, CRM webhook, Zapier…)      |
+| `PODCAST_NOTIFY_WEBHOOK_TOKEN`    | unset                   | Server only, optional. Sent as `Authorization: Bearer <token>` to the podcast webhook                                  |
 
 ## Architecture
 
@@ -121,6 +127,30 @@ shared ones, with homepage anchors rewritten to `/#…` (`lib/site-links.ts`). S
   (`stock/`); the room, the on-camera still, the venue and Splash's portrait are Elite's own.
 - **Logos** — the supplied logos are white-only, so they are tinted to ink with CSS. Drop in
   full-colour files to show brand colours (and remove the `filter` in `.pt-wall__logo`).
+
+## Podcast page (`/podcast`)
+
+Pre-launch announcement: Hero ("Coming Soooon" / "Stay tuned.") · Behind the scenes · (Episodes) ·
+Stay tuned sign-up. Sections live in `src/features/podcast/sections`, copy and show data in
+`podcastPage` (`static-content.ts`), styles in `styles/ee/podcast.css`.
+
+- **Show data** — `PODCAST_SHOW` holds the title (from the homepage: "Keeping It Real"),
+  description, hosts, launch date, artwork and platform URLs. Empty fields render nothing: no
+  placeholder hosts, no countdown, no empty "Listen on" row.
+- **Episodes** — add entries to `PODCAST_EPISODES` (newest first, `PodcastEpisode` in
+  `services/content/types.ts`) and the Episodes section appears with a featured episode
+  (`episodesSection.featured` slug, else the newest) and the archive.
+- **Launch list** — `NotifyForm` posts to `POST /api/podcast-notify` (origin check, honeypot,
+  rate limit, one `submissionId` per form session), which forwards `{ submissionId, source,
+email, submittedAt, pageUrl }` to `PODCAST_NOTIFY_WEBHOOK_URL`. Success is shown only after
+  the webhook accepts it; unset → 503 and an honest "not open yet" message.
+- **Motion** — `PodcastMotion` (letter reveal and O echo, "Stay tuned" tuning in, frame reveals,
+  pointer depth, scroll-tuned dial) on top of `PageMotion`. `Waveform` is a canvas that only runs
+  on screen and draws one still frame with reduced motion. Nothing implies audio is playing.
+- **Follow along** — only the profiles already verified in the footer (Luma, founder Instagram,
+  founder LinkedIn).
+- **Photography** — `stock/podcast-mic`, `podcast-studio`, `podcast-condenser`,
+  `podcast-headphones` are Unsplash stand-ins with no people in frame.
 
 ## Content & assets
 

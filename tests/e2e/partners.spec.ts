@@ -53,7 +53,7 @@ test.describe('partners page', () => {
   test('shared navigation leads back to homepage sections', async ({ page }) => {
     await page.goto('/partners');
     const hrefs = await page.locator('.nav__links a').evaluateAll((links) => links.map((a) => a.getAttribute('href')));
-    expect(hrefs).toEqual(['/#events', '/partners', '/#about', '/#podcast']);
+    expect(hrefs).toEqual(['/events', '/partners', '/about', '/podcast']);
     await expect(page.locator('.nav__links a[aria-current="page"]')).toHaveText('Partners');
     await expect(page.locator('.nav__cta')).toHaveAttribute('href', '/#events');
   });

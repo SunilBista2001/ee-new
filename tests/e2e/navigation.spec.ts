@@ -33,17 +33,17 @@ test.describe('navigation', () => {
       await expect(banner.getByRole('button', { name: 'Open menu' })).toBeFocused();
       await expect(banner.getByRole('button', { name: 'Open menu' })).toHaveAttribute('aria-expanded', 'false');
 
-      // Choosing a link closes the menu and lands on the section.
+      // Choosing a link closes the menu and opens the page.
       await banner.getByRole('button', { name: 'Open menu' }).click();
       await dialog.getByRole('link', { name: /Podcast/ }).click();
-      await expect(banner.getByRole('button', { name: 'Open menu' })).toHaveAttribute('aria-expanded', 'false');
-      await expect(page.locator('#podcast')).toBeInViewport();
+      await expect(page).toHaveURL(/\/podcast$/);
+      await expect(page.getByRole('heading', { level: 1, name: 'Coming soon' })).toBeAttached();
     } else {
       const nav = page.getByRole('navigation', { name: 'Primary' });
       await expect(nav.getByRole('link', { name: /Events/ })).toBeVisible();
       await nav.getByRole('link', { name: /Podcast/ }).click();
-      await expect(page.locator('#podcast')).toBeInViewport();
-      await expect(page.locator('#podcast')).toBeFocused();
+      await expect(page).toHaveURL(/\/podcast$/);
+      await expect(page.getByRole('heading', { level: 1, name: 'Coming soon' })).toBeAttached();
     }
   });
 

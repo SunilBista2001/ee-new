@@ -88,11 +88,20 @@ function EventRow({ event, index }: { event: UpcomingEvent; index: number }) {
 /**
  * Coming up: the public Luma calendar as ruled rows between two halves, with a centre line
  * that draws down the section. If the events cannot be loaded, the Luma embed is shown
- * instead, so the section is never empty.
+ * instead, so the section is never empty. `id` is the section's anchor ("events" on the
+ * homepage, "calendar" on the Events page).
  */
-export function Calendar({ content, events }: { content: CalendarContent; events: UpcomingEvent[] }) {
+export function Calendar({
+  content,
+  events,
+  id = 'events',
+}: {
+  content: CalendarContent;
+  events: UpcomingEvent[];
+  id?: string;
+}) {
   return (
-    <section id="events" className="section hm-cal" aria-labelledby="cal-title" tabIndex={-1}>
+    <section id={id} className="section hm-cal" aria-labelledby="cal-title" tabIndex={-1}>
       <div className="wrap">
         <SectionIndex index={content.index} />
 

@@ -3,7 +3,7 @@
  *
  *   theme      Tailwind design tokens (CSS variables only)
  *   reset      element resets and page defaults of the Elite design system
- *   ee         Elite design system: tokens, primitives, homepage and partners sections
+ * *   ee         Elite design system: tokens, primitives, homepage, partners, about, events and podcast sections
  *   utilities  Tailwind utilities (prefixed `tw:`)
  */
 @layer theme, reset, ee, utilities;
@@ -17,4 +17,7 @@
 @import '../styles/ee/chrome.css' layer(ee);
 @import '../styles/ee/home.css' layer(ee);
 @import '../styles/ee/partners.css' layer(ee);
+@import '../styles/ee/about.css' layer(ee);
+@import '../styles/ee/events.css' layer(ee);
+@import '../styles/ee/podcast.css' layer(ee);
 @import '../styles/ee/motion.css' layer(ee);

@@ -1,0 +1,787 @@
+/*
+ * About page (/about). Built on the homepage system (`.hm-page` scale, index rail, Inter Tight
+ * headlines, Geist Mono labels, hairlines, warm palette) and the Partners page's shared pieces
+ * (`.pt-label`, `.pt-caption`). Each section has its own composition; none is a card grid.
+ *
+ * Prefix `ab-`.
+ */
+
+/* ─── 1. Hero ─────────────────────────────────────────────────────────────── */
+
+.ab-hero {
+  padding-top: clamp(1.75rem, 1rem + 2.6vw, 3.5rem);
+  padding-bottom: var(--section-y);
+}
+
+.ab-hero__head {
+  display: grid;
+  gap: var(--space-xl);
+}
+
+.ab-hero__head .pt-label {
+  margin-bottom: 0;
+}
+
+.ab-hero__title {
+  max-width: 9em;
+}
+
+.ab-hero__lead {
+  max-width: 24em;
+  font-size: var(--hm-fs-statement);
+  line-height: 1.3;
+  letter-spacing: -0.025em;
+  color: var(--ink-soft);
+  text-wrap: pretty;
+}
+
+.ab-hero__figure {
+  margin-top: clamp(2rem, 1rem + 3vw, 4rem);
+}
+
+.ab-hero__photo {
+  aspect-ratio: 4 / 3;
+}
+
+@media (min-width: 640px) {
+  .ab-hero__photo {
+    aspect-ratio: 16 / 9;
+  }
+}
+
+@media (min-width: 992px) {
+  /* Headline left; the answer drops to the right, level with the headline's last line. */
+  .ab-hero__head {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 4fr);
+    column-gap: var(--col-gap);
+    align-items: end;
+  }
+
+  .ab-hero__head .pt-label {
+    grid-column: 1 / -1;
+  }
+
+  .ab-hero__lead {
+    padding-bottom: 0.4em;
+  }
+
+  .ab-hero__photo {
+    aspect-ratio: 21 / 8;
+  }
+}
+
+/* ─── 2. How it started ───────────────────────────────────────────────────── */
+
+.ab-story__grid {
+  display: grid;
+  gap: var(--head-gap);
+}
+
+.ab-story__body {
+  display: grid;
+  gap: var(--space-2xl);
+  max-width: 38rem;
+}
+
+/* The rail: a hairline that draws down the story, with a dot at each paragraph. */
+.ab-story__rail {
+  position: relative;
+  display: grid;
+  gap: var(--space-xl);
+  padding-left: clamp(1.5rem, 1rem + 1.6vw, 2.5rem);
+}
+
+.ab-story__rail::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.7em;
+  bottom: 0.7em;
+  width: 1px;
+  background: var(--line-strong);
+  transform-origin: top;
+  transition: transform 2.2s var(--ease);
+}
+
+html.has-motion .ab-story__rail:not(.in-view)::before {
+  transform: scaleY(0);
+}
+
+.ab-story__step {
+  position: relative;
+  display: grid;
+  gap: var(--space-xs);
+}
+
+.ab-story__step::before {
+  content: '';
+  position: absolute;
+  top: 0.62em;
+  left: calc(-1 * clamp(1.5rem, 1rem + 1.6vw, 2.5rem) - 3px);
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 1px solid var(--line-strong);
+}
+
+.ab-story__step.has-marker::before {
+  top: 0.35em;
+  background: var(--c-gold);
+  border-color: var(--c-gold);
+}
+
+.ab-story__marker {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent-ink);
+}
+
+.ab-story__step p {
+  font-size: var(--fs-lead);
+  line-height: 1.65;
+  color: var(--ink-soft);
+  text-wrap: pretty;
+}
+
+/* The first line opens the story; the turning point is set like a pull quote. */
+.ab-story__step.is-first p,
+.ab-story__step.is-turn p {
+  font-family: var(--font-display);
+  font-size: var(--hm-fs-statement);
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+}
+
+.ab-story__step.is-turn {
+  padding-block: var(--space-md);
+}
+
+.ab-story__step.is-turn::before {
+  top: calc(var(--space-md) + 0.62em);
+}
+
+.ab-story__step.is-turn p {
+  color: var(--c-brown);
+}
+
+.ab-story__sign {
+  display: grid;
+  gap: 2px;
+  padding-left: clamp(1.5rem, 1rem + 1.6vw, 2.5rem);
+}
+
+.ab-story__sign-name {
+  font-family: var(--font-display);
+  font-size: 1.375rem;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+}
+
+.ab-story__sign-name::before {
+  content: '— ';
+  color: var(--line-strong);
+}
+
+.ab-story__sign-role {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+@media (min-width: 992px) {
+  .ab-story__grid {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    column-gap: var(--col-gap);
+  }
+
+  .ab-story__title {
+    position: sticky;
+    top: calc(var(--nav-h) + var(--space-xl));
+    align-self: start;
+    max-width: 7em;
+  }
+}
+
+/* Then and now, side by side, set off from the story by a hairline. */
+.ab-story__photos {
+  display: grid;
+  gap: var(--space-xl);
+  margin-top: var(--block-gap);
+  padding-top: var(--space-xl);
+  border-top: 1px solid var(--line);
+}
+
+@media (min-width: 640px) {
+  .ab-story__photos {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: var(--space-lg);
+  }
+}
+
+/* Desktop: the pair sits under the reading column, kept close to the photos' native size. */
+@media (min-width: 992px) {
+  .ab-story__photos {
+    max-width: 1000px;
+    margin-left: auto;
+  }
+}
+
+.ab-slot__frame {
+  aspect-ratio: 4 / 3;
+  border-radius: var(--r-md);
+}
+
+.ab-slot__caption {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-sm);
+  margin-top: var(--space-sm);
+  font-size: var(--fs-small);
+  color: var(--muted);
+}
+
+.ab-slot__tag {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent-ink);
+}
+
+/* Empty slot: same frame, a quiet note and the monogram. No stand-in photo. */
+.ab-slot__empty {
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: var(--space-md);
+  padding: var(--space-xl);
+  background: var(--ivory);
+  border: 1px dashed var(--line-strong);
+  text-align: center;
+}
+
+.ab-slot__mark {
+  width: 28px;
+  color: var(--line-strong);
+}
+
+.ab-slot__note {
+  max-width: 16em;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* ─── 3. What we believe ──────────────────────────────────────────────────── */
+
+.ab-beliefs__list {
+  display: grid;
+}
+
+.ab-belief {
+  position: relative;
+  display: grid;
+  gap: var(--space-md) var(--space-xl);
+  padding-block: var(--row-y) calc(var(--row-y) * 1.4);
+}
+
+/* Each row's rule draws in from the left as it enters. */
+.ab-belief::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 1px;
+  background: var(--line);
+  transform-origin: left;
+  transition: transform 1.4s var(--ease);
+}
+
+.ab-belief:first-child::before {
+  background: var(--ink);
+}
+
+html.has-motion .ab-belief:not(.in-view)::before {
+  transform: scaleX(0);
+}
+
+.ab-belief__num {
+  font-family: var(--font-display);
+  font-size: clamp(2.25rem, 1.6rem + 2.4vw, 4rem);
+  font-weight: 400;
+  line-height: 0.9;
+  letter-spacing: -0.05em;
+  color: var(--c-gold);
+}
+
+.ab-belief__title {
+  font-family: var(--font-display);
+  font-size: var(--hm-fs-h3);
+  font-weight: 500;
+  line-height: 1.08;
+  letter-spacing: -0.04em;
+  text-wrap: balance;
+  max-width: 13em;
+}
+
+.ab-belief__body {
+  display: grid;
+  gap: var(--space-xl);
+  align-content: start;
+}
+
+.ab-belief__text {
+  max-width: 30em;
+  font-size: var(--fs-lead);
+  line-height: 1.6;
+  color: var(--muted);
+  text-wrap: pretty;
+}
+
+.ab-belief__photo {
+  width: min(100%, 320px);
+  aspect-ratio: 4 / 3;
+  border-radius: var(--r-md);
+}
+
+/* The last belief is the shortest: it closes as a statement. */
+.ab-belief.is-last .ab-belief__title {
+  font-size: var(--hm-fs-h2);
+  letter-spacing: -0.05em;
+  max-width: 11em;
+}
+
+.ab-belief.is-last .ab-belief__title,
+.ab-belief.is-last .ab-belief__num {
+  color: var(--c-brown);
+}
+
+.ab-belief.is-last .ab-belief__text {
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: var(--hm-fs-statement);
+  letter-spacing: -0.03em;
+  line-height: 1.3;
+}
+
+@media (min-width: 768px) {
+  .ab-belief {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 5fr) minmax(0, 5fr);
+    align-items: start;
+  }
+
+  .ab-belief.is-last {
+    align-items: end;
+  }
+
+  .ab-belief.is-last .ab-belief__title {
+    grid-column: 2 / span 2;
+  }
+
+  .ab-belief.is-last .ab-belief__body {
+    grid-column: 2 / span 2;
+  }
+}
+
+@media (min-width: 1100px) {
+  .ab-belief.is-last .ab-belief__title {
+    grid-column: 2;
+  }
+
+  .ab-belief.is-last .ab-belief__body {
+    grid-column: 3;
+    padding-bottom: 0.35em;
+  }
+}
+
+/* ─── 4. How we're different ──────────────────────────────────────────────── */
+
+.ab-diff {
+  background: color-mix(in srgb, var(--c-beige) 55%, var(--ivory));
+}
+
+.ab-diff .sx {
+  border-top-color: var(--line-strong);
+}
+
+.ab-diff__grid {
+  display: grid;
+  gap: var(--block-gap);
+}
+
+.ab-diff__copy {
+  display: grid;
+  gap: var(--head-gap);
+  align-content: start;
+}
+
+.ab-diff__title {
+  max-width: 12em;
+}
+
+.ab-diff__points {
+  display: grid;
+  max-width: 36rem;
+}
+
+.ab-diff__point {
+  display: grid;
+  grid-template-columns: 2.5rem minmax(0, 1fr);
+  gap: var(--space-md);
+  padding-block: var(--space-lg);
+  border-top: 1px solid var(--line-strong);
+}
+
+.ab-diff__num {
+  padding-top: 0.45em;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  color: var(--accent-ink);
+}
+
+.ab-diff__point p {
+  font-size: var(--hm-fs-statement);
+  line-height: 1.3;
+  letter-spacing: -0.028em;
+  color: var(--ink);
+  text-wrap: pretty;
+}
+
+/* Two stills, offset: a larger one right, a smaller one cut into its lower left. */
+.ab-diff__media {
+  position: relative;
+  padding-bottom: 14%;
+  max-width: 560px;
+}
+
+.ab-diff__main {
+  width: 78%;
+  margin-left: auto;
+  aspect-ratio: 4 / 5;
+}
+
+.ab-diff__inset {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 48%;
+}
+
+.ab-diff__inset .media {
+  aspect-ratio: 1 / 1;
+  box-shadow: 0 0 0 6px color-mix(in srgb, var(--c-beige) 55%, var(--ivory));
+}
+
+@media (min-width: 992px) {
+  .ab-diff__grid {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    column-gap: var(--col-gap);
+  }
+
+  .ab-diff__media {
+    max-width: none;
+    margin-top: var(--space-3xl);
+  }
+}
+
+/* The concluding statement, across the band. */
+.ab-diff__closing {
+  margin-top: var(--block-gap);
+  padding-top: var(--block-gap);
+  border-top: 1px solid var(--line-strong);
+  font-size: clamp(2.75rem, 1.2rem + 6.4vw, 7.5rem);
+  line-height: 0.95;
+  letter-spacing: -0.06em;
+}
+
+.ab-diff__closing .serif {
+  display: block;
+  color: var(--c-deep);
+}
+
+@media (min-width: 768px) {
+  .ab-diff__closing .serif {
+    padding-left: 1.6em;
+  }
+}
+
+/* ─── 5. Values ───────────────────────────────────────────────────────────── */
+
+.ab-values__list {
+  position: relative;
+  display: grid;
+}
+
+.ab-values__list::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 1px;
+  background: var(--ink);
+  transform-origin: left;
+  transition: transform 1.4s var(--ease);
+}
+
+html.has-motion .ab-values__list:not(.in-view)::before {
+  transform: scaleX(0);
+}
+
+.ab-value {
+  display: grid;
+  gap: var(--space-sm);
+  align-content: start;
+  padding-block: var(--space-lg) var(--space-xl);
+}
+
+.ab-value + .ab-value {
+  border-top: 1px solid var(--line);
+}
+
+.ab-value__num {
+  margin-bottom: var(--space-lg);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  color: var(--accent-ink);
+}
+
+.ab-value__word {
+  font-family: var(--font-display);
+  font-size: var(--hm-fs-h3);
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.04em;
+}
+
+.ab-value__text {
+  max-width: 22em;
+  line-height: 1.55;
+  color: var(--muted);
+  text-wrap: pretty;
+}
+
+/* Placeholder values read as quiet, unfinished slots rather than content. */
+.ab-value.is-pending .ab-value__word {
+  font-size: var(--fs-lead);
+  letter-spacing: -0.01em;
+}
+
+@media (min-width: 640px) {
+  .ab-values__list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ab-value {
+    padding-right: var(--space-xl);
+  }
+
+  .ab-value + .ab-value {
+    border-top: 0;
+  }
+
+  .ab-value:nth-child(n + 3) {
+    border-top: 1px solid var(--line);
+  }
+
+  .ab-value:nth-child(even) {
+    padding-left: var(--space-xl);
+    border-left: 1px solid var(--line);
+  }
+}
+
+@media (min-width: 992px) {
+  .ab-values__list {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .ab-value:nth-child(n + 3) {
+    border-top: 0;
+  }
+
+  .ab-value + .ab-value {
+    padding-left: var(--space-xl);
+    border-left: 1px solid var(--line);
+  }
+}
+
+/* ─── 6. Where we're going ────────────────────────────────────────────────── */
+
+.ab-next__grid {
+  display: grid;
+  gap: var(--block-gap);
+}
+
+.ab-next__head {
+  display: grid;
+  gap: var(--space-lg);
+  align-content: start;
+}
+
+.ab-next__line {
+  max-width: 11em;
+}
+
+.ab-next__line + .ab-next__line {
+  color: var(--c-brown);
+}
+
+.ab-next__list-label {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: var(--space-sm);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.ab-cities {
+  position: relative;
+}
+
+.ab-cities::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 1px;
+  background: var(--ink);
+  transform-origin: left;
+  transition: transform 1.4s var(--ease);
+}
+
+html.has-motion .ab-cities:not(.in-view)::before {
+  transform: scaleX(0);
+}
+
+.ab-city {
+  display: grid;
+  grid-template-columns: 2.25rem minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: var(--space-md);
+  padding-block: clamp(0.9rem, 0.7rem + 0.6vw, 1.35rem);
+  border-bottom: 1px solid var(--line);
+}
+
+.ab-city__num,
+.ab-city__coords {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.ab-city__num {
+  color: var(--accent-ink);
+}
+
+.ab-city__name {
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 1.3rem + 1.8vw, 3rem);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.05em;
+  transition:
+    color var(--t-med) var(--ease),
+    transform var(--t-med) var(--ease);
+}
+
+@media (hover: hover) {
+  .ab-city:hover .ab-city__name {
+    color: var(--c-brown);
+    transform: translateX(6px);
+  }
+}
+
+@media (max-width: 419px) {
+  .ab-city {
+    grid-template-columns: 1.75rem minmax(0, 1fr);
+  }
+
+  .ab-city__coords {
+    grid-column: 2;
+  }
+}
+
+@media (min-width: 992px) {
+  .ab-next__grid {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    column-gap: var(--col-gap);
+  }
+
+  .ab-next__head {
+    position: sticky;
+    top: calc(var(--nav-h) + var(--space-xl));
+    align-self: start;
+  }
+}
+
+/* ─── 7. Call to action ───────────────────────────────────────────────────── */
+
+.ab-cta {
+  padding-block: var(--section-y) calc(var(--section-y) * 1.5);
+}
+
+.ab-cta__panel {
+  display: grid;
+  gap: var(--space-2xl);
+  padding: var(--card-pad);
+  border-radius: var(--r-lg);
+  background: color-mix(in srgb, var(--c-beige) 55%, var(--ivory));
+}
+
+.ab-cta__copy {
+  display: grid;
+  gap: var(--space-xl);
+  align-content: center;
+  justify-items: start;
+}
+
+.ab-cta__mark {
+  width: 32px;
+  color: var(--c-deep);
+}
+
+.ab-cta__title {
+  max-width: 12em;
+}
+
+.ab-cta__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-lg);
+}
+
+.ab-cta__photo {
+  aspect-ratio: 4 / 3;
+  border-radius: var(--r-md);
+}
+
+@media (min-width: 992px) {
+  .ab-cta__panel {
+    grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+    column-gap: var(--col-gap);
+    align-items: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ab-story__rail::before,
+  .ab-belief::before,
+  .ab-values__list::before,
+  .ab-cities::before,
+  .ab-city__name {
+    transition: none;
+  }
+}

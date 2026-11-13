@@ -8,6 +8,9 @@
  * NEXT_PUBLIC_PARTNER_BOOKING_URL
  *                        Scheduling link behind every "Book a call" button on /partners (Calendly,
  *                        Cal.com, HubSpot meetings…). Unset: the buttons lead to the inquiry form.
+ * NEXT_PUBLIC_FIFTEEN_APPLY_URL
+ *                        Application form for The Fifteen dinner (/events). Unset: the "Apply"
+ *                        button renders as not live yet.
  */
 import { z } from 'zod';
 
@@ -18,6 +21,7 @@ const envSchema = z.object({
     .default('false')
     .transform((value) => value === 'true'),
   NEXT_PUBLIC_PARTNER_BOOKING_URL: z.url().optional(),
+  NEXT_PUBLIC_FIFTEEN_APPLY_URL: z.url().optional(),
 });
 
 /**
@@ -31,6 +35,7 @@ const env = envSchema.parse({
   NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL || (vercelHost ? `https://${vercelHost}` : undefined),
   SITE_INDEXABLE: process.env.SITE_INDEXABLE,
   NEXT_PUBLIC_PARTNER_BOOKING_URL: process.env.NEXT_PUBLIC_PARTNER_BOOKING_URL || undefined,
+  NEXT_PUBLIC_FIFTEEN_APPLY_URL: process.env.NEXT_PUBLIC_FIFTEEN_APPLY_URL || undefined,
 });
 
 export const siteConfig = {
@@ -42,4 +47,6 @@ export const siteConfig = {
   logo: '/assets/ee/brand/logo-brown.png',
   /** External booking link for partnership calls; null until configured. */
   partnerBookingUrl: env.NEXT_PUBLIC_PARTNER_BOOKING_URL ?? null,
+  /** Application form for The Fifteen; null until configured. */
+  fifteenApplyUrl: env.NEXT_PUBLIC_FIFTEEN_APPLY_URL ?? null,
 } as const;

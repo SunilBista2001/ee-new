@@ -1,0 +1,1123 @@
+/*
+ * Podcast page (/podcast). Pre-launch announcement built on the homepage system (`.hm-page`
+ * scale, index rail, Inter Tight headlines, Geist Mono labels, hairlines, warm palette) and the
+ * Partners page's shared pieces (`.pt-label`, `.pt-caption`).
+ *
+ * The one deliberate departure from the scale is the hero headline (`--pc-fs-mega`): it is the
+ * page's visual, so it runs larger than the usual display size, and nothing else does.
+ *
+ * Prefix `pc-`.
+ */
+
+.pc-page {
+  /* Sized to the headline's column: one column below 992px, ~7/12 of the container above. */
+  --pc-fs-mega: clamp(3.75rem, 19.5vw, 11.25rem); /* ~73px at 375, ~150px at 768 */
+  --pc-fs-tuned: clamp(1.625rem, 1rem + 2.6vw, 3.25rem);
+}
+
+@media (min-width: 992px) {
+  .pc-page {
+    --pc-fs-mega: clamp(7rem, 12.4vw, 11.25rem); /* ~127px at 1024, 180px from 1450 */
+  }
+}
+
+/* ─── Shared ──────────────────────────────────────────────────────────────── */
+
+/* Status chip: a slow gold pulse, deliberately not the red of "live". */
+.pc-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 32px;
+  padding: 0 14px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--white);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.pc-status__dot {
+  position: relative;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--c-gold);
+}
+
+.pc-status__dot::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 1px solid var(--c-gold);
+  opacity: 0;
+  animation: pc-pulse 2.4s var(--ease) infinite;
+}
+
+@keyframes pc-pulse {
+  0% {
+    transform: scale(0.4);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(1.8);
+    opacity: 0;
+  }
+}
+
+/* Icon link rows: listening platforms and social profiles. */
+.pc-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-sm) var(--space-lg);
+}
+
+.pc-links__label {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.pc-links__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+}
+
+.pc-links__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 14px 0 8px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 0.875rem;
+  color: var(--ink);
+  transition:
+    border-color var(--t-fast) var(--ease),
+    background-color var(--t-fast) var(--ease),
+    color var(--t-fast) var(--ease);
+}
+
+.pc-links__icon {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  transition:
+    transform var(--t-med) var(--ease),
+    background-color var(--t-fast) var(--ease);
+}
+
+.pc-links__icon svg {
+  width: 17px;
+  height: 17px;
+}
+
+.pc-links__item:hover {
+  border-color: var(--ink);
+}
+
+.pc-links__item:hover .pc-links__icon {
+  transform: rotate(-8deg) scale(1.08);
+  background: var(--stone);
+}
+
+.pc-links--dark .pc-links__label {
+  color: rgba(245, 240, 232, 0.62);
+}
+
+.pc-links--dark .pc-links__item {
+  border-color: rgba(245, 240, 232, 0.18);
+  color: var(--c-ivory);
+}
+
+.pc-links--dark .pc-links__item:hover {
+  border-color: var(--c-gold-light);
+  color: var(--white);
+}
+
+.pc-links--dark .pc-links__item:hover .pc-links__icon {
+  background: rgba(201, 168, 111, 0.16);
+  color: var(--c-gold-light);
+}
+
+/* Sound-wave canvas: bars take `color`, highlights `--wave-accent`. */
+.pc-wave {
+  display: block;
+  width: 100%;
+  color: var(--c-brown);
+  --wave-accent: var(--c-gold);
+}
+
+/* ─── Record ──────────────────────────────────────────────────────────────── */
+
+.pc-record {
+  position: relative;
+  display: inline-block;
+  aspect-ratio: 1;
+  border-radius: 50%;
+}
+
+.pc-record__disc {
+  position: absolute;
+  inset: 0;
+  display: block;
+  animation: pc-spin 9s linear infinite;
+}
+
+.pc-record__disc svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.pc-record__vinyl {
+  fill: var(--c-espresso);
+}
+
+.pc-record__groove {
+  fill: none;
+  stroke: rgba(245, 240, 232, 0.07);
+  stroke-width: 0.8;
+}
+
+.pc-record__label {
+  fill: var(--c-gold);
+}
+
+.pc-record__label-ring {
+  fill: none;
+  stroke: rgba(48, 40, 32, 0.25);
+  stroke-width: 0.6;
+}
+
+.pc-record__hole {
+  fill: var(--bg);
+}
+
+/* The mark sits on the label, off-centre so the turn reads. */
+.pc-record__mark {
+  position: absolute;
+  top: 40.5%;
+  left: 50%;
+  width: 8.5%;
+  translate: -50% -50%;
+  color: var(--c-espresso);
+}
+
+/* Fixed light: two soft highlights that do not turn with the disc. */
+.pc-record__sheen {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 20deg,
+    transparent 0deg,
+    rgba(255, 255, 255, 0.13) 22deg,
+    transparent 50deg,
+    transparent 180deg,
+    rgba(255, 255, 255, 0.09) 205deg,
+    transparent 232deg
+  );
+  pointer-events: none;
+}
+
+@keyframes pc-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ─── 1. Hero ─────────────────────────────────────────────────────────────── */
+
+.pc-hero {
+  position: relative;
+  padding-top: clamp(1.5rem, 1rem + 2vw, 3rem);
+  padding-bottom: var(--section-y);
+  overflow: clip;
+}
+
+.pc-hero__top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm) var(--space-lg);
+  margin-bottom: clamp(1.5rem, 1rem + 2vw, 2.75rem);
+}
+
+.pc-hero__top .pt-label {
+  flex-wrap: wrap;
+  margin-bottom: 0;
+}
+
+.pc-hero__show {
+  color: var(--ink);
+}
+
+/* Small screens: title and line stack instead of wrapping around the separator. */
+@media (max-width: 639px) {
+  .pc-hero__top .pt-label {
+    row-gap: 6px;
+  }
+
+  .pc-hero__sep {
+    display: none;
+  }
+
+  .pc-hero__show {
+    flex-basis: calc(100% - 16px);
+  }
+
+  .pc-hero__top .pt-label > :last-child {
+    padding-left: 16px;
+  }
+}
+
+.pc-hero__grid {
+  display: grid;
+  grid-template-areas:
+    'title'
+    'tuned'
+    'foot'
+    'visual';
+  gap: var(--space-xl);
+}
+
+.pc-hero__title {
+  grid-area: title;
+  margin: 0;
+}
+
+/* The mega headline. Each line masks its letters for the rise. */
+.pc-mega {
+  display: block;
+  font-family: var(--font-display);
+  font-size: var(--pc-fs-mega);
+  font-weight: 500;
+  line-height: 0.86;
+  letter-spacing: -0.06em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.pc-mega__line {
+  display: flex;
+  align-items: baseline;
+  width: max-content;
+  max-width: 100%;
+  overflow: hidden;
+  /* Room for the echo's lift and the letters' descenders inside the mask. */
+  padding-block: 0.1em 0.06em;
+  margin-block: -0.1em -0.06em;
+}
+
+.pc-mega__line + .pc-mega__line {
+  margin-left: 0.2em;
+}
+
+@media (min-width: 640px) {
+  .pc-mega__line + .pc-mega__line {
+    margin-left: 0.38em;
+  }
+}
+
+.pc-mega__ch {
+  flex: none;
+  display: inline-block;
+  will-change: transform;
+}
+
+/* The echo: each O a step quieter than the last. */
+.pc-mega__ch--echo.is-1 {
+  color: var(--c-brown);
+}
+
+.pc-mega__ch--echo.is-2 {
+  color: transparent;
+  -webkit-text-stroke: 0.025em var(--c-taupe);
+}
+
+/* The last O is a record, cap height, sitting on the baseline. */
+.pc-mega__ch--disc {
+  align-self: center;
+  width: 0.7em;
+  margin-inline: 0.02em 0.04em;
+  /* Optical: the disc reads lighter than a letter, so it is nudged down a touch. */
+  translate: 0 0.035em;
+}
+
+.pc-mega__ch--disc .pc-record {
+  display: block;
+  width: 100%;
+}
+
+/* "STAY TUNED." runs straight into the wave. */
+.pc-tuned {
+  grid-area: tuned;
+  display: flex;
+  align-items: center;
+  gap: clamp(1rem, 0.5rem + 1.5vw, 2rem);
+  min-width: 0;
+}
+
+.pc-tuned__text {
+  flex: none;
+  font-family: var(--font-display);
+  font-size: var(--pc-fs-tuned);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--c-brown);
+}
+
+.pc-tuned__wave {
+  flex: 1;
+  min-width: 80px;
+  height: calc(var(--pc-fs-tuned) * 1.5);
+}
+
+.pc-hero__foot {
+  grid-area: foot;
+  display: grid;
+  gap: var(--space-lg);
+  max-width: 34rem;
+}
+
+.pc-hero__lead {
+  font-size: var(--fs-lead);
+  line-height: 1.55;
+  color: var(--ink-soft);
+  text-wrap: pretty;
+}
+
+.pc-hero__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-lg);
+}
+
+.pc-hero__meta dt {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.pc-hero__meta dd {
+  margin-top: 4px;
+  font-weight: 500;
+}
+
+.pc-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-md) var(--space-lg);
+}
+
+/* Visual: a tall microphone frame, a smaller studio frame set against it, rings behind. */
+.pc-hero__visual {
+  grid-area: visual;
+  position: relative;
+  justify-self: end;
+  width: min(100%, 26rem);
+  margin: var(--space-lg) 0 0;
+  padding-left: 18%;
+  isolation: isolate;
+}
+
+.pc-hero__photo .media {
+  aspect-ratio: 4 / 5;
+  border-radius: var(--r-lg);
+}
+
+.pc-hero__inset {
+  position: absolute;
+  left: 0;
+  bottom: -6%;
+  z-index: 2;
+  width: 42%;
+  padding: 6px;
+  background: var(--bg);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-md);
+}
+
+.pc-hero__inset .media {
+  aspect-ratio: 1;
+  border-radius: var(--r-sm);
+}
+
+/* Broadcast rings: concentric hairlines that breathe outward behind the microphone. */
+.pc-rings {
+  position: absolute;
+  top: 38%;
+  left: 58%;
+  z-index: -1;
+  width: 150%;
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  pointer-events: none;
+}
+
+.pc-rings i {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px solid var(--line-strong);
+  opacity: 0;
+  animation: pc-ring 7.5s cubic-bezier(0.25, 0.6, 0.3, 1) infinite;
+}
+
+.pc-rings i:nth-child(2) {
+  animation-delay: -2.5s;
+}
+
+.pc-rings i:nth-child(3) {
+  animation-delay: -5s;
+}
+
+@keyframes pc-ring {
+  0% {
+    transform: scale(0.35);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.55;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0;
+  }
+}
+
+/* Loops rest while the hero is out of view. */
+.pc-hero.is-offscreen .pc-record__disc,
+.pc-hero.is-offscreen .pc-rings i,
+.pc-hero.is-offscreen .pc-status__dot::after {
+  animation-play-state: paused;
+}
+
+@media (min-width: 640px) {
+  .pc-hero__visual {
+    width: min(100%, 30rem);
+  }
+}
+
+@media (min-width: 992px) {
+  .pc-hero__grid {
+    grid-template-columns: minmax(0, 7.4fr) minmax(0, 4.6fr);
+    grid-template-rows: auto auto 1fr;
+    grid-template-areas:
+      'title  visual'
+      'tuned  visual'
+      'foot   visual';
+    column-gap: var(--col-gap);
+    row-gap: clamp(1.75rem, 1rem + 1.6vw, 2.75rem);
+  }
+
+  .pc-hero__visual {
+    align-self: start;
+    width: 100%;
+    margin: 0;
+    padding-left: 14%;
+  }
+
+  .pc-hero__inset {
+    left: -6%;
+    bottom: 9%;
+    width: 40%;
+  }
+
+  .pc-hero__foot {
+    align-self: start;
+  }
+}
+
+/* ─── 2. Behind the scenes ────────────────────────────────────────────────── */
+
+.pc-studio__grid {
+  display: grid;
+  gap: var(--head-gap);
+}
+
+.pc-studio__copy {
+  display: grid;
+  align-content: start;
+  gap: var(--space-xl);
+}
+
+.pc-studio__statement {
+  font-family: var(--font-display);
+  font-size: var(--hm-fs-h3);
+  font-weight: 500;
+  line-height: 1.18;
+  letter-spacing: -0.035em;
+  color: var(--ink);
+  text-wrap: pretty;
+  max-width: 22em;
+}
+
+.pc-studio__text {
+  max-width: 26rem;
+  color: var(--muted);
+}
+
+.pc-studio__collage {
+  position: relative;
+  padding-bottom: clamp(3rem, 2rem + 4vw, 6rem);
+}
+
+.pc-studio__main {
+  width: 86%;
+  margin-left: auto;
+}
+
+.pc-studio__main .media {
+  aspect-ratio: 4 / 3;
+}
+
+/* The second frame overlaps the main one's lower left corner, so its caption sits right. */
+.pc-studio__main .pt-caption {
+  justify-content: flex-end;
+}
+
+.pc-studio__second {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 40%;
+  padding: 6px 6px 0;
+  background: var(--bg);
+  border-radius: var(--r-md) var(--r-md) 0 0;
+}
+
+.pc-studio__second .media {
+  aspect-ratio: 3 / 4;
+  border-radius: var(--r-sm);
+}
+
+@media (min-width: 992px) {
+  .pc-studio__grid {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    column-gap: var(--col-gap);
+    align-items: center;
+  }
+
+  .pc-studio__copy {
+    padding-bottom: var(--space-3xl);
+  }
+}
+
+/* Dial: an FM scale; the needle tunes across with the scroll and locks on the station. */
+.pc-dial {
+  --dial-ink: var(--line-strong);
+  margin-top: var(--block-gap);
+}
+
+.pc-dial__labels {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-md);
+  margin-bottom: var(--space-md);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.pc-dial__end {
+  transition: color var(--t-med) var(--ease);
+}
+
+.pc-dial.is-locked .pc-dial__end {
+  color: var(--ink);
+}
+
+.pc-dial__track {
+  position: relative;
+  height: 64px;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+/* Minor ticks every quarter step, taller ones every 2 MHz: two repeating gradients. */
+.pc-dial__ticks {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 22px;
+  background:
+    repeating-linear-gradient(to right, var(--dial-ink) 0 1px, transparent 1px calc(100% / 10)) top left / 100% 22px
+      no-repeat,
+    repeating-linear-gradient(to right, var(--line) 0 1px, transparent 1px calc(100% / 40)) top left / 100% 11px
+      no-repeat;
+}
+
+/* Close the scale with its last major tick. */
+.pc-dial__ticks::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 1px;
+  height: 22px;
+  background: var(--dial-ink);
+}
+
+.pc-dial__num {
+  position: absolute;
+  bottom: 10px;
+  translate: -50% 0;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: var(--muted);
+}
+
+.pc-dial__num:first-of-type {
+  translate: 0 0;
+}
+
+.pc-dial__num:last-of-type {
+  translate: -100% 0;
+}
+
+/* The station: a gold band across the ticks (clear of the numbers) where the show sits. */
+.pc-dial__station {
+  position: absolute;
+  top: -1px;
+  height: 30px;
+  left: var(--lock);
+  width: 24px;
+  translate: -50% 0;
+  background: color-mix(in srgb, var(--c-gold) 14%, transparent);
+  border-inline: 1px solid color-mix(in srgb, var(--c-gold) 40%, transparent);
+  transition: background-color var(--t-med) var(--ease);
+}
+
+.pc-dial.is-locked .pc-dial__station {
+  background: color-mix(in srgb, var(--c-gold) 30%, transparent);
+}
+
+.pc-dial__needle {
+  position: absolute;
+  top: -10px;
+  bottom: -10px;
+  left: var(--lock);
+  width: 2px;
+  margin-left: -1px;
+  background: var(--c-brown);
+  border-radius: 2px;
+}
+
+.pc-dial__needle::before {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  translate: -50% 0;
+  border-radius: 50%;
+  background: var(--c-brown);
+  transition:
+    background-color var(--t-med) var(--ease),
+    box-shadow var(--t-med) var(--ease);
+}
+
+.pc-dial.is-locked .pc-dial__needle::before {
+  background: var(--c-gold);
+  box-shadow: 0 0 0 5px color-mix(in srgb, var(--c-gold) 22%, transparent);
+}
+
+@media (max-width: 639px) {
+  .pc-dial__num.is-odd {
+    display: none;
+  }
+}
+
+/* ─── 3. Episodes (renders once episodes exist) ───────────────────────────── */
+
+.pc-episodes__title {
+  margin-bottom: var(--head-gap);
+}
+
+.pc-episode-meta {
+  color: var(--muted);
+}
+
+.pc-feature {
+  display: grid;
+  gap: var(--space-xl);
+  padding-block: var(--space-xl);
+  border-top: 1px solid var(--line);
+}
+
+.pc-feature__art {
+  aspect-ratio: 1;
+}
+
+.pc-feature__body {
+  display: grid;
+  align-content: start;
+  gap: var(--space-md);
+}
+
+.pc-feature__title {
+  font-family: var(--font-display);
+  font-size: var(--hm-fs-h3);
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.035em;
+}
+
+.pc-feature__summary {
+  max-width: 34rem;
+  color: var(--ink-soft);
+}
+
+.pc-feature__guests {
+  font-weight: 500;
+}
+
+.pc-archive {
+  border-top: 1px solid var(--line);
+}
+
+.pc-archive__item {
+  display: grid;
+  gap: var(--space-sm);
+  padding-block: var(--row-y);
+  border-bottom: 1px solid var(--line);
+}
+
+.pc-archive__title {
+  font-size: 1.125rem;
+  font-weight: 500;
+}
+
+@media (min-width: 992px) {
+  .pc-feature {
+    grid-template-columns: minmax(0, 4fr) minmax(0, 7fr);
+    column-gap: var(--col-gap);
+  }
+
+  .pc-archive__item {
+    grid-template-columns: 12rem minmax(0, 1fr) auto;
+    align-items: center;
+    column-gap: var(--space-xl);
+  }
+}
+
+/* ─── 4. Stay tuned ───────────────────────────────────────────────────────── */
+
+.pc-notify__panel {
+  position: relative;
+  /* clip, not hidden: a hidden box can still be scrolled sideways when the field takes focus. */
+  overflow: clip;
+  isolation: isolate;
+  padding: clamp(2.25rem, 1.25rem + 4vw, 5rem) clamp(1.25rem, 0.5rem + 4vw, 5rem) 0;
+  border-radius: var(--r-xl);
+  background: var(--c-espresso);
+  color: var(--c-ivory);
+}
+
+/* A large record turning half out of frame behind the copy. */
+.pc-notify__record {
+  position: absolute;
+  z-index: -1;
+  top: clamp(-14rem, -12vw, -6rem);
+  right: clamp(-12rem, -9vw, -5rem);
+  width: clamp(18rem, 12rem + 26vw, 34rem);
+  opacity: 0.4;
+}
+
+.pc-notify__record .pc-record__vinyl {
+  fill: #3a3027;
+}
+
+.pc-notify__record .pc-record__disc {
+  animation-duration: 24s;
+}
+
+.pc-notify__grid {
+  display: grid;
+  gap: var(--space-2xl);
+}
+
+.pc-notify__copy {
+  display: grid;
+  align-content: start;
+  gap: var(--space-lg);
+}
+
+.pc-notify__show {
+  color: var(--c-gold-light);
+}
+
+.pc-notify__title {
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 1.5rem + 6vw, 7rem);
+  font-weight: 500;
+  line-height: 0.92;
+  letter-spacing: -0.055em;
+  color: var(--c-ivory);
+}
+
+.pc-notify__text {
+  max-width: 24rem;
+  font-size: var(--hm-fs-statement);
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+  color: rgba(245, 240, 232, 0.78);
+}
+
+.pc-notify__action {
+  display: grid;
+  align-content: end;
+  gap: var(--space-xl);
+}
+
+.pc-notify__foot {
+  display: grid;
+  gap: var(--space-lg);
+  margin-top: clamp(2.5rem, 1.5rem + 4vw, 4.5rem);
+  padding-top: var(--space-xl);
+  border-top: 1px solid rgba(245, 240, 232, 0.12);
+}
+
+.pc-notify__wave {
+  height: 56px;
+  margin-inline: calc(clamp(1.25rem, 0.5rem + 4vw, 5rem) * -1);
+  width: calc(100% + clamp(1.25rem, 0.5rem + 4vw, 5rem) * 2);
+  color: rgba(201, 168, 111, 0.55);
+  --wave-accent: var(--c-gold-light);
+}
+
+@media (min-width: 992px) {
+  .pc-notify__grid {
+    grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+    column-gap: var(--col-gap);
+    align-items: end;
+  }
+}
+
+/* Launch-list form, on espresso. */
+.pc-form {
+  display: grid;
+  gap: 10px;
+}
+
+.pc-form__field {
+  display: flex;
+  gap: 8px;
+  padding: 6px;
+  border-radius: 999px;
+  border: 1px solid rgba(245, 240, 232, 0.22);
+  background: rgba(245, 240, 232, 0.06);
+  transition:
+    border-color var(--t-fast) var(--ease),
+    box-shadow var(--t-fast) var(--ease),
+    background-color var(--t-fast) var(--ease);
+}
+
+.pc-form__field:focus-within {
+  border-color: var(--c-gold-light);
+  background: rgba(245, 240, 232, 0.09);
+  box-shadow: 0 0 0 4px rgba(201, 168, 111, 0.18);
+}
+
+.pc-form__field[data-invalid] {
+  border-color: #e3a08f;
+}
+
+.pc-form__input {
+  flex: 1;
+  min-width: 0;
+  height: 52px;
+  padding: 0 18px;
+  border: 0;
+  background: transparent;
+  color: var(--c-ivory);
+  font-size: 1rem;
+  outline: none;
+}
+
+.pc-form__input::placeholder {
+  color: rgba(245, 240, 232, 0.5);
+}
+
+.pc-form__input:read-only {
+  opacity: 0.7;
+}
+
+.pc-form__submit {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 52px;
+  padding: 0 24px;
+  border-radius: 999px;
+  background: var(--c-ivory);
+  color: var(--c-espresso);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  white-space: nowrap;
+  transition:
+    background-color var(--t-fast) var(--ease),
+    transform var(--t-fast) var(--ease);
+}
+
+.pc-form__submit:hover {
+  background: var(--c-gold-light);
+}
+
+.pc-form__submit:active {
+  transform: scale(0.98);
+}
+
+.pc-form__submit svg {
+  transition: transform var(--t-med) var(--ease);
+}
+
+.pc-form__submit:hover svg {
+  transform: translateX(3px);
+}
+
+.pc-form__submit:disabled {
+  cursor: progress;
+  background: rgba(245, 240, 232, 0.75);
+}
+
+.pc-form__submit:focus-visible,
+.pc-links--dark .pc-links__item:focus-visible {
+  outline: 2px solid var(--c-gold-light);
+  outline-offset: 3px;
+}
+
+.pc-form__spinner {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1.5px solid currentColor;
+  border-right-color: transparent;
+  animation: pc-spin 0.8s linear infinite;
+}
+
+.pc-form__messages:empty {
+  display: none;
+}
+
+.pc-form__error {
+  padding-left: 18px;
+  font-size: var(--fs-small);
+  color: #f0b3a3;
+}
+
+.pc-form__note {
+  padding-left: 18px;
+  font-size: var(--fs-small);
+  color: rgba(245, 240, 232, 0.6);
+}
+
+.pc-form__hp {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.pc-form__done {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 64px;
+  padding: 12px 24px 12px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(201, 168, 111, 0.45);
+  background: rgba(201, 168, 111, 0.1);
+  font-weight: 500;
+  color: var(--c-ivory);
+  outline: none;
+}
+
+.pc-form__done-icon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--c-gold-light);
+  color: var(--c-espresso);
+}
+
+@media (max-width: 479px) {
+  .pc-form__field {
+    flex-direction: column;
+    border-radius: var(--r-lg);
+  }
+
+  .pc-form__done {
+    border-radius: var(--r-lg);
+  }
+}
+
+/* ─── Motion ──────────────────────────────────────────────────────────────── */
+
+/* Pre-animation states, as in motion.css: only with motion, only until GSAP has taken over. */
+html.has-motion:not(.motion-ready):not(.motion-fallback) .pc-mega__ch {
+  transform: translateY(110%);
+}
+
+html.has-motion:not(.motion-ready):not(.motion-fallback) [data-pc-tuned],
+html.has-motion:not(.motion-ready):not(.motion-fallback) [data-pc-inset],
+html.has-motion:not(.motion-ready):not(.motion-fallback) .pc-rings {
+  opacity: 0;
+}
+
+html.has-motion:not(.motion-ready):not(.motion-fallback) [data-pc-photo] {
+  clip-path: inset(100% 0 0 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pc-record__disc,
+  .pc-rings i,
+  .pc-status__dot::after {
+    animation: none;
+  }
+
+  /* Rings shown as a still, layered set. */
+  .pc-rings i {
+    opacity: 0.35;
+  }
+
+  .pc-rings i:nth-child(2) {
+    transform: scale(0.75);
+  }
+
+  .pc-rings i:nth-child(3) {
+    transform: scale(0.5);
+  }
+
+  .pc-form__spinner {
+    animation-duration: 2.4s;
+  }
+}

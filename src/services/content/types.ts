@@ -340,3 +340,275 @@ export interface PartnersPageContent {
   pastPartners: PastPartnersContent;
   inquiry: InquiryContent;
 }
+
+// ─── About page ───────────────────────────────────────────────────────────────
+//
+// Structure and copy follow the About brief (sections 1 to 7, in order). Where the brief asks
+// for a photo or text that has not been supplied, the model allows it to be missing and the
+// component renders a marked, restrained slot instead of a stand-in.
+
+export interface AboutHeroContent {
+  label: string;
+  headline: Headline;
+  lead: string;
+  image: ImageAsset;
+  caption: string;
+}
+
+/** One of the "then and now" photo slots. Without `image` it renders as an empty, labelled slot. */
+export interface AboutPhotoSlot {
+  /** Short mono tag above the caption, e.g. "Then". */
+  tag: string;
+  caption: string;
+  image?: ImageAsset;
+  /** Shown inside the empty slot while `image` is missing. */
+  pendingNote?: string;
+}
+
+export interface AboutStoryContent {
+  index: string;
+  label: string;
+  heading: string;
+  /** The founder's story, one paragraph per entry, in his own words. */
+  paragraphs: string[];
+  /** Marker shown beside a paragraph on the story rail, keyed by paragraph position. */
+  markers: Record<number, string>;
+  /** Paragraph set apart as the turning point. */
+  emphasisIndex: number;
+  signature: { name: string; role: string };
+  photos: [AboutPhotoSlot, AboutPhotoSlot];
+}
+
+export interface AboutBelief {
+  title: string;
+  text: string;
+  image?: ImageAsset;
+}
+
+export interface AboutBeliefsContent {
+  index: string;
+  label: string;
+  heading: string;
+  beliefs: AboutBelief[];
+}
+
+export interface AboutDifferentContent {
+  index: string;
+  label: string;
+  heading: string;
+  points: string[];
+  closing: Headline;
+  images: [ImageAsset, ImageAsset];
+}
+
+/** A value: one short word and one sentence. Bracketed text renders as a marked placeholder. */
+export interface AboutValue {
+  word: string;
+  text: string;
+}
+
+export interface AboutValuesContent {
+  index: string;
+  label: string;
+  heading: string;
+  values: AboutValue[];
+}
+
+export interface AboutCity {
+  name: string;
+  /** Coordinates, shown as a quiet geographic detail. */
+  coords: string;
+}
+
+export interface AboutNextContent {
+  index: string;
+  label: string;
+  heading: string;
+  lines: string[];
+  listLabel: string;
+  cities: AboutCity[];
+}
+
+export interface AboutCtaContent {
+  heading: string;
+  primaryCta: Link;
+  secondaryCta: Link;
+  image: ImageAsset;
+  caption: string;
+}
+
+export interface AboutPageContent {
+  seo: SeoContent;
+  hero: AboutHeroContent;
+  story: AboutStoryContent;
+  beliefs: AboutBeliefsContent;
+  different: AboutDifferentContent;
+  values: AboutValuesContent;
+  next: AboutNextContent;
+  cta: AboutCtaContent;
+}
+
+// ─── Events page ──────────────────────────────────────────────────────────────
+//
+// Structure and copy follow the Events brief, in order. Text in [brackets] is a placeholder
+// from the brief (e.g. the first Sidequest's date) and renders as a marked slot.
+
+export interface EventsHeroContent {
+  label: string;
+  headline: Headline;
+  lead: string;
+  /** Scrolls to the calendar section on this page. */
+  primaryCta: Link;
+  /** Editorial strip of three or four photos, in reading order. */
+  photos: ImageAsset[];
+}
+
+export interface EventsFifteenContent {
+  index: string;
+  label: string;
+  heading: string;
+  statement: string;
+  text: string;
+  /** Short qualifier, e.g. "By application." */
+  detail: string;
+  /** Application link; an empty href renders the button as not live yet. */
+  cta: Link;
+  image: ImageAsset;
+  /** A small second photo set against the main one. */
+  inset: ImageAsset;
+  caption: string;
+}
+
+export interface EventsSidequestsContent {
+  index: string;
+  label: string;
+  heading: string;
+  statement: string;
+  text: string;
+  /** The kinds of things a Sidequest can be; the last stays open-ended. */
+  ideas: string[];
+  /** Next Sidequest. `[date]` stays a marked placeholder until confirmed. */
+  next: { label: string; text: string };
+  image: ImageAsset;
+  inset: ImageAsset;
+}
+
+export interface EventsPageContent {
+  seo: SeoContent;
+  hero: EventsHeroContent;
+  fifteen: EventsFifteenContent;
+  sidequests: EventsSidequestsContent;
+  calendar: CalendarContent;
+}
+
+// ─── Podcast page ─────────────────────────────────────────────────────────────
+//
+// Pre-launch today. The show model is complete so the page can grow into a full podcast site:
+// every field is optional, and a section whose data is missing does not render at all (no
+// empty states, no stand-in hosts, guests, dates or episodes).
+
+/** A host or guest. Only real, confirmed people. */
+export interface PodcastPerson {
+  name: string;
+  /** e.g. "Founder, Mint Ave". */
+  role?: string;
+  photo?: ImageAsset;
+  link?: Link;
+}
+
+/** Listening platforms. Empty or missing URLs are hidden. */
+export interface PodcastPlatformLinks {
+  spotify?: string;
+  apple?: string;
+  youtube?: string;
+}
+
+export interface PodcastEpisode {
+  /** Stable id, also used as the in-page anchor. */
+  slug: string;
+  number?: number;
+  title: string;
+  summary?: string;
+  /** ISO date, e.g. "2027-02-03". */
+  publishedAt?: string;
+  /** Human duration, e.g. "48 min". */
+  duration?: string;
+  artwork?: ImageAsset;
+  guests?: PodcastPerson[];
+  links: PodcastPlatformLinks;
+}
+
+export interface PodcastShow {
+  title?: string;
+  description?: string;
+  hosts: PodcastPerson[];
+  /** ISO date. Shown as a plain date once confirmed; never as a countdown. */
+  launchDate?: string;
+  artwork?: ImageAsset;
+  platforms: PodcastPlatformLinks;
+}
+
+export interface PodcastHeroContent {
+  /** Small line above the headline, after the show title. */
+  label: string;
+  /** Production status chip, e.g. "In production". */
+  status: string;
+  /** Visual headline, two words on two lines. Repeated O's are set as a fading echo. */
+  headline: string;
+  /** Accessible text of the headline. */
+  headlineText: string;
+  subline: string;
+  /** Used while `show.description` is empty. */
+  lead: string;
+  cta: Link;
+  image: ImageAsset;
+  inset: ImageAsset;
+}
+
+export interface PodcastStudioContent {
+  index: string;
+  label: string;
+  /** Filled in word by word on scroll. */
+  statement: string;
+  text: string;
+  images: [ImageAsset, ImageAsset];
+  captions: [string, string];
+  /** The scroll-tuned dial. */
+  dial: { start: string; end: string };
+}
+
+export interface PodcastEpisodesContent {
+  index: string;
+  label: string;
+  heading: string;
+  /** Slug of the episode to feature; the newest one otherwise. */
+  featured?: string;
+  listenLabel: string;
+}
+
+export interface PodcastNotifyContent {
+  heading: string;
+  text: string;
+  placeholder: string;
+  submitLabel: string;
+  submittingLabel: string;
+  successMessage: string;
+  errorMessage: string;
+  /** Shown when no sign-up destination is configured on the server. */
+  unavailableMessage: string;
+  privacyNote: string;
+  followLabel: string;
+  /** Verified profiles only. */
+  follow: Link[];
+  listenLabel: string;
+}
+
+export interface PodcastPageContent {
+  seo: SeoContent;
+  show: PodcastShow;
+  episodes: PodcastEpisode[];
+  hero: PodcastHeroContent;
+  studio: PodcastStudioContent;
+  episodesSection: PodcastEpisodesContent;
+  notify: PodcastNotifyContent;
+}

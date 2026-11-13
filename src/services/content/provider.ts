@@ -1,4 +1,11 @@
-import type { HomePageContent, PartnersPageContent, SiteSettings } from './types';
+import type {
+  AboutPageContent,
+  EventsPageContent,
+  HomePageContent,
+  PartnersPageContent,
+  PodcastPageContent,
+  SiteSettings,
+} from './types';
 
 /**
  * The single seam between pages and their content source.
@@ -14,4 +21,7 @@ export interface ContentProvider {
   getSiteSettings(): Promise<SiteSettings>;
   getHomePage(): Promise<HomePageContent>;
   getPartnersPage(): Promise<PartnersPageContent>;
+  getAboutPage(): Promise<AboutPageContent>;
+  getEventsPage(): Promise<EventsPageContent>;
+  getPodcastPage(): Promise<PodcastPageContent>;
 }

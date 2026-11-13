@@ -1,0 +1,406 @@
+/*
+ * Events page (/events). Built on the homepage system (`.hm-page` scale, index rail, Inter Tight
+ * headlines, Geist Mono labels, hairlines, warm palette) and the Partners page's shared pieces
+ * (`.pt-label`, `.pt-caption`). Each section has its own composition; none is a card grid.
+ *
+ * Prefix `ev-`.
+ */
+
+/* ─── 1. Hero ─────────────────────────────────────────────────────────────── */
+
+.ev-hero {
+  padding-top: clamp(1.75rem, 1rem + 2.6vw, 3.5rem);
+  padding-bottom: var(--section-y);
+}
+
+.ev-hero__head {
+  display: grid;
+  gap: var(--space-xl);
+}
+
+.ev-hero__head .pt-label {
+  margin-bottom: 0;
+}
+
+.ev-hero__title {
+  max-width: 12em;
+}
+
+.ev-hero__side {
+  display: grid;
+  justify-items: start;
+  gap: var(--space-lg);
+}
+
+.ev-hero__lead {
+  font-family: var(--font-display);
+  font-size: var(--hm-fs-statement);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+  color: var(--ink-soft);
+  text-wrap: balance;
+}
+
+@media (min-width: 992px) {
+  .ev-hero__head {
+    grid-template-columns: minmax(0, 8fr) minmax(0, 3fr);
+    column-gap: var(--col-gap);
+    align-items: end;
+  }
+
+  .ev-hero__head .pt-label {
+    grid-column: 1 / -1;
+  }
+
+  .ev-hero__side {
+    padding-bottom: 0.5em;
+  }
+}
+
+/* The strip: varied frames on one baseline, stepping in height like a contact sheet. */
+.ev-strip {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-sm);
+  margin-top: clamp(2rem, 1rem + 3vw, 4rem);
+}
+
+.ev-strip__photo {
+  height: 100%;
+}
+
+.ev-strip__item.is-wide {
+  grid-column: 1 / -1;
+}
+
+.ev-strip__item.is-wide .ev-strip__photo {
+  aspect-ratio: 16 / 10;
+}
+
+.ev-strip__item.is-tall .ev-strip__photo {
+  aspect-ratio: 3 / 4;
+}
+
+.ev-strip__item.is-square .ev-strip__photo {
+  aspect-ratio: 3 / 4;
+}
+
+.ev-strip__item.is-land {
+  grid-column: 1 / -1;
+}
+
+.ev-strip__item.is-land .ev-strip__photo {
+  aspect-ratio: 16 / 9;
+}
+
+@media (min-width: 768px) {
+  .ev-strip {
+    grid-template-columns: 38fr 20fr 18fr 24fr;
+    align-items: end;
+    gap: var(--space-md);
+  }
+
+  .ev-strip__item.is-wide,
+  .ev-strip__item.is-land {
+    grid-column: auto;
+  }
+
+  .ev-strip__item.is-wide .ev-strip__photo {
+    aspect-ratio: 4 / 3;
+  }
+
+  .ev-strip__item.is-tall .ev-strip__photo {
+    aspect-ratio: 3 / 4.6;
+  }
+
+  .ev-strip__item.is-square .ev-strip__photo {
+    aspect-ratio: 1;
+  }
+
+  .ev-strip__item.is-land .ev-strip__photo {
+    aspect-ratio: 5 / 4.4;
+  }
+}
+
+/* ─── 2. The Fifteen ──────────────────────────────────────────────────────── */
+
+.ev-fifteen__grid {
+  display: grid;
+  gap: var(--head-gap);
+}
+
+.ev-fifteen__figure {
+  position: relative;
+}
+
+.ev-fifteen__photo {
+  aspect-ratio: 3 / 2;
+}
+
+/* A small second frame set into the corner of the dinner photo, lifted off the page. */
+.ev-fifteen__inset {
+  position: absolute;
+  right: clamp(-0.5rem, -2vw, -2.5rem);
+  bottom: clamp(1.5rem, 1rem + 3vw, 4rem);
+  width: clamp(110px, 24%, 220px);
+  padding: 6px;
+  background: var(--bg);
+  border-radius: var(--r-sm);
+  box-shadow: var(--shadow-md);
+}
+
+.ev-fifteen__inset .media {
+  aspect-ratio: 4 / 5;
+  border-radius: var(--r-xs);
+}
+
+@media (max-width: 767px) {
+  .ev-fifteen__inset {
+    right: var(--space-sm);
+  }
+}
+
+.ev-fifteen__card {
+  display: grid;
+  align-content: start;
+  max-width: 30rem;
+}
+
+.ev-fifteen__title {
+  margin-bottom: var(--space-lg);
+}
+
+/* Fifteen seats: short ticks that set in one by one when the section comes into view. */
+.ev-seats {
+  display: flex;
+  gap: 6px;
+  margin-bottom: var(--space-xl);
+}
+
+.ev-seats li {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1px solid var(--line-strong);
+  transition:
+    background-color var(--t-med) var(--ease),
+    border-color var(--t-med) var(--ease);
+  transition-delay: calc(var(--i) * 60ms);
+}
+
+.ev-seats.in-view li,
+html:not(.has-motion) .ev-seats li {
+  background: var(--c-gold);
+  border-color: var(--c-gold);
+}
+
+.ev-fifteen__statement {
+  font-family: var(--font-display);
+  font-size: var(--hm-fs-statement);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  text-wrap: balance;
+}
+
+.ev-fifteen__text {
+  margin-top: var(--space-md);
+  font-size: var(--fs-lead);
+  line-height: 1.6;
+  color: var(--ink-soft);
+  text-wrap: pretty;
+}
+
+.ev-fifteen__foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  margin-top: var(--space-2xl);
+  padding-top: var(--space-lg);
+  border-top: 1px solid var(--line);
+}
+
+.ev-fifteen__detail {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent-ink);
+}
+
+@media (min-width: 992px) {
+  .ev-fifteen__grid {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 4fr);
+    column-gap: var(--col-gap);
+    align-items: center;
+  }
+
+  .ev-fifteen__photo {
+    aspect-ratio: 16 / 10;
+  }
+}
+
+/* ─── 3. Sidequests ───────────────────────────────────────────────────────── */
+
+.ev-quests__grid {
+  display: grid;
+  gap: var(--head-gap);
+}
+
+.ev-quests__title {
+  margin-bottom: var(--space-lg);
+}
+
+.ev-quests__statement {
+  font-family: var(--font-display);
+  font-size: var(--hm-fs-statement);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+  color: var(--accent-ink);
+}
+
+.ev-quests__text {
+  max-width: 34rem;
+  margin-top: var(--space-md);
+  font-size: var(--fs-lead);
+  line-height: 1.6;
+  color: var(--ink-soft);
+  text-wrap: pretty;
+}
+
+/* The run of ideas: numbered, ruled, ending open. */
+.ev-quests__ideas {
+  margin-top: var(--space-2xl);
+  border-top: 1px solid var(--line);
+  max-width: 34rem;
+}
+
+.ev-quests__idea {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-lg);
+  padding-block: var(--space-md);
+  border-bottom: 1px solid var(--line);
+  font-family: var(--font-display);
+  font-size: var(--hm-fs-h3);
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.035em;
+  color: var(--ink);
+  transition:
+    padding-left var(--t-med) var(--ease),
+    color var(--t-med) var(--ease);
+}
+
+.ev-quests__idea:last-child {
+  color: var(--muted);
+}
+
+.ev-quests__idea:last-child .ev-quests__name::after {
+  content: '…';
+}
+
+@media (hover: hover) {
+  .ev-quests__idea:hover {
+    padding-left: var(--space-sm);
+    color: var(--c-brown);
+  }
+}
+
+.ev-quests__num {
+  flex: none;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  color: var(--accent-ink);
+  transform: translateY(-0.35em);
+}
+
+/* "First up": a torn-off ticket stub, a perforated edge between label and event. */
+.ev-ticket {
+  display: inline-flex;
+  align-items: stretch;
+  margin-top: var(--space-2xl);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-xs);
+  background: var(--white);
+  font-size: var(--fs-small);
+}
+
+.ev-ticket__label {
+  display: flex;
+  align-items: center;
+  padding: var(--space-sm) var(--space-md);
+  border-right: 1px dashed var(--line-strong);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent-ink);
+}
+
+.ev-ticket__text {
+  padding: var(--space-sm) var(--space-md);
+  font-weight: 500;
+  color: var(--ink);
+}
+
+/* Media: a tall padel frame and a small snapshot tilted against it. */
+.ev-quests__media {
+  position: relative;
+  max-width: 30rem;
+  margin-inline: auto;
+  padding-bottom: var(--space-2xl);
+}
+
+.ev-quests__photo {
+  aspect-ratio: 4 / 5;
+}
+
+.ev-quests__snap {
+  position: absolute;
+  left: clamp(-2.5rem, -3vw, -0.5rem);
+  bottom: 0;
+  width: 44%;
+  padding: 6px 6px 22px;
+  background: var(--white);
+  border-radius: var(--r-xs);
+  box-shadow: var(--shadow-md);
+  rotate: -4deg;
+}
+
+.ev-quests__snap .media {
+  aspect-ratio: 1;
+  border-radius: 3px;
+}
+
+@media (max-width: 767px) {
+  .ev-quests__snap {
+    left: var(--space-sm);
+  }
+}
+
+@media (min-width: 992px) {
+  .ev-quests__grid {
+    grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+    column-gap: var(--col-gap);
+    align-items: center;
+  }
+
+  .ev-quests__media {
+    margin-inline: auto 0;
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ev-seats li,
+  .ev-quests__idea {
+    transition: none;
+  }
+}

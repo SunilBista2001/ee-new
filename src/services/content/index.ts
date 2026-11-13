@@ -15,6 +15,9 @@ export function getContentProvider(): ContentProvider {
 export const getSiteSettings = cache(() => getContentProvider().getSiteSettings());
 export const getHomePage = cache(() => getContentProvider().getHomePage());
 export const getPartnersPage = cache(() => getContentProvider().getPartnersPage());
+export const getAboutPage = cache(() => getContentProvider().getAboutPage());
+export const getEventsPage = cache(() => getContentProvider().getEventsPage());
+export const getPodcastPage = cache(() => getContentProvider().getPodcastPage());
 
 export type * from './types';
 export type { ContentProvider } from './provider';

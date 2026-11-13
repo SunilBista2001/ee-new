@@ -12,10 +12,27 @@
  *  - `LINKS.youtube`: the YouTube channel URL (empty means "not live yet": the button renders
  *    disabled). `LINKS.lumaEmbed` is the public Luma calendar.
  *  - `ROUTES`: the Events, Partners and About pages from the brief.
+ *  - `aboutPage.story.photos[0]`: a photo from an early Elite Entrepreneurs event (none on file).
+ *  - `aboutPage.values.values`: the four values (not supplied yet).
  *  - `testimonials.items`: quotes, last names and companies are still to come.
+ *  - `eventsPage.sidequests.next`: the date of Founders Padel ("[date]").
+ *  - The Fifteen's "Apply" link: NEXT_PUBLIC_FIFTEEN_APPLY_URL (see config/site.ts).
+ *  - `PODCAST_SHOW` / `PODCAST_EPISODES`: the podcast's description, hosts, launch date,
+ *    artwork, platform links and episodes. Everything left empty stays off the page.
  */
+import { siteConfig } from '@/config/site';
 import type { ContentProvider } from './provider';
-import type { HomePageContent, ImageAsset, PartnersPageContent, SiteSettings } from './types';
+import type {
+  AboutPageContent,
+  EventsPageContent,
+  HomePageContent,
+  ImageAsset,
+  PartnersPageContent,
+  PodcastEpisode,
+  PodcastPageContent,
+  PodcastShow,
+  SiteSettings,
+} from './types';
 
 const EE = '/assets/ee';
 
@@ -28,7 +45,7 @@ const img = (file: string, alt: string, width: number, height: number, focus?: s
 });
 
 // Nav links to homepage sections use bare anchors (rewritten to "/#…" on other pages by
-// lib/site-links.ts). Point Events and About at ROUTES once those pages exist.
+// lib/site-links.ts).
 const CONTACT_EMAIL = 'pb@mintaveinc.com';
 const LUMA = 'https://luma.com/eliteentrepreneur';
 const FOUNDER_INSTAGRAM = 'https://www.instagram.com/lifeofsplash/';
@@ -39,6 +56,7 @@ const ROUTES = {
   events: '/events',
   partners: '/partners',
   about: '/about',
+  podcast: '/podcast',
 } as const;
 
 const LINKS = {
@@ -75,6 +93,34 @@ const STOCK = {
   summitStage: stock('summit-stage', 'A speaker on stage in front of a full audience', 1800, 1200),
   speaker: stock('speaker', 'A speaker addressing a crowd', 1800, 1200),
   podcast: stock('podcast', 'Two people recording a podcast with headphones and microphones', 1800, 1187),
+  podcastMic: stock(
+    'podcast-mic',
+    'A broadcast microphone on a boom arm against a dark background',
+    1200,
+    1800,
+    '50% 62%',
+  ),
+  podcastStudio: stock(
+    'podcast-studio',
+    'A condenser microphone in a shock mount in a dimly lit recording studio',
+    1600,
+    1067,
+    '62% 50%',
+  ),
+  podcastCondenser: stock(
+    'podcast-condenser',
+    'A studio microphone with a pair of headphones hung on its stand',
+    1600,
+    1067,
+    '78% 40%',
+  ),
+  podcastHeadphones: stock(
+    'podcast-headphones',
+    'A pair of brown leather and metal headphones resting on a table',
+    1600,
+    1067,
+    '38% 50%',
+  ),
 } as const;
 
 /** Elite's own photography. */
@@ -124,10 +170,10 @@ const siteSettings: SiteSettings = {
   },
   navigation: {
     primary: [
-      { label: 'Events', href: '#events' },
+      { label: 'Events', href: ROUTES.events },
       { label: 'Partners', href: ROUTES.partners },
-      { label: 'About', href: '#about' },
-      { label: 'Podcast', href: '#podcast' },
+      { label: 'About', href: ROUTES.about },
+      { label: 'Podcast', href: ROUTES.podcast },
     ],
     cta: { label: 'See what’s coming up', href: '#events' },
   },
@@ -142,8 +188,8 @@ const siteSettings: SiteSettings = {
       {
         title: 'Explore',
         links: [
-          { label: 'Events', href: '#events' },
-          { label: 'About', href: '#about' },
+          { label: 'Events', href: ROUTES.events },
+          { label: 'About', href: ROUTES.about },
           { label: 'Speakers', href: '#speakers' },
           { label: 'Community', href: '#community' },
           { label: 'Newsletter', href: '#newsletter' },
@@ -521,8 +567,306 @@ const partnersPage: PartnersPageContent = {
   },
 };
 
+// ─── About ────────────────────────────────────────────────────────────────────
+//
+// Copy follows the About brief word for word. Photography is Elite's own; there is no photo of
+// an early event on file yet, so that slot stays empty (and says so) until one is supplied.
+// The four values have not been supplied: they stay bracketed placeholders.
+
+const aboutPage: AboutPageContent = {
+  seo: {
+    title: 'About Elite Entrepreneurs | Business is human.',
+    description: 'Authentic relationships drive business. We curate the environments where they get built.',
+    path: ROUTES.about,
+    ogImage: OG_IMAGE,
+  },
+
+  hero: {
+    label: 'About Elite Entrepreneurs',
+    headline: { text: 'Business is', accent: 'human.' },
+    lead: 'Authentic relationships drive business. We curate the environments where they get built.',
+    image: { ...OG_IMAGE, focus: '50% 60%' },
+    caption: 'An Elite Entrepreneurs summit, Toronto',
+  },
+
+  story: {
+    index: '01',
+    label: 'How it started',
+    heading: 'How it started.',
+    paragraphs: [
+      'In 2016 I went to an event hosted by Brandon Carter. It changed everything for me.',
+      'I started going to more events and saw what they did for my business. Real relationships, in a world that had moved online.',
+      'Events have shaped the direction of my life ever since. So I started hosting my own.',
+      'At the first one, people who met started working together. Some became business partners. I did another, and it happened again.',
+      'That’s when it clicked. Put the right people in the right room, and business takes care of itself.',
+      'Now we curate even harder, so the right people meet, build something real, and do business with someone they’ve actually looked in the eye.',
+    ],
+    markers: { 0: '2016', 3: 'The first event', 5: 'Now' },
+    emphasisIndex: 4,
+    signature: { name: 'Splash', role: 'Founder, Elite Entrepreneurs' },
+    photos: [
+      {
+        tag: 'Then',
+        caption: 'An early Elite Entrepreneurs event',
+        pendingNote: 'Photo from an early event to come',
+      },
+      {
+        tag: 'Now',
+        caption: 'A recent Elite Entrepreneurs summit',
+        image: EVENT.networking,
+      },
+    ],
+  },
+
+  beliefs: {
+    index: '02',
+    label: 'What we believe',
+    heading: 'What we believe.',
+    beliefs: [
+      {
+        title: 'Relationships drive business.',
+        text: 'Most of the deals and partnerships we’ve seen started with people actually knowing each other. Clients convert better after meeting in person than from any ad or cold message.',
+      },
+      {
+        title: 'Shared experiences build real relationships.',
+        text: 'At formal networking, people keep their guard up. Over a drink, a game or an activity, you meet the actual person.',
+        image: img(
+          'event/moment-conversation.jpg',
+          'Two attendees in conversation in front of the Elite Entrepreneurs backdrop',
+          540,
+          400,
+          '40% 50%',
+        ),
+      },
+      {
+        title: 'Business is human to human.',
+        text: 'Everything we do starts there.',
+      },
+    ],
+  },
+
+  different: {
+    index: '03',
+    label: 'How we’re different',
+    heading: 'We bring the right people into the right room.',
+    points: [
+      'We don’t make you sit through speeches all day. People come for people, so we make time for people.',
+      'We bring speakers you wouldn’t expect, and sometimes we get very specific and technical.',
+      'We build events we’d actually want to go to, because we’ve been to enough bad ones.',
+    ],
+    closing: { text: 'Amazing people.', accent: 'Having fun.' },
+    images: [
+      EVENT.backdropTalk,
+      img(
+        'event/moment-hallway.jpg',
+        'An attendee speaking into a microphone in the hallway of an Elite Entrepreneurs summit',
+        540,
+        480,
+        '50% 40%',
+      ),
+    ],
+  },
+
+  values: {
+    index: '04',
+    label: 'Values',
+    heading: 'Values.',
+    values: [
+      { word: '[Value]', text: '[One supporting sentence to come.]' },
+      { word: '[Value]', text: '[One supporting sentence to come.]' },
+      { word: '[Value]', text: '[One supporting sentence to come.]' },
+      { word: '[Value]', text: '[One supporting sentence to come.]' },
+    ],
+  },
+
+  next: {
+    index: '05',
+    label: 'Where we’re going',
+    heading: 'Where we’re going.',
+    lines: ['More events no one has seen before.', 'Higher-level rooms in new cities.'],
+    listLabel: 'Next rooms',
+    cities: [
+      { name: 'Miami', coords: '25.76° N, 80.19° W' },
+      { name: 'New York', coords: '40.71° N, 74.01° W' },
+      { name: 'San Francisco', coords: '37.77° N, 122.42° W' },
+      { name: 'LA', coords: '34.05° N, 118.24° W' },
+      { name: 'Cape Town', coords: '33.92° S, 18.42° E' },
+      { name: 'Dubai', coords: '25.20° N, 55.27° E' },
+    ],
+  },
+
+  cta: {
+    heading: 'The best way to understand EE is to be in the room.',
+    // Same targets as the site navigation: the homepage calendar and the Partners page.
+    primaryCta: { label: 'See what’s coming up', href: '/#events' },
+    secondaryCta: { label: 'Partner with us', href: ROUTES.partners },
+    image: img(
+      'event/venue-ballroom.jpg',
+      'The ballroom of the Omni King Edward hotel in Toronto, an Elite Entrepreneurs venue',
+      1800,
+      941,
+      '50% 55%',
+    ),
+    caption: 'Omni King Edward, Toronto',
+  },
+};
+
+// ─── Events ───────────────────────────────────────────────────────────────────
+//
+// Copy follows the Events brief word for word. The hero strip mixes Elite's own summit photos
+// with the dinner stand-ins already used on the homepage.
+
+const eventsPage: EventsPageContent = {
+  seo: {
+    title: 'Events | Elite Entrepreneurs',
+    description: 'We host the events people actually want to go to. And keep coming back to.',
+    path: ROUTES.events,
+    ogImage: OG_IMAGE,
+  },
+
+  hero: {
+    label: 'Events',
+    headline: { text: 'We host the events people actually want to', accent: 'go to.' },
+    lead: 'And keep coming back to.',
+    primaryCta: { label: 'See the calendar', href: '#calendar' },
+    photos: [
+      STOCK.toast,
+      img(
+        'event/moment-conversation.jpg',
+        'Two attendees in conversation in front of the Elite Entrepreneurs backdrop',
+        540,
+        400,
+        '40% 50%',
+      ),
+      { ...STOCK.dinnerLaughing, focus: '45% 45%' },
+      EVENT.networking,
+    ],
+  },
+
+  fifteen: {
+    index: '01',
+    label: 'The Fifteen',
+    heading: 'The Fifteen',
+    statement: 'One table. Fifteen people. One long dinner.',
+    text: 'A curated group of founders. The right people in the right place, once a month.',
+    detail: 'By application.',
+    cta: { label: 'Apply', href: siteConfig.fifteenApplyUrl ?? '', external: Boolean(siteConfig.fifteenApplyUrl) },
+    image: { ...STOCK.dinnerTable, focus: '50% 55%' },
+    inset: STOCK.dinnerTalk,
+    caption: 'Once a month · Fifteen seats',
+  },
+
+  sidequests: {
+    index: '02',
+    label: 'Sidequests',
+    heading: 'Sidequests',
+    statement: 'Something different every month.',
+    text: 'Padel, a perfume-making workshop, whatever no one else is planning. Do something fun together and the conversation takes care of itself.',
+    ideas: ['Padel', 'Perfume-making', 'Whatever no one else is planning'],
+    next: { label: 'First up', text: 'Founders Padel [date].' },
+    image: STOCK.padel,
+    inset: { ...STOCK.greeting, focus: '50% 40%' },
+  },
+
+  calendar: {
+    index: '03',
+    heading: 'Coming up.',
+    calendarId: LINKS.lumaCalendarId,
+    embedUrl: LINKS.lumaEmbed,
+    link: { label: 'View on Luma', href: LUMA, external: true },
+  },
+};
+
+// ─── Podcast ──────────────────────────────────────────────────────────────────
+//
+// Pre-launch. The show's name comes from the homepage; everything else is still to be
+// confirmed and is left empty on purpose: empty fields are not rendered.
+
+const PODCAST_SHOW: PodcastShow = {
+  title: 'Keeping It Real',
+  /** Replaces the hero's lead once written. */
+  description: '',
+  /** Real, confirmed hosts only. */
+  hosts: [],
+  /** ISO date, e.g. '2027-02-03'. */
+  launchDate: undefined,
+  artwork: undefined,
+  platforms: {
+    spotify: '',
+    apple: '',
+    youtube: LINKS.youtube,
+  },
+};
+
+/** Newest first. Nothing has been published yet. */
+const PODCAST_EPISODES: PodcastEpisode[] = [];
+
+const podcastPage: PodcastPageContent = {
+  seo: {
+    title: 'Podcast | Elite Entrepreneurs',
+    description: 'Keeping It Real, the Elite Entrepreneurs podcast, is coming soon. Stay tuned.',
+    path: ROUTES.podcast,
+    ogImage: OG_IMAGE,
+  },
+
+  show: PODCAST_SHOW,
+  episodes: PODCAST_EPISODES,
+
+  hero: {
+    label: 'A podcast by Elite Entrepreneurs',
+    status: 'In production',
+    headline: 'Coming Soooon',
+    headlineText: 'Coming soon',
+    subline: 'Stay tuned.',
+    lead: 'Conversations with entrepreneurs, from the people behind Elite Entrepreneurs. The first episodes are on the way.',
+    cta: { label: 'Keep me posted', href: '#stay-tuned' },
+    image: STOCK.podcastMic,
+    inset: STOCK.podcastCondenser,
+  },
+
+  studio: {
+    index: '01',
+    label: 'Behind the scenes',
+    statement:
+      'The best conversations at Elite rarely happen on stage. They happen at the table, in the hallway, after the room empties out. Soon, you can listen in.',
+    text: 'Same people, same honesty, now with a microphone on the table.',
+    images: [STOCK.podcastStudio, STOCK.podcastHeadphones],
+    captions: ['Mic check', 'Levels'],
+    dial: { start: 'Tuning in', end: 'Keeping It Real' },
+  },
+
+  episodesSection: {
+    index: '02',
+    label: 'Episodes',
+    heading: 'Latest episodes.',
+    listenLabel: 'Listen',
+  },
+
+  notify: {
+    heading: 'Stay tuned.',
+    text: 'Something worth listening to is on the way.',
+    placeholder: 'you@company.com',
+    submitLabel: 'Keep me posted',
+    submittingLabel: 'Sending',
+    successMessage: 'You’re on the list. We’ll let you know the moment the first episode is out.',
+    errorMessage: 'Something went wrong on our side. Please try again in a moment.',
+    unavailableMessage: 'Launch sign-ups are not open just yet. Please check back soon.',
+    privacyNote: 'One email when we launch. No spam.',
+    followLabel: 'Follow along',
+    follow: [
+      { label: 'Elite on Luma', href: LUMA, external: true },
+      { label: 'Founder on Instagram', href: FOUNDER_INSTAGRAM, external: true },
+      { label: 'Founder on LinkedIn', href: FOUNDER_LINKEDIN, external: true },
+    ],
+    listenLabel: 'Listen on',
+  },
+};
+
 export const staticContentProvider: ContentProvider = {
   getSiteSettings: () => Promise.resolve(siteSettings),
   getHomePage: () => Promise.resolve(homePage),
   getPartnersPage: () => Promise.resolve(partnersPage),
+  getAboutPage: () => Promise.resolve(aboutPage),
+  getEventsPage: () => Promise.resolve(eventsPage),
+  getPodcastPage: () => Promise.resolve(podcastPage),
 };
